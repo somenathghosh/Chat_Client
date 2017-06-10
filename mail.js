@@ -1,5 +1,5 @@
 var nodemailer = require('nodemailer');
-var dbFunctions = require('./dbStore/dbFunctions');
+var dbFunctions = require('./dbStore/dbFunctions').new();
 var Q = require('q');
 var generator = require('xoauth2').createXOAuth2Generator({
 	user: "",
@@ -17,9 +17,9 @@ var transporter = nodemailer.createTransport(({
 }));
 
 var mailOptions = {
-	from: "Sender <sernder@email.com>", // sender address 
-	to: "admin@email.com", 				// list of receivers 
-	subject: '', 						// Subject line 
+	from: "Sender <sernder@email.com>", // sender address
+	to: "admin@email.com", 				// list of receivers
+	subject: '', 						// Subject line
 	generateTextFromHTML: true,
 	html: ""
 };

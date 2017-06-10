@@ -5,35 +5,58 @@ var io = require('socket.io')();
 var uuid = require('node-uuid');
 var Q = require('q');
 var _ = require("underscore")
-var dbFunctions = require('./dbStore/dbFunctions');
+var dbFunctions = require('./dbStore/dbFunctions').new();
 var config = require('./config');
 var mail = require('./mail');	//Configure mail.js and un-comment the mail code
 var btoa = require('btoa');		//Password is btoa hashed
 var morgan = require('morgan');
 var redis 	= require('redis').createClient;
 var adapter = require('socket.io-redis');
+var path 		= require('path');
+var bodyParser 	= require('body-parser');
+var session 	= require('./session');
+var routes 		= require('./routes');
+
+
 var admins = {};
 var users = {};
 
-
+// console.log('Starting server');
 
  // dbFunctions.ConnectToRedis(startApp);
 
-app.get('/', function(req, res) {
-	res.sendFile(__dirname + '/views/client.html');
-});
 
-app.get('/ping', function(req, res) {
-	res.setHeader('Access-Control-Allow-Origin', config.parentDomain);
-	res.send("OK");
-});
+ // View engine setup
+ app.set('views', path.join(__dirname, '/views'));
+ app.set('view engine', 'ejs');
 
-app.get(config.admin_url, function(req, res) {
-	res.sendFile(__dirname + '/views/admin.html');
-});
+ // Middlewares
+ app.use(bodyParser.json());
+ app.use(bodyParser.urlencoded({ extended: false }));
+ app.use(express.static(__dirname + '/public'));
 
-app.use(express.static(__dirname + '/public'));
-app.use(morgan(':method :url :response-time'));
+app.use(morgan('dev'));
+
+app.use(session);
+
+app.use('/', routes);
+
+
+// app.get('/', function(req, res) {
+// 	res.sendFile(__dirname + '/views/client.html');
+// });
+
+// app.get('/ping', function(req, res) {
+// 	res.setHeader('Access-Control-Allow-Origin', config.parentDomain);
+// 	res.send("OK");
+// });
+//
+// app.get(config.admin_url, function(req, res) {
+// 	res.sendFile(__dirname + '/views/admin.html');
+// });
+
+
+
 
 io.on('connection', function(socket) {
 	//Login Admin
@@ -252,6 +275,7 @@ io.on('connection', function(socket) {
 });
 
 function startApp() {
+	console.log('Starting APP');
 	dbFunctions.ConnectToRedis(function(isSuccess){
 
 		if (isSuccess) {
@@ -265,10 +289,7 @@ function startApp() {
 			    "reconnectionDelay": 2000,                  //starts with 2 secs delay, then 4, 6, 8, until 60 where it stays forever until it reconnects
 			    "reconnectionDelayMax" : 60000,             //1 minute maximum delay between connections
 			    "reconnectionAttempts": "Infinity",         //to prevent dead clients, having the user to having to manually reconnect after a server restart.
-			    "timeout" : 10000,                           //before connect_error and connect_timeout are emitted.
-			    "transports" : ["websocket"],                //forces the transport to be only websocket. Server needs to be setup as well/
-					'pingInterval': 15000,
-					'pingTimeout': 15000
+			    "timeout" : 10000                           //before connect_error and connect_timeout are emitted.
 			}
 
 			// Attach the http server
@@ -291,3 +312,6 @@ function startApp() {
 }
 
 startApp();
+
+
+// /usr/local/src/redis-3.2.0

@@ -1,6 +1,6 @@
 {
   "name": "chat_app",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "Simple application using socket.io",
   "main": "app.js",
   "scripts": {
@@ -8,14 +8,18 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://mynkag@bitbucket.org/cronj-dev/chat_app.git"
+    "url": "https://github.com/somenathghosh/Chat_Client"
   },
   "author": "Somenath Ghosh",
   "license": "ISC",
-  "homepage": "https://bitbucket.org/cronj-dev/chat_app#readme",
+  "homepage": "https://github.com/somenathghosh/Chat_Client",
   "dependencies": {
+    "assert": "1.4.1",
+    "body-parser": "1.17.2",
     "btoa": "^1.1.2",
+    "ejs": "2.5.6",
     "express": "4.15.3",
+    "express-session": "1.15.3",
     "morgan": "1.8.2",
     "node-uuid": "^1.4.7",
     "nodemailer": "^2.2.1",

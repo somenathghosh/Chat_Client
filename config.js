@@ -1,6 +1,6 @@
 var config = {
 	parentDomain : 'http://localhost:8083', 	//Host Domain
-	web_port : 8080,							//Port where app will be hosted
+	web_port : 3000,							//Port where app will be hosted
 	admin_url : '/adminURL',					//Choose a URL where admin panel can be accessed
 	redis_port : 41999,							//Redis Port
 	redis_hostname : "ec2-34-206-77-235.compute-1.amazonaws.com", 				//Redis Hostname
