@@ -16,11 +16,11 @@ var $inputMessage; // Input message input box
 var $messages; // Messages area
 
 var username;	//Store admin username
-var authenticated = false; //Boolean to check if admin is authenticated 
-var connected = false; 
+var authenticated = false; //Boolean to check if admin is authenticated
+var connected = false;
 var typing = false; //Boolean to check if admin is typing
 var timeout = undefined; //Timeout to monitor typing
-var socket = io(); //io socket
+var socket = io({transports: ['websocket']}); //io socket
 $newUser.loop = true;
 $usernameInput.focus();
 Notification.requestPermission();
@@ -31,6 +31,7 @@ socket.on('login', function(data) {
 	if (authenticated) {
 		$loginPage.fadeOut();
 		$chatPage.show();
+		console.log('100');
 		socket.emit('add admin', {
 			admin: username,
 			isAdmin: true
@@ -47,6 +48,7 @@ socket.on('login', function(data) {
 })
 
 socket.on('chat message', function(data) {
+	console.log('200');
 	$inputMessage = $('#' + data.roomID);
 	var $parent = $inputMessage.parent();
 	var $messages = $parent.children(".messages");
@@ -64,15 +66,18 @@ socket.on('chat message', function(data) {
 });
 
 socket.on('admin added', function(username) {
+	console.log('300');
 	$userList.append('<li id=' + username + '>' + username + '</li>');
 	adminListListener(username);
 })
 
 socket.on('admin removed', function(username) {
+	console.log('500');
 	$('#' + username).remove();
 })
 
 socket.on('New Client', function(data) {
+	console.log('400');
 	$('.container').append(getChatArea(data.roomID));
 	$inputMessage = $('#' + data.roomID);
 	var $parent = $inputMessage.parent();
@@ -111,6 +116,7 @@ socket.on('New Client', function(data) {
 })
 
 socket.on('typing', function(data) {
+	console.log('600');
 	$inputMessage = $('#' + data.roomID);
 	var $parent = $inputMessage.parent();
 	var $typing = $parent.children(".typing");
@@ -121,10 +127,12 @@ socket.on('typing', function(data) {
 })
 
 socket.on('client ack', function() {
+	console.log('700');
 	$newUser.pause();
 })
 
 socket.on('User Disconnected', function(roomID) {
+	console.log('800');
 	$newUser.pause();
 	$inputMessage = $('#' + roomID);
 	$inputMessage.off();
@@ -133,10 +141,12 @@ socket.on('User Disconnected', function(roomID) {
 })
 
 socket.on('poke admin', function() {
+
 	$pokeAdmin.play();
 })
 
 socket.on('reconnect', function() {
+	console.log('900');
 	console.log("Reconnected!");
 	$userList.empty();
 	$('.container').empty();
@@ -150,11 +160,13 @@ socket.on('reconnect', function() {
 });
 
 socket.on('disconnect', function() {
+	console.log('1000');
 	console.log("Disconnected!");
 	$errorPage.show();
 });
 
 socket.on('reconnect_failed', function() {
+	console.log('1100');
 	console.log("Reconnection Failed!");
 	var $errorMsg = $errorPage.children(".title")
 	$errorMsg.text("Reconection Failed. Please refresh your page. ")
@@ -178,6 +190,7 @@ function sendMessage(id) {
 		$inputMessage.val('');
 		// tell server to execute 'new message' and send along one parameter
 		var time = ("" + new Date());
+		console.log('1200');
 		socket.emit('chat message', {
 			roomID: id,
 			msg: message,

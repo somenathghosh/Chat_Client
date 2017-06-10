@@ -13,15 +13,16 @@ var $Typing = $(".typing") //Typing notification
 var $newMsg = $('.msg_push_new'); //Dummy to push new msgs
 var $oldMsg = $('.msg_push_old'); //Dummy to push msg history
 
-var socket = io(); //io socket
+var socket = io('/',{transports: ['websocket']}); //io socket
 var typing = false; //Boolean to check if user is typing
 var timeout = undefined; //Timeout to monitor typing
-var id = localStorage.getItem("roomID"); //Room ID in localstorage
+var id = localStorage.getItem("roomID"); //Room ID in sessionStorage
 var active = sessionStorage.getItem('active'); //Check if chat has been opened.
 
 if (active && id) {
 	$form.hide();
 	$chatBox.show();
+	console.log('100');
 	socket.emit('add user', {
 		isNewUser: false,
 		roomID: id
@@ -30,13 +31,14 @@ if (active && id) {
 }
 
 $('.msg_head').click(function() {
-	console.log('new user');
+	console.log('200');
 	$widgetBox.slideToggle('slow');
 	if (id != null && !active) {
 		socket.emit('add user', {
 			isNewUser: false,
 			roomID: id
 		});
+		console.log('new user');
 		$form.hide();
 		$chatBox.show();
 		$inputMessage.focus();
@@ -46,10 +48,13 @@ $('.msg_head').click(function() {
 });
 
 $Input.submit(function() {
+	console.log('300');
+	console.log('submit');
 	$form.hide();
 	$chatBox.show();
 	$inputMessage.focus();
 	sessionStorage.setItem('active', true);
+	console.log('new user');
 	socket.emit('add user', {
 		isNewUser: true,
 		Name: $nameInput.val().trim(),
@@ -62,6 +67,7 @@ $inputMessage.keypress(function(event) {
 	if (event.which !== 13) {
 		if (typing === false && $inputMessage.is(":focus")) {
 			typing = true;
+			console.log('400');
 			socket.emit("typing", {
 				isTyping: true,
 				roomID: id,
@@ -79,16 +85,19 @@ $inputMessage.keypress(function(event) {
 })
 
 $messages.on("scroll", function() {
+
 	if ($messages.scrollTop() == 0)
 		socket.emit("more messages", {});
 })
 
 socket.on('roomID', function(roomID) {
+	console.log('500');
 	id = roomID;
 	localStorage.setItem("roomID", roomID);
 });
 
 socket.on('chat message', function(data) {
+	console.log('600');
 	var sender;
 	if (data.isAdmin)
 		sender = "msg_a"
@@ -100,25 +109,29 @@ socket.on('chat message', function(data) {
 });
 
 socket.on('typing', function(data) {
+	console.log('700');
 	if (data.isTyping && data.person != 'Client')
-		$Typing.append("CronJ is typing...");
+		$Typing.append("Admin is typing...");
 	else
 		$Typing.text('');
 });
 
 socket.on('chat history', function(data) {
+	console.log('800');
 	var len = data.history.length;
 	for (var i = len - 1; i >= 0; i--)
 		addMessages(data.history[i], false);
 });
 
 socket.on('more chat history', function(data) {
+	console.log('900');
 	var len = data.history.length;
 	for (var i = 0; i < len; i++)
 		addMessages(data.history[i], true);
 });
 
 socket.on('log message', function(text) {
+	console.log('1000');
 	var time = ("" + new Date());
 	var $messageDiv = $('<div class="msg_a">' + text + '<span class="timestamp">' +
 		(time.toLocaleString().substr(15, 6)) + '</span></div>').insertBefore($newMsg);
@@ -126,17 +139,23 @@ socket.on('log message', function(text) {
 });
 
 socket.on('disconnect', function() {
+	console.log('1100');
+	localStorage.removeItem("roomID");
+	sessionStorage.removeItem('active');
 	console.log("Disconnected!");
 	$inputMessage.prop('disabled', true);
 	$inputMessage.prop('placeholder', "Connection Lost! Reconnecting..");
+
 });
 
 socket.on('reconnect_failed', function() {
+	console.log('1200');
 	console.log("Reconnection Failed!");
 	$inputMessage.prop('placeholder', "No active connection. Please refresh page.");
 });
 
 socket.on('reconnect', function() {
+	console.log('1300');
 	setTimeout(function() {
 		console.log("Reconnected!");
 		$inputMessage.prop('disabled', false);
@@ -167,6 +186,8 @@ function sendMessage() {
 		$inputMessage.val('');
 		var time = ("" + new Date());
 		// tell server to execute 'new message' and send along one parameter
+		//
+		console.log('1400');
 		socket.emit('chat message', {
 			roomID: "null",
 			msg: message,

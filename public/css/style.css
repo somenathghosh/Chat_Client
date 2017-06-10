@@ -1,4 +1,4 @@
-body {      
+body {
     font-family: sans-serif;
 }
 
@@ -7,7 +7,7 @@ body {
     bottom: -5px;
     width: 300px;
     background: white;
-    border-radius: 5px 5px 0px 0px;    
+    border-radius: 5px 5px 0px 0px;
 }
 
 .msg_head {
@@ -16,11 +16,11 @@ body {
     padding:18px 15px 19px 15px;
     font-weight: bold;
     cursor: pointer;
-    border-radius: 5px 5px 0px 0px;    
+    border-radius: 5px 5px 0px 0px;
 }
 
 .formArea {
-    height: 250px;
+    height: 450px;
 }
 
 .title {
@@ -31,7 +31,7 @@ body {
 }
 
 .inputFields {
-    height: 190px;
+    height: 290px;
     padding: 15px;
     padding-top: 5px;
 }

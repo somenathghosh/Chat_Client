@@ -8,12 +8,16 @@ var _ = require("underscore")
 var dbFunctions = require('./dbStore/dbFunctions');
 var config = require('./config');
 var mail = require('./mail');	//Configure mail.js and un-comment the mail code
-var btoa = require('btoa');		//Password is btoa hashed 
-
+var btoa = require('btoa');		//Password is btoa hashed
+var morgan = require('morgan');
+var redis 	= require('redis').createClient;
+var adapter = require('socket.io-redis');
 var admins = {};
 var users = {};
 
-dbFunctions.ConnectToRedis(startApp);
+
+
+ // dbFunctions.ConnectToRedis(startApp);
 
 app.get('/', function(req, res) {
 	res.sendFile(__dirname + '/views/client.html');
@@ -29,19 +33,19 @@ app.get(config.admin_url, function(req, res) {
 });
 
 app.use(express.static(__dirname + '/public'));
+app.use(morgan(':method :url :response-time'));
 
 io.on('connection', function(socket) {
 	//Login Admin
 	socket.on('login', function(data) {
-		if (btoa(data.password) != config.key)
+		if (btoa(data.password) != config.key) {
 			socket.emit('login', {
 				login: false,
 				err: "Invalid Login"
-			})
+			});
+		}
 		else {
-			if (_.find(config.admin_users, function(admin) {
-					return (admin == data.admin);
-				})) {
+			if (_.find(config.admin_users, function(admin) { return (admin == data.admin); })) {
 				if (admins[data.admin]) {
 					socket.emit('login', {
 						login: false,
@@ -59,7 +63,7 @@ io.on('connection', function(socket) {
 				})
 			}
 		}
-	});	
+	});
 	//Init admin
 	socket.on('add admin', function(data) {
 		this.isAdmin = data.isAdmin;
@@ -90,7 +94,7 @@ io.on('connection', function(socket) {
 					})
 			});
 		}
-	});	
+	});
 	//Init user
 	socket.on('add user', function(data) {
 		socket.isAdmin = false;
@@ -188,7 +192,7 @@ io.on('connection', function(socket) {
 				var totAdmins = Object.keys(admins).length;
 				var clients = total - totAdmins;
 				if (clients == 0) {
-					//check if user reconnects in 4 seconds 
+					//check if user reconnects in 4 seconds
 					setTimeout(function() {
 						if (io.sockets.adapter.rooms[socket.roomID])
 							total = io.sockets.adapter.rooms[socket.roomID]["length"];
@@ -215,6 +219,7 @@ io.on('connection', function(socket) {
 						email: socket.userDetails
 					});*/
 				delete users[socket.roomID];
+				dbFunctions.deleteRoom(socket.roomID);
 			}
 		}
 	});
@@ -246,17 +251,43 @@ io.on('connection', function(socket) {
 	});
 });
 
-function startApp(isSuccess) {
-	if (isSuccess) {
-		server.listen(config.web_port, function() {
-			console.log('Server started ' + config.web_port + ' at ' +
-				(new Date().toLocaleString().substr(0, 24)));
-		});
-		io.attach(server, {
-			'pingInterval': 15000,
-			'pingTimeout': 15000
-		});
-	} else {
-		console.log("Server failed to start.");
-	}
+function startApp() {
+	dbFunctions.ConnectToRedis(function(isSuccess){
+
+		if (isSuccess) {
+			server.listen(config.web_port, function() {
+				console.log('Server started ' + config.web_port + ' at ' +
+					(new Date().toLocaleString().substr(0, 24)));
+			});
+			var connectionOptions =  {
+			    "force new connection" : true,
+			    "reconnection": true,
+			    "reconnectionDelay": 2000,                  //starts with 2 secs delay, then 4, 6, 8, until 60 where it stays forever until it reconnects
+			    "reconnectionDelayMax" : 60000,             //1 minute maximum delay between connections
+			    "reconnectionAttempts": "Infinity",         //to prevent dead clients, having the user to having to manually reconnect after a server restart.
+			    "timeout" : 10000,                           //before connect_error and connect_timeout are emitted.
+			    "transports" : ["websocket"],                //forces the transport to be only websocket. Server needs to be setup as well/
+					'pingInterval': 15000,
+					'pingTimeout': 15000
+			}
+
+			// Attach the http server
+			io.attach(server, connectionOptions);
+			// Force Socket.io to ONLY use "websockets"; No Long Polling.
+			io.set('transports', ['websocket']);
+			let port = config.redis_port;
+			let host = config.redis_hostname;
+			let password = config.redis_password;
+			let pubClient = redis(port, host, { auth_pass: password });
+			let subClient = redis(port, host, { auth_pass: password, return_buffers: true, });
+			io.adapter(adapter({ pubClient, subClient }));
+
+		} else {
+			console.log("Server failed to start.");
+		}
+
+	});
+
 }
+
+startApp();

@@ -3,21 +3,34 @@ var config = require('../config');
 var Q = require('q');
 var redisClient;
 
-exports.ConnectToRedis = function(startApp) {
-	redisClient = redis.createClient(config.redis_port, config.redis_hostname);
+exports.ConnectToRedis = function(callback) {
+	redisClient = redis.createClient({
+																		port: config.redis_port,
+																		host: config.redis_hostname,
+																		password: config.redis_password
+																		});
 
 	redisClient.on('ready', function() {
 		console.log('Connected to Redis');
-		startApp(true);
+		 // startApp(true);
+		 callback(true);
 	});
 
 	redisClient.on('error', function() {
 		console.log('Failed to connect to Redis');
-		startApp(false);
+		 // startApp(false);
+		 callback(false);
 	});
 }
 
+exports.deleteRoom = function(roomID){
+
+	redisClient.del(roomID);
+
+}
+
 exports.getMessages = function(roomID, startPos, endPos) {
+	console.log(roomID, startPos, endPos);
 	if (endPos == undefined) {
 		if (startPos > -10 && startPos < 0)
 			endPos = -1;
@@ -29,8 +42,10 @@ exports.getMessages = function(roomID, startPos, endPos) {
 		if (!err) {
 			var result = [];
 			// Loop through the list, parsing each item into an object
-			for (var msg in res)
+			for (var msg in res){
+				console.log(msg);
 				result.push(JSON.parse(res[msg]));
+			}
 			result.push(roomID);
 			deffered.resolve(result)
 		} else {
