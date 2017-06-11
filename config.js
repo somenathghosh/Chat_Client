@@ -1,12 +1,16 @@
 var config = {
 	parentDomain : 'http://localhost:8083', 	//Host Domain
 	web_port : 3000,							//Port where app will be hosted
-	admin_url : '/adminURL',					//Choose a URL where admin panel can be accessed
-	redis_port : 41999,							//Redis Port
-	redis_hostname : "ec2-34-206-77-235.compute-1.amazonaws.com", 				//Redis Hostname
-	redis_password : "p22fad4700c45fa29f34c04f1101c818cd68c835161a09da4beb6cf4a33334cfb",
+	admin_url : '/admin',					//Choose a URL where admin panel can be accessed
+	redis_port : process.env.REDIS_PORT,							//Redis Port
+	redis_hostname : process.env.REDIS_HOST, 				//Redis Hostname
+	redis_password : process.env.REDIS_PASSWORD,
 	admin_users : ['admin','admin2'], 					//Add usernames for different admins
-	key : 'cGFzc3dvcmQ='						//Admin Password btoa hashed (Default = 'password')
+	key : process.env.ADMIN_PASS,						//Admin Password btoa hashed (Default = 'password')
+	env : process.env.NODE_ENV || 'development',
+	sessionSecret: 'hds092384023j54351421&^$#@hvsvsd--t8153c-076][]',
+	mongo:  process.env.MONGODB_URI,
+	redis: process.env.REDIS_URL
 };
 
 module.exports = config;

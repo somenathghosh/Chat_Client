@@ -48,6 +48,7 @@ $('.msg_head').click(function() {
 });
 
 $Input.submit(function() {
+	
 	console.log('300');
 	console.log('submit');
 	$form.hide();

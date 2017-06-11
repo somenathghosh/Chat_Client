@@ -1,1 +1,6 @@
 cert/*
+.tern-project
+.env
+.editorconfig
+.jshintrc
+.eslintrc

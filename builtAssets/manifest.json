@@ -1,0 +1,320 @@
+{
+  "assets": {
+    "admin.js": "admin-7d52a9946533b88ee71dce4a62f00c4a.js",
+    "client.js": "client-074783cce0cd63ee06b00fcddca0271c.js",
+    "adminStyle.css": "adminStyle-01ba5da4be89cb1028b65a9a0ed08dcd.css",
+    "style.css": "style-e6ac311928283fa0ac8def623c22e700.css",
+    "core.js": "core-8708906a645a5fd60d4e1eb0e68cbb3d.js",
+    "jquery.js": "jquery-473d216d9281e01c16720852c2dd1ece.js",
+    "jquery.min.js": "jquery.min-62abfc55d97fadf1228f74784bdb2c0b.js",
+    "jquery.min.map": "jquery.min-b08266448855bc87166a8c589d411b2c.map",
+    "jquery.slim.js": "jquery.slim-afd858c5307ac282e04d6c4da29b2ae4.js",
+    "jquery.slim.min.js": "jquery.slim.min-c419e1233b4fc27522f025452d04b8a7.js",
+    "jquery.slim.min.map": "jquery.slim.min-516b563cce053a3db59c0c3de8c8fac5.map",
+    "bootstrap.js": "bootstrap-23c07f9a0fa5f07ba37c1bf25ac572ce.js",
+    "bootstrap.min.js": "bootstrap.min-e27566cf003d0795041dffb3473da34f.js",
+    "npm.js": "npm-1110b7599e85d1273549a17e7dfda5cc.js",
+    "bootstrap-theme.css": "bootstrap-theme-e657a5d99fecaa1827d35ece6b351185.css",
+    "bootstrap-theme.css.map": "bootstrap-theme.css-a796208c9b2349c29960209bf3a70d10.map",
+    "bootstrap-theme.min.css": "bootstrap-theme.min-891aa3cc880dca2578822da3e5dd9d71.css",
+    "bootstrap-theme.min.css.map": "bootstrap-theme.min.css-071f28ecd127e72636948dff2fea56d6.map",
+    "bootstrap.css": "bootstrap-20e8abfe48ef4f47381d411b41bfd68f.css",
+    "bootstrap.css.map": "bootstrap.css-efe88e30a08d9cb52827f9c96528c6ba.map",
+    "bootstrap.min.css": "bootstrap.min-4005dc8e17c1de1b1210510835646dd8.css",
+    "bootstrap.min.css.map": "bootstrap.min.css-aafc466bc91717ee1339053846e8077c.map",
+    "socket.io.js": "socket.io-caea39fc26f622b102c7ac3cff1886f4.js",
+    "socket.io.js.map": "socket.io.js-24ba0d2ac4555f0bb127823e970fc988.map",
+    "socket.io.slim.js": "socket.io.slim-070818dd5d0566d70033c33f27c13b9e.js",
+    "socket.io.slim.js.map": "socket.io.slim.js-9fdaffd5c31cc071ba6f2078e76a3c18.map"
+  },
+  "files": {
+    "admin-f9046e7a4aa43a2757cf63ee171bd2df.js": {
+      "logical_path": "admin.js",
+      "mtime": "2017-06-10T08:48:56.000Z",
+      "size": 8084,
+      "digest": "f9046e7a4aa43a2757cf63ee171bd2df"
+    },
+    "client-f1aed27989eab23c74d3eb40916b20bd.js": {
+      "logical_path": "client.js",
+      "mtime": "2017-06-11T09:41:10.000Z",
+      "size": 5989,
+      "digest": "f1aed27989eab23c74d3eb40916b20bd"
+    },
+    "adminStyle-e211813b68e45aa2300b1cd45ce9bbc7.css": {
+      "logical_path": "adminStyle.css",
+      "mtime": "2017-06-09T13:47:19.000Z",
+      "size": 2622,
+      "digest": "e211813b68e45aa2300b1cd45ce9bbc7"
+    },
+    "style-b92e6146a5831a71b502d0ff516c90d8.css": {
+      "logical_path": "style.css",
+      "mtime": "2017-06-09T14:04:25.000Z",
+      "size": 2755,
+      "digest": "b92e6146a5831a71b502d0ff516c90d8"
+    },
+    "core-7e21c1f725bc20349c5467f8b9aee0ca.js": {
+      "logical_path": "core.js",
+      "mtime": "2017-03-20T19:02:00.000Z",
+      "size": 11196,
+      "digest": "7e21c1f725bc20349c5467f8b9aee0ca"
+    },
+    "jquery-4cb919d4ef0cb16c6d524ac74e2138ac.js": {
+      "logical_path": "jquery.js",
+      "mtime": "2017-03-20T19:02:00.000Z",
+      "size": 268038,
+      "digest": "4cb919d4ef0cb16c6d524ac74e2138ac"
+    },
+    "jquery.min-c2c1365b93bb896ebbeb5396495d629e.js": {
+      "logical_path": "jquery.min.js",
+      "mtime": "2017-03-20T19:02:00.000Z",
+      "size": 86658,
+      "digest": "c2c1365b93bb896ebbeb5396495d629e"
+    },
+    "jquery.min-b08266448855bc87166a8c589d411b2c.map": {
+      "logical_path": "jquery.min.map",
+      "mtime": "2017-03-20T19:02:00.000Z",
+      "size": 131666,
+      "digest": "b08266448855bc87166a8c589d411b2c"
+    },
+    "jquery.slim-e797bf32502c2c8da6309a33a0ddbe64.js": {
+      "logical_path": "jquery.slim.js",
+      "mtime": "2017-03-20T19:02:00.000Z",
+      "size": 215255,
+      "digest": "e797bf32502c2c8da6309a33a0ddbe64"
+    },
+    "jquery.slim.min-5476a2170902335a7dd72d0923a61552.js": {
+      "logical_path": "jquery.slim.min.js",
+      "mtime": "2017-03-20T19:02:00.000Z",
+      "size": 69596,
+      "digest": "5476a2170902335a7dd72d0923a61552"
+    },
+    "jquery.slim.min-516b563cce053a3db59c0c3de8c8fac5.map": {
+      "logical_path": "jquery.slim.min.map",
+      "mtime": "2017-03-20T19:02:00.000Z",
+      "size": 104583,
+      "digest": "516b563cce053a3db59c0c3de8c8fac5"
+    },
+    "bootstrap-897527e09230cd1fd545918f96a23c7f.js": {
+      "logical_path": "bootstrap.js",
+      "mtime": "2016-07-25T15:51:55.000Z",
+      "size": 69706,
+      "digest": "897527e09230cd1fd545918f96a23c7f"
+    },
+    "bootstrap.min-26cfe10150821f745777fee2a6aaea3e.js": {
+      "logical_path": "bootstrap.min.js",
+      "mtime": "2016-07-25T15:51:55.000Z",
+      "size": 37045,
+      "digest": "26cfe10150821f745777fee2a6aaea3e"
+    },
+    "npm-9df534cdea127ed062fd999e1b7bb947.js": {
+      "logical_path": "npm.js",
+      "mtime": "2016-07-25T15:51:55.000Z",
+      "size": 487,
+      "digest": "9df534cdea127ed062fd999e1b7bb947"
+    },
+    "bootstrap-theme-78d16ec4211cf9d39978b9a26bb1ac82.css": {
+      "logical_path": "bootstrap-theme.css",
+      "mtime": "2016-07-25T15:51:55.000Z",
+      "size": 26133,
+      "digest": "78d16ec4211cf9d39978b9a26bb1ac82"
+    },
+    "bootstrap-theme.css-a796208c9b2349c29960209bf3a70d10.map": {
+      "logical_path": "bootstrap-theme.css.map",
+      "mtime": "2016-07-25T15:51:55.000Z",
+      "size": 47706,
+      "digest": "a796208c9b2349c29960209bf3a70d10"
+    },
+    "bootstrap-theme.min-b794e0b5f651a8cfabbfb98b9e03f62f.css": {
+      "logical_path": "bootstrap-theme.min.css",
+      "mtime": "2016-07-25T15:51:55.000Z",
+      "size": 23410,
+      "digest": "b794e0b5f651a8cfabbfb98b9e03f62f"
+    },
+    "bootstrap-theme.min.css-071f28ecd127e72636948dff2fea56d6.map": {
+      "logical_path": "bootstrap-theme.min.css.map",
+      "mtime": "2016-07-25T15:51:55.000Z",
+      "size": 25648,
+      "digest": "071f28ecd127e72636948dff2fea56d6"
+    },
+    "bootstrap-fa081dade40f02a9455e6faad62d2d0f.css": {
+      "logical_path": "bootstrap.css",
+      "mtime": "2016-07-25T15:51:55.000Z",
+      "size": 146011,
+      "digest": "fa081dade40f02a9455e6faad62d2d0f"
+    },
+    "bootstrap.css-efe88e30a08d9cb52827f9c96528c6ba.map": {
+      "logical_path": "bootstrap.css.map",
+      "mtime": "2016-07-25T15:51:55.000Z",
+      "size": 389287,
+      "digest": "efe88e30a08d9cb52827f9c96528c6ba"
+    },
+    "bootstrap.min-0096d5c2f40bc90df7fb886256144a0c.css": {
+      "logical_path": "bootstrap.min.css",
+      "mtime": "2016-07-25T15:51:55.000Z",
+      "size": 121201,
+      "digest": "0096d5c2f40bc90df7fb886256144a0c"
+    },
+    "bootstrap.min.css-aafc466bc91717ee1339053846e8077c.map": {
+      "logical_path": "bootstrap.min.css.map",
+      "mtime": "2016-07-25T15:51:55.000Z",
+      "size": 542194,
+      "digest": "aafc466bc91717ee1339053846e8077c"
+    },
+    "socket.io-3362ccc7ae13694b98b3206077372f40.js": {
+      "logical_path": "socket.io.js",
+      "mtime": "2017-06-01T11:58:34.000Z",
+      "size": 61214,
+      "digest": "3362ccc7ae13694b98b3206077372f40"
+    },
+    "socket.io.js-24ba0d2ac4555f0bb127823e970fc988.map": {
+      "logical_path": "socket.io.js.map",
+      "mtime": "2017-06-01T11:58:34.000Z",
+      "size": 402867,
+      "digest": "24ba0d2ac4555f0bb127823e970fc988"
+    },
+    "socket.io.slim-f25b68b094404f4290c453a5c80f2249.js": {
+      "logical_path": "socket.io.slim.js",
+      "mtime": "2017-06-01T11:58:34.000Z",
+      "size": 52903,
+      "digest": "f25b68b094404f4290c453a5c80f2249"
+    },
+    "socket.io.slim.js-9fdaffd5c31cc071ba6f2078e76a3c18.map": {
+      "logical_path": "socket.io.slim.js.map",
+      "mtime": "2017-06-01T11:58:34.000Z",
+      "size": 348929,
+      "digest": "9fdaffd5c31cc071ba6f2078e76a3c18"
+    },
+    "admin-d68994599a77ffd09bd63864d650d6bc.js": {
+      "logical_path": "admin.js",
+      "mtime": "2017-06-10T08:48:56.000Z",
+      "size": 5436,
+      "digest": "d68994599a77ffd09bd63864d650d6bc"
+    },
+    "client-074783cce0cd63ee06b00fcddca0271c.js": {
+      "logical_path": "client.js",
+      "mtime": "2017-06-11T10:36:34.000Z",
+      "size": 4129,
+      "digest": "074783cce0cd63ee06b00fcddca0271c"
+    },
+    "adminStyle-01ba5da4be89cb1028b65a9a0ed08dcd.css": {
+      "logical_path": "adminStyle.css",
+      "mtime": "2017-06-09T13:47:19.000Z",
+      "size": 1803,
+      "digest": "01ba5da4be89cb1028b65a9a0ed08dcd"
+    },
+    "style-e6ac311928283fa0ac8def623c22e700.css": {
+      "logical_path": "style.css",
+      "mtime": "2017-06-09T14:04:25.000Z",
+      "size": 1927,
+      "digest": "e6ac311928283fa0ac8def623c22e700"
+    },
+    "core-8708906a645a5fd60d4e1eb0e68cbb3d.js": {
+      "logical_path": "core.js",
+      "mtime": "2017-03-20T19:02:00.000Z",
+      "size": 3760,
+      "digest": "8708906a645a5fd60d4e1eb0e68cbb3d"
+    },
+    "jquery-473d216d9281e01c16720852c2dd1ece.js": {
+      "logical_path": "jquery.js",
+      "mtime": "2017-03-20T19:02:00.000Z",
+      "size": 87215,
+      "digest": "473d216d9281e01c16720852c2dd1ece"
+    },
+    "jquery.min-62abfc55d97fadf1228f74784bdb2c0b.js": {
+      "logical_path": "jquery.min.js",
+      "mtime": "2017-03-20T19:02:00.000Z",
+      "size": 87217,
+      "digest": "62abfc55d97fadf1228f74784bdb2c0b"
+    },
+    "jquery.slim-afd858c5307ac282e04d6c4da29b2ae4.js": {
+      "logical_path": "jquery.slim.js",
+      "mtime": "2017-03-20T19:02:00.000Z",
+      "size": 69761,
+      "digest": "afd858c5307ac282e04d6c4da29b2ae4"
+    },
+    "jquery.slim.min-c419e1233b4fc27522f025452d04b8a7.js": {
+      "logical_path": "jquery.slim.min.js",
+      "mtime": "2017-03-20T19:02:00.000Z",
+      "size": 69763,
+      "digest": "c419e1233b4fc27522f025452d04b8a7"
+    },
+    "bootstrap-23c07f9a0fa5f07ba37c1bf25ac572ce.js": {
+      "logical_path": "bootstrap.js",
+      "mtime": "2016-07-25T15:51:55.000Z",
+      "size": 36944,
+      "digest": "23c07f9a0fa5f07ba37c1bf25ac572ce"
+    },
+    "bootstrap.min-e27566cf003d0795041dffb3473da34f.js": {
+      "logical_path": "bootstrap.min.js",
+      "mtime": "2016-07-25T15:51:55.000Z",
+      "size": 36942,
+      "digest": "e27566cf003d0795041dffb3473da34f"
+    },
+    "npm-1110b7599e85d1273549a17e7dfda5cc.js": {
+      "logical_path": "npm.js",
+      "mtime": "2016-07-25T15:51:55.000Z",
+      "size": 369,
+      "digest": "1110b7599e85d1273549a17e7dfda5cc"
+    },
+    "bootstrap-theme-e657a5d99fecaa1827d35ece6b351185.css": {
+      "logical_path": "bootstrap-theme.css",
+      "mtime": "2016-07-25T15:51:55.000Z",
+      "size": 23190,
+      "digest": "e657a5d99fecaa1827d35ece6b351185"
+    },
+    "bootstrap-theme.min-891aa3cc880dca2578822da3e5dd9d71.css": {
+      "logical_path": "bootstrap-theme.min.css",
+      "mtime": "2016-07-25T15:51:55.000Z",
+      "size": 23178,
+      "digest": "891aa3cc880dca2578822da3e5dd9d71"
+    },
+    "bootstrap-20e8abfe48ef4f47381d411b41bfd68f.css": {
+      "logical_path": "bootstrap.css",
+      "mtime": "2016-07-25T15:51:55.000Z",
+      "size": 120826,
+      "digest": "20e8abfe48ef4f47381d411b41bfd68f"
+    },
+    "bootstrap.min-4005dc8e17c1de1b1210510835646dd8.css": {
+      "logical_path": "bootstrap.min.css",
+      "mtime": "2016-07-25T15:51:55.000Z",
+      "size": 120787,
+      "digest": "4005dc8e17c1de1b1210510835646dd8"
+    },
+    "socket.io-caea39fc26f622b102c7ac3cff1886f4.js": {
+      "logical_path": "socket.io.js",
+      "mtime": "2017-06-01T11:58:34.000Z",
+      "size": 61175,
+      "digest": "caea39fc26f622b102c7ac3cff1886f4"
+    },
+    "socket.io.slim-070818dd5d0566d70033c33f27c13b9e.js": {
+      "logical_path": "socket.io.slim.js",
+      "mtime": "2017-06-01T11:58:34.000Z",
+      "size": 52860,
+      "digest": "070818dd5d0566d70033c33f27c13b9e"
+    },
+    "admin-ce8cdfa5a3e3a852a16e7e9f52fad9d2.js": {
+      "logical_path": "admin.js",
+      "mtime": "2017-06-11T09:24:52.000Z",
+      "size": 8096,
+      "digest": "ce8cdfa5a3e3a852a16e7e9f52fad9d2"
+    },
+    "client-e0ae3df5d30f271fe3a59e1d7ee69830.js": {
+      "logical_path": "client.js",
+      "mtime": "2017-06-11T09:40:02.000Z",
+      "size": 6011,
+      "digest": "e0ae3df5d30f271fe3a59e1d7ee69830"
+    },
+    "client-2904049c1cd7b4e2764f7a79423fbe83.js": {
+      "logical_path": "client.js",
+      "mtime": "2017-06-11T10:36:34.000Z",
+      "size": 5991,
+      "digest": "2904049c1cd7b4e2764f7a79423fbe83"
+    },
+    "admin-7d52a9946533b88ee71dce4a62f00c4a.js": {
+      "logical_path": "admin.js",
+      "mtime": "2017-06-11T09:24:52.000Z",
+      "size": 5424,
+      "digest": "7d52a9946533b88ee71dce4a62f00c4a"
+    }
+  }
+}

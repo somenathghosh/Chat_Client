@@ -5,51 +5,32 @@ const config = require('../config');
 const Q = require('q');
 const EventEmitter = require('events').EventEmitter;
 const assert = require('assert');
+const redisClient = require('./redconnection');
 
 let DB  = (function(){
 
-	let redisClient;  // private variable
+	// let redisClient;  // private variable
 
 	class DB extends EventEmitter {
 
 		constructor() {
 			super();
 			this.on('error', this.printStack);
+			// this.ConnectToRedis();
+			// this.on('ECONNRESET', function(error){
+			// 	console.log(error.stack);
+			// })
 		}
 		printStack(error) {
       console.log(error.stack);
     }
 
-		ConnectToRedis(callback) {
-			redisClient = redis.createClient({
-																				port: config.redis_port,
-																				host: config.redis_hostname,
-																				password: config.redis_password
-																				});
-
-			redisClient.on('ready', function() {
-				console.log('Connected to Redis');
-				 // startApp(true);
-				 callback(true);
-			});
-
-			redisClient.on('error', function(err) {
-				console.log('Failed to connect to Redis');
-				assert(err instanceof Error);
-		    assert(err instanceof redis.AbortError);
-		    assert(err instanceof redis.AggregateError);
-		    assert.strictEqual(err.errors.length, 2); // The set and get got aggregated in here
-		    assert.strictEqual(err.code, 'NR_CLOSED');
-				console.log(err.stack);
-				 // startApp(false);
-				 callback(false);
-			});
-		}
 
 		deleteRoom(roomID){
 
-			// redisClient.del(roomID);
-
+			console.log('executing del');
+			redisClient.del(roomID);
+			redisClient.del(roomID+"-details");
 		}
 
 		getMessages(roomID, startPos, endPos) {

@@ -110,8 +110,8 @@ socket.on('New Client', function(data) {
 			socket.emit('client ack', {});
 		});
 	}
-	$inputMessage.on('keypress', function() {
-		isTyping();
+	$inputMessage.on('keypress', function(e) {
+		isTyping(e);
 	});
 })
 
@@ -205,7 +205,7 @@ function sendMessage(id) {
 	}
 }
 
-function isTyping() {
+function isTyping(event) {
 	var id = event.target.id;
 	if (event.which !== 13 && event.which !== undefined) {
 		if (typing === false && $('#' + id).is(":focus")) {
@@ -238,7 +238,7 @@ function timeoutFunction(id) {
 }
 
 function adminListListener(target) {
-	$('#' + target).on('click', function() {
+	$('#' + target).on('click', function(event) {
 		var pokeAdmin = event.target.id;
 		socket.emit('poke admin', pokeAdmin);
 	});
