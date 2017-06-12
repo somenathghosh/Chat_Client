@@ -9,7 +9,7 @@ Mongoose.connect(config.mongo);
 
 // Throw an error if the connection fails
 Mongoose.connection.on('error', function(err) {
-	if(err) throw err;
+	if (err) throw err;
 });
 
 
@@ -21,4 +21,8 @@ Mongoose.connection.on('connect', function() {
 // Use native promises
 Mongoose.Promise = global.Promise;
 
-module.exports = {Mongoose};
+module.exports = {Mongoose,
+	models: {
+		user: require('./schemas/user'),
+		room: require('./schemas/room'),
+	}};

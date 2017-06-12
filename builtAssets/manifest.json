@@ -1,31 +1,36 @@
 {
   "assets": {
-    "admin.js": "admin-7d52a9946533b88ee71dce4a62f00c4a.js",
-    "client.js": "client-074783cce0cd63ee06b00fcddca0271c.js",
-    "adminStyle.css": "adminStyle-01ba5da4be89cb1028b65a9a0ed08dcd.css",
-    "style.css": "style-e6ac311928283fa0ac8def623c22e700.css",
-    "core.js": "core-8708906a645a5fd60d4e1eb0e68cbb3d.js",
-    "jquery.js": "jquery-473d216d9281e01c16720852c2dd1ece.js",
-    "jquery.min.js": "jquery.min-62abfc55d97fadf1228f74784bdb2c0b.js",
+    "admin.js": "admin-5f3256e3abb9a431e78e158836d06af9.js",
+    "client.js": "client-7eca0efb102a578a519f29770798bb8c.js",
+    "adminStyle.css": "adminStyle-13f95c52616b7c2db5922e30facad03d.css",
+    "style.css": "style-b92e6146a5831a71b502d0ff516c90d8.css",
+    "core.js": "core-7e21c1f725bc20349c5467f8b9aee0ca.js",
+    "jquery.js": "jquery-4cb919d4ef0cb16c6d524ac74e2138ac.js",
+    "jquery.min.js": "jquery.min-c2c1365b93bb896ebbeb5396495d629e.js",
     "jquery.min.map": "jquery.min-b08266448855bc87166a8c589d411b2c.map",
-    "jquery.slim.js": "jquery.slim-afd858c5307ac282e04d6c4da29b2ae4.js",
-    "jquery.slim.min.js": "jquery.slim.min-c419e1233b4fc27522f025452d04b8a7.js",
+    "jquery.slim.js": "jquery.slim-e797bf32502c2c8da6309a33a0ddbe64.js",
+    "jquery.slim.min.js": "jquery.slim.min-5476a2170902335a7dd72d0923a61552.js",
     "jquery.slim.min.map": "jquery.slim.min-516b563cce053a3db59c0c3de8c8fac5.map",
-    "bootstrap.js": "bootstrap-23c07f9a0fa5f07ba37c1bf25ac572ce.js",
-    "bootstrap.min.js": "bootstrap.min-e27566cf003d0795041dffb3473da34f.js",
-    "npm.js": "npm-1110b7599e85d1273549a17e7dfda5cc.js",
-    "bootstrap-theme.css": "bootstrap-theme-e657a5d99fecaa1827d35ece6b351185.css",
+    "bootstrap.js": "bootstrap-897527e09230cd1fd545918f96a23c7f.js",
+    "bootstrap.min.js": "bootstrap.min-26cfe10150821f745777fee2a6aaea3e.js",
+    "npm.js": "npm-9df534cdea127ed062fd999e1b7bb947.js",
+    "bootstrap-theme.css": "bootstrap-theme-78d16ec4211cf9d39978b9a26bb1ac82.css",
     "bootstrap-theme.css.map": "bootstrap-theme.css-a796208c9b2349c29960209bf3a70d10.map",
-    "bootstrap-theme.min.css": "bootstrap-theme.min-891aa3cc880dca2578822da3e5dd9d71.css",
+    "bootstrap-theme.min.css": "bootstrap-theme.min-b794e0b5f651a8cfabbfb98b9e03f62f.css",
     "bootstrap-theme.min.css.map": "bootstrap-theme.min.css-071f28ecd127e72636948dff2fea56d6.map",
-    "bootstrap.css": "bootstrap-20e8abfe48ef4f47381d411b41bfd68f.css",
+    "bootstrap.css": "bootstrap-fa081dade40f02a9455e6faad62d2d0f.css",
     "bootstrap.css.map": "bootstrap.css-efe88e30a08d9cb52827f9c96528c6ba.map",
-    "bootstrap.min.css": "bootstrap.min-4005dc8e17c1de1b1210510835646dd8.css",
+    "bootstrap.min.css": "bootstrap.min-0096d5c2f40bc90df7fb886256144a0c.css",
     "bootstrap.min.css.map": "bootstrap.min.css-aafc466bc91717ee1339053846e8077c.map",
-    "socket.io.js": "socket.io-caea39fc26f622b102c7ac3cff1886f4.js",
+    "socket.io.js": "socket.io-3362ccc7ae13694b98b3206077372f40.js",
     "socket.io.js.map": "socket.io.js-24ba0d2ac4555f0bb127823e970fc988.map",
-    "socket.io.slim.js": "socket.io.slim-070818dd5d0566d70033c33f27c13b9e.js",
-    "socket.io.slim.js.map": "socket.io.slim.js-9fdaffd5c31cc071ba6f2078e76a3c18.map"
+    "socket.io.slim.js": "socket.io.slim-f25b68b094404f4290c453a5c80f2249.js",
+    "socket.io.slim.js.map": "socket.io.slim.js-9fdaffd5c31cc071ba6f2078e76a3c18.map",
+    "login.css": "login-4527436b90c4c572fe7fded6e1e0a2fd.css",
+    "font-awesome.css": "font-awesome-9de102f7fb04efb0d92ac59a60f76d64.css",
+    "font-awesome.css.map": "font-awesome.css-8221a09537fe89e604901203a6e268a8.map",
+    "font-awesome.min.css": "font-awesome.min-af4f5727487ec80653a8c9058618eb37.css",
+    "login.js": "login-8eae57de94b1556a1caa18bbf17d775d.js"
   },
   "files": {
     "admin-f9046e7a4aa43a2757cf63ee171bd2df.js": {
@@ -312,9 +317,147 @@
     },
     "admin-7d52a9946533b88ee71dce4a62f00c4a.js": {
       "logical_path": "admin.js",
-      "mtime": "2017-06-11T09:24:52.000Z",
+      "mtime": "2017-06-12T09:46:28.000Z",
       "size": 5424,
       "digest": "7d52a9946533b88ee71dce4a62f00c4a"
+    },
+    "login-cd2da4460110dfcb8f39e6b45519f030.css": {
+      "logical_path": "login.css",
+      "mtime": "2017-06-11T15:53:04.000Z",
+      "size": 5515,
+      "digest": "cd2da4460110dfcb8f39e6b45519f030"
+    },
+    "font-awesome-8d1061559cfb59d0a7e96a294d4eb825.css": {
+      "logical_path": "font-awesome.css",
+      "mtime": "2016-10-25T10:56:23.000Z",
+      "size": 30772,
+      "digest": "8d1061559cfb59d0a7e96a294d4eb825"
+    },
+    "font-awesome.css-8221a09537fe89e604901203a6e268a8.map": {
+      "logical_path": "font-awesome.css.map",
+      "mtime": "2016-10-25T10:56:23.000Z",
+      "size": 21778,
+      "digest": "8221a09537fe89e604901203a6e268a8"
+    },
+    "font-awesome.min-8d1061559cfb59d0a7e96a294d4eb825.css": {
+      "logical_path": "font-awesome.min.css",
+      "mtime": "2016-10-25T10:56:23.000Z",
+      "size": 30772,
+      "digest": "8d1061559cfb59d0a7e96a294d4eb825"
+    },
+    "client-7876d37fe4d3f8d1a1cb29f78ba131de.js": {
+      "logical_path": "client.js",
+      "mtime": "2017-06-12T09:03:20.000Z",
+      "size": 4139,
+      "digest": "7876d37fe4d3f8d1a1cb29f78ba131de"
+    },
+    "login-4d740005ad007daac45d98fd50bdcff9.js": {
+      "logical_path": "login.js",
+      "mtime": "2017-06-12T10:06:36.000Z",
+      "size": 13,
+      "digest": "4d740005ad007daac45d98fd50bdcff9"
+    },
+    "adminStyle-6b72beeaefcd86d0b083164f367fd357.css": {
+      "logical_path": "adminStyle.css",
+      "mtime": "2017-06-12T09:51:25.000Z",
+      "size": 1806,
+      "digest": "6b72beeaefcd86d0b083164f367fd357"
+    },
+    "login-a0f555a9ef2d89be718b76860f25471b.js": {
+      "logical_path": "login.js",
+      "mtime": "2017-06-12T10:17:24.000Z",
+      "size": 272,
+      "digest": "a0f555a9ef2d89be718b76860f25471b"
+    },
+    "admin-ceca5eeef60493533a2e9590d1f7069e.js": {
+      "logical_path": "admin.js",
+      "mtime": "2017-06-12T15:57:55.000Z",
+      "size": 8156,
+      "digest": "ceca5eeef60493533a2e9590d1f7069e"
+    },
+    "client-fb5515b4d69c59b88ef2d2e4a8a0974f.js": {
+      "logical_path": "client.js",
+      "mtime": "2017-06-12T09:03:20.000Z",
+      "size": 6005,
+      "digest": "fb5515b4d69c59b88ef2d2e4a8a0974f"
+    },
+    "login-8eae57de94b1556a1caa18bbf17d775d.js": {
+      "logical_path": "login.js",
+      "mtime": "2017-06-12T10:17:24.000Z",
+      "size": 308,
+      "digest": "8eae57de94b1556a1caa18bbf17d775d"
+    },
+    "adminStyle-062f762b74837db545469ad4b00ccbd9.css": {
+      "logical_path": "adminStyle.css",
+      "mtime": "2017-06-12T09:51:25.000Z",
+      "size": 2625,
+      "digest": "062f762b74837db545469ad4b00ccbd9"
+    },
+    "login-4527436b90c4c572fe7fded6e1e0a2fd.css": {
+      "logical_path": "login.css",
+      "mtime": "2017-06-11T15:53:04.000Z",
+      "size": 6850,
+      "digest": "4527436b90c4c572fe7fded6e1e0a2fd"
+    },
+    "font-awesome-9de102f7fb04efb0d92ac59a60f76d64.css": {
+      "logical_path": "font-awesome.css",
+      "mtime": "2016-10-25T10:56:23.000Z",
+      "size": 37415,
+      "digest": "9de102f7fb04efb0d92ac59a60f76d64"
+    },
+    "font-awesome.min-af4f5727487ec80653a8c9058618eb37.css": {
+      "logical_path": "font-awesome.min.css",
+      "mtime": "2016-10-25T10:56:23.000Z",
+      "size": 31001,
+      "digest": "af4f5727487ec80653a8c9058618eb37"
+    },
+    "admin-6ae7f5dc44bf40dd8b76965d8160ed1e.js": {
+      "logical_path": "admin.js",
+      "mtime": "2017-06-12T16:09:19.000Z",
+      "size": 8161,
+      "digest": "6ae7f5dc44bf40dd8b76965d8160ed1e"
+    },
+    "admin-7ae8498e34a28e57cb01cc829f17a95c.js": {
+      "logical_path": "admin.js",
+      "mtime": "2017-06-12T16:11:50.000Z",
+      "size": 8192,
+      "digest": "7ae8498e34a28e57cb01cc829f17a95c"
+    },
+    "admin-0d61306ab5aae1848067efee053d3451.js": {
+      "logical_path": "admin.js",
+      "mtime": "2017-06-12T16:12:40.000Z",
+      "size": 8137,
+      "digest": "0d61306ab5aae1848067efee053d3451"
+    },
+    "admin-2fdec487fca9575bcb5cd900d5d2c8b5.js": {
+      "logical_path": "admin.js",
+      "mtime": "2017-06-12T16:25:38.000Z",
+      "size": 8296,
+      "digest": "2fdec487fca9575bcb5cd900d5d2c8b5"
+    },
+    "admin-674508d66d1979f9f18ae361db175ac3.js": {
+      "logical_path": "admin.js",
+      "mtime": "2017-06-12T16:45:00.000Z",
+      "size": 8298,
+      "digest": "674508d66d1979f9f18ae361db175ac3"
+    },
+    "client-7eca0efb102a578a519f29770798bb8c.js": {
+      "logical_path": "client.js",
+      "mtime": "2017-06-12T16:59:04.000Z",
+      "size": 6462,
+      "digest": "7eca0efb102a578a519f29770798bb8c"
+    },
+    "adminStyle-13f95c52616b7c2db5922e30facad03d.css": {
+      "logical_path": "adminStyle.css",
+      "mtime": "2017-06-12T17:04:24.000Z",
+      "size": 2626,
+      "digest": "13f95c52616b7c2db5922e30facad03d"
+    },
+    "admin-5f3256e3abb9a431e78e158836d06af9.js": {
+      "logical_path": "admin.js",
+      "mtime": "2017-06-12T17:26:27.000Z",
+      "size": 10124,
+      "digest": "5f3256e3abb9a431e78e158836d06af9"
     }
   }
 }

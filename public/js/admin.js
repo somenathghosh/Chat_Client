@@ -1,3 +1,4 @@
+/* eslint-disable new-cap, max-len, no-var, key-spacing, quotes */
 // To-do
 // Add scroll to load more messages for Admins
 
@@ -7,7 +8,7 @@ var $newUser = $('#windowSound')[0];
 var $newChat = $('#chatSound')[0];
 var $pokeAdmin = $('#pokeSound')[0];
 var $usernameInput = $('.usernameInput'); // Input for username
-var $passwordInput = $('.passwordInput'); //Input for password
+var $passwordInput = $('.passwordInput'); // Input for password
 var $loginPage = $('.login.page'); // The login page
 var $errorPage = $('.error.page'); // The error page
 var $chatPage = $('.chat.page'); // The chat page
@@ -15,15 +16,22 @@ var $userList = $('.adminList'); // List of online admins
 var $inputMessage; // Input message input box
 var $messages; // Messages area
 
-var username;	//Store admin username
-var authenticated = false; //Boolean to check if admin is authenticated
+var username;	// Store admin username
+var authenticated = false; // Boolean to check if admin is authenticated
 var connected = false;
-var typing = false; //Boolean to check if admin is typing
-var timeout = undefined; //Timeout to monitor typing
-var socket = io({transports: ['websocket']}); //io socket
+var typing = false; // Boolean to check if admin is typing
+var timeout = undefined; // Timeout to monitor typing
+var socket = io({transports: ['websocket']}); // io socket
 $newUser.loop = true;
 $usernameInput.focus();
 Notification.requestPermission();
+
+
+console.log('from admin js', _admin);
+username = _admin.username;
+
+// ask for Login authentication to server
+setUsername(username);
 
 socket.on('login', function(data) {
 	$userList.empty();
@@ -45,7 +53,7 @@ socket.on('login', function(data) {
 		username = null;
 		$usernameInput.focus();
 	}
-})
+});
 
 socket.on('chat message', function(data) {
 	console.log('200');
@@ -69,12 +77,12 @@ socket.on('admin added', function(username) {
 	console.log('300');
 	$userList.append('<li id=' + username + '>' + username + '</li>');
 	adminListListener(username);
-})
+});
 
 socket.on('admin removed', function(username) {
 	console.log('500');
 	$('#' + username).remove();
-})
+});
 
 socket.on('New Client', function(data) {
 	console.log('400');
@@ -101,11 +109,11 @@ socket.on('New Client', function(data) {
 	if (!data.justJoined) {
 		$newUser.play();
 		notifyAdmin("New Client", "Hey there!" + data.details[0] + " needs help!");
-		$parent.css('border', '2px solid red')
+		$parent.css('border', '2px solid red');
 		$inputMessage = $('#' + data.roomID);
 		$inputMessage.on("focus", function() {
 			$newUser.pause();
-			$parent.css('border', '1px solid black')
+			$parent.css('border', '1px solid black');
 			$inputMessage.off('focus');
 			socket.emit('client ack', {});
 		});
@@ -113,7 +121,7 @@ socket.on('New Client', function(data) {
 	$inputMessage.on('keypress', function(e) {
 		isTyping(e);
 	});
-})
+});
 
 socket.on('typing', function(data) {
 	console.log('600');
@@ -124,12 +132,12 @@ socket.on('typing', function(data) {
 		$typing.append("<small>" + data.person + " is typing...<small>");
 	else
 		$typing.text('');
-})
+});
 
 socket.on('client ack', function() {
 	console.log('700');
 	$newUser.pause();
-})
+});
 
 socket.on('User Disconnected', function(roomID) {
 	console.log('800');
@@ -138,12 +146,12 @@ socket.on('User Disconnected', function(roomID) {
 	$inputMessage.off();
 	var $parent = $inputMessage.parent();
 	$parent.remove();
-})
+});
 
 socket.on('poke admin', function() {
 
 	$pokeAdmin.play();
-})
+});
 
 socket.on('reconnect', function() {
 	console.log('900');
@@ -155,7 +163,7 @@ socket.on('reconnect', function() {
 	if (authenticated)
 		socket.emit('add admin', {
 			admin: username,
-			isAdmin: true
+			isAdmin: true,
 		});
 });
 
@@ -168,16 +176,25 @@ socket.on('disconnect', function() {
 socket.on('reconnect_failed', function() {
 	console.log('1100');
 	console.log("Reconnection Failed!");
-	var $errorMsg = $errorPage.children(".title")
-	$errorMsg.text("Reconection Failed. Please refresh your page. ")
-	$window.alert("Disconnected from chat.")
+	var $errorMsg = $errorPage.children(".title");
+	$errorMsg.text("Reconection Failed. Please refresh your page. ");
+	$window.alert("Disconnected from chat.");
 });
 
-$passwordInput.keypress(function(event) {
-	if (event.which === 13)
-		setUsername();
-});
+// $passwordInput.keypress(function(event) {
+// 	if (event.which === 13)
+// 		setUsername();
+// });
 
+/**
+ * [sendMessage description]
+ * @method  sendMessage
+ * @param   {[type]}    id [description]
+ * This is a function
+ * @author Somenath Ghosh
+ * @version [version]
+ * @date    2017-06-12
+ */
 function sendMessage(id) {
 	$inputMessage = $('#' + id);
 	var $parent = $inputMessage.parent();
@@ -194,7 +211,7 @@ function sendMessage(id) {
 		socket.emit('chat message', {
 			roomID: id,
 			msg: message,
-			timestamp: time
+			timestamp: time,
 		});
 		var $usernameDiv = $('<span class="username"/>').text("You");
 		var $messageBodyDiv = $('<span class="messageBody">').text(message);
@@ -205,6 +222,15 @@ function sendMessage(id) {
 	}
 }
 
+/**
+ * [isTyping description]
+ * @method  isTyping
+ * @param   {[type]}   event [description]
+ * This is a function
+ * @author Somenath Ghosh
+ * @version [version]
+ * @date    2017-06-12
+ */
 function isTyping(event) {
 	var id = event.target.id;
 	if (event.which !== 13 && event.which !== undefined) {
@@ -213,7 +239,7 @@ function isTyping(event) {
 			socket.emit("typing", {
 				isTyping: true,
 				roomID: id,
-				person: username
+				person: username,
 			});
 		} else {
 			clearTimeout(timeout);
@@ -228,15 +254,33 @@ function isTyping(event) {
 	}
 }
 
+/**
+ * [timeoutFunction description]
+ * @method  timeoutFunction
+ * @param   {[type]}        id [description]
+ * This is a function
+ * @author Somenath Ghosh
+ * @version [version]
+ * @date    2017-06-12
+ */
 function timeoutFunction(id) {
 	typing = false;
 	socket.emit("typing", {
 		isTyping: false,
 		roomID: id,
-		person: username
+		person: username,
 	});
 }
 
+/**
+ * [adminListListener description]
+ * @method  adminListListener
+ * @param   {[type]}          target [description]
+ * This is a function
+ * @author Somenath Ghosh
+ * @version [version]
+ * @date    2017-06-12
+ */
 function adminListListener(target) {
 	$('#' + target).on('click', function(event) {
 		var pokeAdmin = event.target.id;
@@ -244,24 +288,55 @@ function adminListListener(target) {
 	});
 }
 
+/**
+ * [getChatArea description]
+ * @method  getChatArea
+ * @param   {[type]}    id [description]
+ * @return  {[type]}       [description]
+ * This is a function
+ * @author Somenath Ghosh
+ * @version [version]
+ * @date    2017-06-12
+ */
 function getChatArea(id) {
 	return ("<div class='chatArea'><div class='chatHeader'></div><ul class='messages'>" +
 		"</ul><div class='typing'></div><input class='inputMessage' id='" + id + "'' placeholder='Type here...'/></div>");
 }
 
-function setUsername() {
-	username = cleanInput($usernameInput.val().trim());
+/**
+ * [setUsername description]
+ * @method  setUsername
+ * @param   {[type]}    _username [description]
+ * This is a function
+ * @author Somenath Ghosh
+ * @version [version]
+ * @date    2017-06-12
+ */
+function setUsername(_username) {
+	// username = cleanInput($usernameInput.val().trim());
+	username = _username;
+	password = 'password';
 	username = username.toLowerCase();
-	password = $passwordInput.val();
+	// password = $passwordInput.val();
 	if (username) {
 		// If the username is valid
 		socket.emit('login', {
 			admin: username,
-			password: password
+			password: password,
 		});
 	}
 }
 
+/**
+ * [notifyAdmin description]
+ * @method  notifyAdmin
+ * @param   {[type]}    title [description]
+ * @param   {[type]}    body  [description]
+ * This is a function
+ * @author Somenath Ghosh
+ * @version [version]
+ * @date    2017-06-12
+ */
 function notifyAdmin(title, body) {
 	if (Notification.permission !== "granted")
 		Notification.requestPermission();
@@ -273,11 +348,21 @@ function notifyAdmin(title, body) {
 		notification.onclick = function() {
 			$window.focus();
 			this.cancel();
-		}
+		};
 	}
 }
 
 // Prevents input from having injected markup
+/**
+ * [cleanInput description]
+ * @method  cleanInput
+ * @param   {[type]}   input [description]
+ * @return  {[type]}         [description]
+ * This is a function
+ * @author Somenath Ghosh
+ * @version [version]
+ * @date    2017-06-12
+ */
 function cleanInput(input) {
 	return $('<div/>').text(input).text();
 }
