@@ -62,6 +62,8 @@ $Input.submit(function() {
 		Email: $emailInput.val().trim(),
 		Phone: $phoneInput.val().trim()
 	});
+
+	return false;
 });
 
 $inputMessage.keypress(function(event) {
