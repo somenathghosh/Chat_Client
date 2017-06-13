@@ -14,18 +14,19 @@
                 <h1>Admins Online</h1>
                 <ul class ="adminList" id="admins">
                 </ul>
+
             </div>
             <div class="container">
             </div>
         </li>
-        <li class="login page">
+        <!-- <li class="login page">
             <div class="form">
                 <h3 class="title">What's your nickname?</h3>
                 <input class="usernameInput" type="text" maxlength="14" />
                 <h3 class="title">Password</h3>
                 <input class="passwordInput" type="password" maxlength="10" />
             </div>
-        </li>
+        </li> -->
         <li class="error page" style="display: none">
             <div class="form">
                 <h3 class="title">Reconnecting...</h3>
@@ -41,6 +42,12 @@
     <audio id="pokeSound">
         <source src="/sounds/poke.mp3" type="audio/mpeg">
     </audio>
+
+    <script>
+        let _admin =<%-JSON.stringify(user)%>
+    </script>
+
+
     <!-- <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script src="/js/admin.js"></script> -->
@@ -48,6 +55,7 @@
     <%- js("socket.io.js") %>
     <!-- <script src="/socket.io/socket.io.js"></script> -->
     <%- js("admin.js") %>
+
 </body>
 
 </html>

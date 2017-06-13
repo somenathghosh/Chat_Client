@@ -6,16 +6,20 @@
     <title>Chat App</title>
     <!-- <link rel="stylesheet" href="/css/style.css"> -->
     <%- css("style.css") %>
+    <%- css("font-awesome.min.css") %>
 </head>
 
 <body>
+  <div class="controls" style="border: none; width: 100%;">
+      <a href="/logout" class="logout-btn" style="width: auto; padding: 13px; font-size: 12px;">Logout</a>
+  </div>
     <div class="msg_box">
         <div class="msg_head">Live Chat</div>
         <div class="contentArea" style="display: none">
             <div class="formArea">
                 <div class="title">Please fill out this form</div>
                 <form class="inputFields">
-                    <div class="inputContainer">
+                    <!-- <div class="inputContainer">
                         <input class="nameInput" type="text" maxlength="20" pattern="^[a-zA-Z ]{3,}" placeholder=" * Name" required />
                     </div>
                     <div class="inputContainer">
@@ -23,7 +27,7 @@
                     </div>
                     <div class="inputContainer">
                         <input class="phoneInput" type="text" pattern="[0-9\(\)\-\+ ]{8,15}" title="Enter a valid Phone Number" placeholder=" * Phone Number" required />
-                    </div>
+                    </div> -->
                     <input type="submit" class="submitBtn">
                 </form>
             </div>
@@ -37,6 +41,9 @@
             </div>
         </div>
     </div>
+    <script>
+        let _client =<%-JSON.stringify(user)%>
+    </script>
     <%- js("jquery.min.js") %>
     <%- js("socket.io.js") %>
     <!-- <script src="/socket.io/socket.io.js"></script> -->

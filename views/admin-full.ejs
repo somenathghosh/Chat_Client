@@ -80,6 +80,47 @@
             border-radius: 90px;
             padding: 5px;
         }
+        .message {
+            width: 100%;
+        }
+        .message::after {
+            content: "";
+            display: block;
+            clear: both;
+        }
+        .message-text {
+            padding: 10px;
+            margin-top: 10px;
+            max-width: 80%;
+            border-radius: 90px;
+        }
+        .message-sender > .message-text {
+            float: right;
+            background-color: #abb3e8;
+        }
+        .message-receiver > .message-text {
+            float: left;
+            background-color: #9cde97;
+        }
+        .time-message {
+            width: 100%;
+            text-align: center;
+            padding: 10px;
+        }
+        .time-message::after {
+            border-top: 1px solid black;
+        }
+        .time-text {
+            display: inline-block;
+            background-color: #fff;
+        }
+        .mid-horizontal-line {
+            border-top: 1px solid black;
+            width: 100%;
+            transform: translateY(20px);
+            position: relative;
+            z-index: -1;
+        }
     </style>
 </head>
 
@@ -118,7 +159,23 @@
                             <div>Company 1</div>
                         </div>
                         <div class="chat-messages">
-
+                            <div class="time-message">
+                                <div class="mid-horizontal-line"></div>
+                                <div class="time-text">
+                                    <div>Chat Start</div>
+                                    <div>12:31 PM</div>
+                                </div>
+                            </div>
+                            <div class="message message-sender">
+                                <div class="message-text">
+                                    Hi Chat 1. How can I help you today?
+                                </div>
+                            </div>
+                            <div class="message message-receiver">
+                                <div class="message-text">
+                                    I need some help retreiving my password.
+                                </div>
+                            </div>
                         </div>
                         <div class="chat-input">
                             <div class="row">
@@ -164,7 +221,7 @@
     <%- js("jquery.min.js") %>
     <%- js("socket.io.js") %>
     <%- js("bootstrap.min.js") %>
-    <%- js("admin.js") %>
+    <%- js("admin-full.js") %>
 </body>
 
 </html>

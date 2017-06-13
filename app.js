@@ -17,6 +17,8 @@ const adapter = require('./subpub');
 const cookieParser = require('cookie-parser');
 const compression = require('compression');
 const helmet = require('helmet');
+const flash = require('connect-flash');
+const passport = require('./auth');
 
  // View engine setup
  app.set('views', path.join(__dirname, '/views'));
@@ -32,6 +34,10 @@ app.use(morgan('dev'));
 
 // session
 app.use(session);
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(flash());
+
 // Set compression before any routes
 app.use(compression({ threshold: 512 }));
 app.use(cookieParser());
@@ -51,7 +57,7 @@ app.use(helmet.contentSecurityPolicy({
   directives: {
     defaultSrc: ['\'none\''],
     connectSrc: ['*'],
-    scriptSrc: ['\'self\'', '\'unsafe-eval\'', 'cdnjs.cloudflare.com'],
+    scriptSrc: ['\'self\'','\'unsafe-eval\'','\'unsafe-inline\'','cdnjs.cloudflare.com'],
     styleSrc: ['\'self\'', 'fonts.googleapis.com', '\'unsafe-inline\'', 'cdnjs.cloudflare.com'],
     fontSrc: ['\'self\'','* data:'],
     mediaSrc: ['\'self\''],
@@ -70,7 +76,8 @@ app.use(require('connect-assets')({
         './public/components/jquery/dist',
         './public/components/bootstrap/dist/js',
         './public/components/bootstrap/dist/css',
-        './node_modules/socket.io-client/dist'
+        './node_modules/socket.io-client/dist',
+        './public/components/components-font-awesome/css'
     ],
     build: true,
     fingerprinting: true,
@@ -111,7 +118,7 @@ function startApp() {
 		console.log('Server started ' + config.web_port + ' at ' +
 			(new Date().toLocaleString().substr(0, 24)));
 	});
-	var connectionOptions =  {
+	let connectionOptions =  {
 	    "force new connection" : true,
 	    "reconnection": true,
 	    "reconnectionDelay": 2000,                  //starts with 2 secs delay, then 4, 6, 8, until 60 where it stays forever until it reconnects
@@ -128,6 +135,14 @@ function startApp() {
 	io.adapter(adapter);
 
 }
+
+app.use(function(req, res, next) {
+  res.status(404).sendFile(process.cwd() + '/views/404.htm');
+});
+
+app.use(function(req, res, next) {
+  res.status(500).sendFile(process.cwd() + '/views/500.htm');
+});
 
 startApp();
 

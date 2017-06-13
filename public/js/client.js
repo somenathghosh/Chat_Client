@@ -12,6 +12,7 @@ var $chatBox = $('.chatArea'); //Chat page after filling form
 var $Typing = $(".typing") //Typing notification
 var $newMsg = $('.msg_push_new'); //Dummy to push new msgs
 var $oldMsg = $('.msg_push_old'); //Dummy to push msg history
+var $submitBtn = $('.submitBtn');
 
 var socket = io('/',{transports: ['websocket']}); //io socket
 var typing = false; //Boolean to check if user is typing
@@ -47,8 +48,8 @@ $('.msg_head').click(function() {
 	}
 });
 
-$Input.submit(function() {
-	
+$submitBtn.click(function() {
+
 	console.log('300');
 	console.log('submit');
 	$form.hide();
@@ -58,13 +59,34 @@ $Input.submit(function() {
 	console.log('new user');
 	socket.emit('add user', {
 		isNewUser: true,
-		Name: $nameInput.val().trim(),
-		Email: $emailInput.val().trim(),
-		Phone: $phoneInput.val().trim()
+		Name: _client.firstName + ' '+ _client.lastName,
+		Email: _client.email,
+		Phone: _client.phone
 	});
 
-	return false; //Needed in firefox so it doesn't reload the page
+	return false;
 });
+
+
+// $Input.submit(function() {
+//
+// 	console.log('300');
+// 	console.log('submit');
+// 	$form.hide();
+// 	$chatBox.show();
+// 	$inputMessage.focus();
+// 	sessionStorage.setItem('active', true);
+// 	console.log('new user');
+// 	socket.emit('add user', {
+// 		isNewUser: true,
+// 		Name:  $nameInput.val().trim(),
+// 		Email: $emailInput.val().trim(),
+// 		Phone: $phoneInput.val().trim()
+// 	});
+// 	return false;
+// });
+
+
 
 $inputMessage.keypress(function(event) {
 	if (event.which !== 13) {
