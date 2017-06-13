@@ -57,8 +57,8 @@ app.use(helmet.contentSecurityPolicy({
   directives: {
     defaultSrc: ['\'none\''],
     connectSrc: ['*'],
-    scriptSrc: ['\'self\'','\'unsafe-eval\'','\'unsafe-inline\'','cdnjs.cloudflare.com', 'localhost:3000','p2p-chatapp.com'],
-    styleSrc: ['\'self\'', 'fonts.googleapis.com', '\'unsafe-inline\'', 'cdnjs.cloudflare.com','localhost:3000','p2p-chatapp.com'],
+    scriptSrc: ['\'self\'','\'unsafe-eval\'','\'unsafe-inline\'','cdnjs.cloudflare.com'],
+    styleSrc: ['\'self\'', 'fonts.googleapis.com', '\'unsafe-inline\'', 'cdnjs.cloudflare.com'],
     fontSrc: ['\'self\'','* data:'],
     mediaSrc: ['\'self\''],
     objectSrc: ['\'self\''],
