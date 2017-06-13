@@ -19,6 +19,12 @@ router.get('/admin', function(req, res, next) {
 
 });
 
+router.get('/admin-full', function(req, res, next) {
+	// If user is already logged in, then redirect to rooms page
+
+	res.render('admin-full',{});
+
+});
 
 router.get('/ping', function(req, res, next) {
 	// If user is already logged in, then redirect to rooms page

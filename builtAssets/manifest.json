@@ -3,7 +3,7 @@
     "admin.js": "admin-5ef2220e257d4efb26fbade69c172cb3.js",
     "client.js": "client-d2c07a267eb69bebedda49a42095c381.js",
     "adminStyle.css": "adminStyle-aec3f004f9f959e626e6a7ae98124c2a.css",
-    "style.css": "style-c4f1f864b0f49fca4472aadd7abdaf00.css",
+    "style.css": "style-786399d8ace24c8b985d2e3f6093795d.css",
     "core.js": "core-49c222dbec5a3106b48b79abdb7bfe2e.js",
     "jquery.js": "jquery-097fb249c346e287cc5bcce6106d515f.js",
     "jquery.min.js": "jquery.min-9eb5716adaaef3cf9e95391fe4527aa5.js",
@@ -25,7 +25,8 @@
     "socket.io.js": "socket.io-3362ccc7ae13694b98b3206077372f40.js",
     "socket.io.js.map": "socket.io.js-24ba0d2ac4555f0bb127823e970fc988.map",
     "socket.io.slim.js": "socket.io.slim-f25b68b094404f4290c453a5c80f2249.js",
-    "socket.io.slim.js.map": "socket.io.slim.js-9fdaffd5c31cc071ba6f2078e76a3c18.map"
+    "socket.io.slim.js.map": "socket.io.slim.js-9fdaffd5c31cc071ba6f2078e76a3c18.map",
+    "sidebar-collapse.css": "sidebar-collapse-ed5d362ae9c8ed83b18d15445668ffdc.css"
   },
   "files": {
     "admin-f9046e7a4aa43a2757cf63ee171bd2df.js": {
@@ -411,6 +412,24 @@
       "mtime": "2017-06-11T16:12:33.000Z",
       "size": 121206,
       "digest": "15860921804d5dcb972bb26f7b23c2ed"
+    },
+    "sidebar-collapse-63f4159e6c949c19d3cab0bef8fc3750.css": {
+      "logical_path": "sidebar-collapse.css",
+      "mtime": "2017-06-13T04:27:58.000Z",
+      "size": 1156,
+      "digest": "63f4159e6c949c19d3cab0bef8fc3750"
+    },
+    "style-786399d8ace24c8b985d2e3f6093795d.css": {
+      "logical_path": "style.css",
+      "mtime": "2017-06-13T04:27:34.000Z",
+      "size": 2915,
+      "digest": "786399d8ace24c8b985d2e3f6093795d"
+    },
+    "sidebar-collapse-ed5d362ae9c8ed83b18d15445668ffdc.css": {
+      "logical_path": "sidebar-collapse.css",
+      "mtime": "2017-06-13T05:00:43.000Z",
+      "size": 1160,
+      "digest": "ed5d362ae9c8ed83b18d15445668ffdc"
     }
   }
 }
