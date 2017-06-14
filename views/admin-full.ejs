@@ -3,9 +3,7 @@
 
 <head>
     <title>Chat App</title>
-    <!--<link rel="stylesheet" href="/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/css/sidebar-collapse.css">
-    <link rel="stylesheet" href="/css/adminStyle.css"> -->
+
     <%- css("bootstrap.min.css") %>
     <%- css("sidebar-collapse.css") %>
     <%- css("adminStyle.css") %>
@@ -13,7 +11,8 @@
         .container-fluid,
         .container-fluid .row-offcanvas,
         .container-fluid .sidebar-offcanvas,
-        .container-fluid .chat-area {
+        .container-fluid .chat-area,
+        .chat-container {
             height: 100%;
         }
 
@@ -40,6 +39,7 @@
             background-color: #000;
             color: white;
             box-shadow: 0 -5px 3px -2px #000 inset;
+            cursor: pointer;
         }
         .sidebar-chat-notification {
             position: absolute;
@@ -58,26 +58,27 @@
         }
         .chat-messages {
             height: calc(100% - 110px);
+            overflow-y: auto;
         }
 
         /* http://paletton.com/#uid=c4r2V0D3J0kllllaFw0g0qFqFg0w0aF */
-        .palleton-blue {
+        .paletton-blue {
             background-color: #2D4471;
         }
-        .palleton-purple {
+        .paletton-purple {
             background-color: #4A2D74;
         }
-        .palleton-green {
+        .paletton-green {
             background-color: #297B48;
         }
-        .palleton-orange {
+        .paletton-orange {
             background-color: #AA7539;
         }
 
         .user-image {
             background-color: white;
             height: 100%;
-            border-radius: 90px;
+            border-radius: 15px;
             padding: 5px;
         }
         .message {
@@ -132,58 +133,60 @@
                     <div class="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar">
                         <div class="user-header">
                             <img class="user-image" src="./img/user.svg" />
-                            <span class="user-header-name">Brandon</span>
+                            <span class="user-header-name"><%- user.firstName %></span>
                         </div>
-                        <div class="sidebar-chat palleton-blue">
-                            <div>Chat 1</div>
-                            <div>Company 1</div>
+                        <div class="sidebar-chat paletton-blue" onclick="showChat('1');">
+                            <div class="sidebar-chat-name">Chat 1</div>
+                            <div class="sidebar-chat-company">Company 1</div>
                             <span class="sidebar-chat-notification">2</span>
                         </div>
-                        <div class="sidebar-chat palleton-purple">
-                            <div>Chat 2</div>
-                            <div>Company 1</div>
+                        <div class="sidebar-chat paletton-purple">
+                            <div class="sidebar-chat-name">Chat 2</div>
+                            <div class="sidebar-chat-company">Company 1</div>
                         </div>
-                        <div class="sidebar-chat palleton-green">
-                            <div>Chat 3</div>
-                            <div>Company 1</div>
+                        <div class="sidebar-chat paletton-green">
+                            <div class="sidebar-chat-name">Chat 3</div>
+                            <div class="sidebar-chat-company">Company 1</div>
                         </div>
-                        <div class="sidebar-chat palleton-orange">
-                            <div>Chat 4</div>
-                            <div>Company 1</div>
+                        <div class="sidebar-chat paletton-orange">
+                            <div class="sidebar-chat-name">Chat 4</div>
+                            <div class="sidebar-chat-company">Company 1</div>
                         </div>
                     </div>
                     <div class="col-xs-12 col-sm-9 chat-area">
-                        <div class="main-chat-header palleton-blue">
-                            <button type="button" class="close" aria-hidden="true">×</button>
-                            <div>Chat 1</div>
-                            <div>Company 1</div>
-                        </div>
-                        <div class="chat-messages">
-                            <div class="time-message">
-                                <div class="mid-horizontal-line"></div>
-                                <div class="time-text">
-                                    <div>Chat Start</div>
-                                    <div>12:31 PM</div>
+                        <div class="chat-container" id="chat-1">
+                            <div class="main-chat-header paletton-blue">
+                                <button type="button" class="close" aria-hidden="true">×</button>
+                                <div>Chat 1</div>
+                                <div>Company 1</div>
+                            </div>
+                            <div class="chat-messages">
+                                <div class="time-message">
+                                    <div class="mid-horizontal-line"></div>
+                                    <div class="time-text">
+                                        <div>Chat Start</div>
+                                        <div>12:31 PM</div>
+                                    </div>
+                                </div>
+                                <div class="message message-sender">
+                                    <div class="message-text">
+                                        Hi Chat 1. How can I help you today?
+                                    </div>
+                                </div>
+                                <div class="message message-receiver">
+                                    <div class="message-text">
+                                        I need some help retreiving my password.
+                                    </div>
                                 </div>
                             </div>
-                            <div class="message message-sender">
-                                <div class="message-text">
-                                    Hi Chat 1. How can I help you today?
-                                </div>
-                            </div>
-                            <div class="message message-receiver">
-                                <div class="message-text">
-                                    I need some help retreiving my password.
-                                </div>
-                            </div>
-                        </div>
-                        <div class="chat-input">
-                            <div class="row">
-                                <div class="col-xs-9 form-group">
-                                    <input type="text" class="form-control" placeholder="Type Message" />
-                                </div>
-                                <div class="col-xs-3 form-group">
-                                    <button type="button" class="btn btn-primary form-control">Send</button>
+                            <div class="chat-input">
+                                <div class="row">
+                                    <div class="col-xs-9 form-group">
+                                        <input type="text" class="form-control" placeholder="Type Message" />
+                                    </div>
+                                    <div class="col-xs-3 form-group">
+                                        <button type="button" class="btn btn-primary form-control">Send</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -191,14 +194,14 @@
                 </div>
             </div>
         </li>
-        <li class="login page" style="display: none">
+        <!--<li class="login page" style="display: none">
             <div class="form">
                 <h3 class="title">What's your nickname?</h3>
                 <input class="usernameInput" type="text" maxlength="14" />
                 <h3 class="title">Password</h3>
                 <input class="passwordInput" type="password" maxlength="10" />
             </div>
-        </li>
+        </li>-->
         <li class="error page" style="display: none">
             <div class="form">
                 <h3 class="title">Reconnecting...</h3>
@@ -214,10 +217,11 @@
     <audio id="pokeSound">
         <source src="/sounds/poke.mp3" type="audio/mpeg">
     </audio>
-    <!-- <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="/js/bootstrap.min.js"></script>
-    <script src="/js/admin.js"></script> -->
+
+    <script>
+        var _admin =<%-JSON.stringify(user)%>
+    </script>
+
     <%- js("jquery.min.js") %>
     <%- js("socket.io.js") %>
     <%- js("bootstrap.min.js") %>

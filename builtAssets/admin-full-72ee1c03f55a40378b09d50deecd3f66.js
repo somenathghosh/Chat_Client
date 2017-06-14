@@ -1,6 +1,10 @@
 /* eslint-disable new-cap, max-len, no-var, key-spacing, quotes */
+
 // To-do
+
 // Add scroll to load more messages for Admins
+
+
 
 // Initialize variables
 var $window = $(window);
@@ -90,9 +94,9 @@ socket.on('chat message', function(data) {
 	//var $timestampDiv = $('<span class="timestamp">').text((data.timestamp).toLocaleString().substr(15, 6));
 	//var $messageDiv = $('<li class="message"/>').append($usernameDiv, $messageBodyDiv, $timestampDiv);
 
-	if($chatContainer.hasClass('hidden')) {
-		addNotification(data.roomID)
-	}
+	console.log($messageContainer);
+
+	//TODO: If hidden, add 1 to the notification and blink
 
 	$messageContainer.append(message);
 	$messageContainer.scrollTop = $messageContainer.scrollHeight;
@@ -153,25 +157,20 @@ socket.on('New Client', function(data) {
 	console.log('400');
 	$inputMessage = $('#' + data.roomID);
 
-	if($inputMessage.length < 1) {
+	if(!$inputMessage) {
 		let order = totalChats++;
 
 		$('.chat-area').append(newChatContainer(data.roomID, data.details[0], "Company", order));
 		$('#sidebar').append(newSidebarChat(data.roomID, data.details[0], "Company", order));
-		$('#chat-' + data.roomID).find('.chat-messages').append(newTimestamp('Chat Start'));
+		
+		$('#chat-' + data.roomID).find('.chat-messages').append(newTimestamp('Chat Start'))
 
 		//TODO: Load history, check if new
+		//TODO: Increment sidebar message count and flash
 
 		$inputMessage.on('keypress', function(e) {
 			isTyping(e);
 		});
-	}
-	else {
-		$('#chat-' + data.roomID).find('.chat-messages').append(newTimestamp('Client Reconnected'));
-	}
-
-	if($('#chat-' + data.roomID).hasClass('hidden')) {
-		addNotification(data.roomID)
 	}
 });
 
@@ -432,7 +431,7 @@ function newChatContainer(id, username, company, order) {
 	// TODO: Rotate color class
 	let chatContainer = '';
 
-	chatContainer += '<div class="chat-container hidden" id="chat-' + id + '">' +
+	chatContainer += '<div class="chat-container" id="chat-' + id + '">' +
 		'<div class="main-chat-header ' + colorClasses[order % colorClasses.length] +'">' +
 			'<button type="button" class="close" aria-hidden="true">×</button>' +
 			'<div>' + username + '</div>' +
@@ -470,9 +469,6 @@ function newSidebarChat(id, username, company, order) {
 function showChat(id) {
 	$('.chat-container').addClass('hidden');
 	$('#chat-' + id).removeClass('hidden');
-
-	let $notification = $('#sidebar-chat-' + id).find('.sidebar-chat-notification');
-	$notification.text(0);
 }
 
 function newTimestamp(description) {
@@ -492,7 +488,8 @@ function newTimestamp(description) {
 }
 
 function addNotification(id) {
-	let $notification = $('#sidebar-chat-' + id).find('.sidebarChasidebar-chat-notificationtNotification');
+	$notification = $('#sidebar-chat-' + id).find('.sidebarChatNotification');
 
-	$notification.text(parseInt($notification.text()) + 1);
+	
 }
+;

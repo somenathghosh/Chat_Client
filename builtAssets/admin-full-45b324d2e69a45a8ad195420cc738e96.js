@@ -1,6 +1,10 @@
 /* eslint-disable new-cap, max-len, no-var, key-spacing, quotes */
+
 // To-do
+
 // Add scroll to load more messages for Admins
+
+
 
 // Initialize variables
 var $window = $(window);
@@ -29,8 +33,10 @@ Notification.requestPermission();
 
 console.log('from admin js', _admin);
 username = _admin.username;
+//username = "ADMIN";
 
 // ask for Login authentication to server
+console.log(username);
 setUsername(username);
 
 socket.on('login', function(data) {
@@ -55,7 +61,7 @@ socket.on('login', function(data) {
 	}
 });
 
-socket.on('chat message', function(data) {
+/*socket.on('chat message', function(data) {
 	console.log('200');
 	$inputMessage = $('#' + data.roomID);
 	var $parent = $inputMessage.parent();
@@ -71,6 +77,24 @@ socket.on('chat message', function(data) {
 	$messages.append($messageDiv);
 	$messages[0].scrollTop = $messages[0].scrollHeight;
 	$newChat.play();
+});*/
+
+socket.on('chat message', function(data) {
+	console.log('200');
+	$inputMessage = $('#' + data.roomID);
+	let $chatContainer = $('#chat-' + data.roomID);
+	let $messageContainer = $chatContainer.find('.chatMessages');
+
+	let message = '<div class="message ' + (data.isAdmin ? 'message-sender' : 'message-receiver') + '">' +
+        '<div class="message-text">' + data.msg + '</div>' +
+    '</div>';
+
+	//var $timestampDiv = $('<span class="timestamp">').text((data.timestamp).toLocaleString().substr(15, 6));
+	//var $messageDiv = $('<li class="message"/>').append($usernameDiv, $messageBodyDiv, $timestampDiv);
+
+	$messageContainer.append(message);
+	$messageContainer.scrollTop = $messageContainer.scrollHeight;
+	$newChat.play();
 });
 
 socket.on('admin added', function(username) {
@@ -84,7 +108,7 @@ socket.on('admin removed', function(username) {
 	$('#' + username).remove();
 });
 
-socket.on('New Client', function(data) {
+/*socket.on('New Client', function(data) {
 	console.log('400');
 	$('.container').append(getChatArea(data.roomID));
 	$inputMessage = $('#' + data.roomID);
@@ -118,6 +142,22 @@ socket.on('New Client', function(data) {
 			socket.emit('client ack', {});
 		});
 	}
+	$inputMessage.on('keypress', function(e) {
+		isTyping(e);
+	});
+});*/
+
+socket.on('New Client', function(data) {
+	console.log(data);
+	console.log('400');
+	$('.chat-area').append(newChatContainer(data.roomID, data.details[0], "Company"));
+	$('#sidebar').append(newSidebarChat(data.roomID, data.details[0], "Company"));
+	$inputMessage = $('#' + data.roomID);
+	$('#chat-' + data.roomID).append(newTimestamp('Chat Start'))
+
+	//TODO: Load history, check if new
+	//TODO: Increment sidebar message count and flash
+
 	$inputMessage.on('keypress', function(e) {
 		isTyping(e);
 	});
@@ -366,3 +406,67 @@ function notifyAdmin(title, body) {
 function cleanInput(input) {
 	return $('<div/>').text(input).text();
 }
+
+
+// Full additions
+
+function newChatContainer(id, username, company) {
+	// TODO: Rotate color class
+	let chatContainer = '';
+
+	chatContainer += '<div class="chat-container" id="chat-' + id + '">' +
+		'<div class="main-chat-header palleton-blue">' +
+			'<button type="button" class="close" aria-hidden="true">×</button>' +
+			'<div>' + username + '</div>' +
+			'<div>' + company + '</div>' +
+		'</div>' +
+		'<div class="chat-messages"></div>' +
+		'<div class="chat-input">' +
+            '<div class="row">' +
+                '<div class="col-xs-9 form-group">' +
+                    '<input type="text" class="form-control" id="' + id +'" placeholder="Type Message">' +
+                '</div>' +
+                '<div class="col-xs-3 form-group">' +
+                    '<button type="button" class="btn btn-primary form-control">Send</button>' +
+                '</div>' +
+            '</div>' +
+        '</div>' +
+	'</div>';
+
+	return chatContainer;
+}
+
+function newSidebarChat(id, username, company) {
+	// TODO: Rotate color class
+	let chatContainer = '';
+
+	chatContainer += '<div class="sidebar-chat palleton-blue" id="sidebar-chat-' + id +'" onclick="showChat(\'' + id + '\')">' +
+        '<div>' + username + '</div>' +
+        '<div>' + username + '</div>' +
+        '<span class="sidebar-chat-notification">0</span>' +
+    '</div>';
+
+	return chatContainer;
+}
+
+function showChat(id) {
+	$('.chat-container').addClass('hidden');
+	$('#chat-' + id).removeClass('hidden');
+}
+
+function newTimestamp(description) {
+	let timestamp = '';
+	let date = new Date();
+	let currentTime = date.getHours() + ':' + date.getMinutes();
+
+	timestamp += '<div class="time-message">' +
+        '<div class="mid-horizontal-line"></div>' +
+        '<div class="time-text">' +
+            '<div>' + description +'</div>' +
+            '<div>' + currentTime +'</div>' +
+        '</div>' +
+    '</div>';
+
+	return timestamp;
+}
+;

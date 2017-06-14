@@ -1,6 +1,10 @@
 /* eslint-disable new-cap, max-len, no-var, key-spacing, quotes */
+
 // To-do
+
 // Add scroll to load more messages for Admins
+
+
 
 // Initialize variables
 var $window = $(window);
@@ -432,7 +436,7 @@ function newChatContainer(id, username, company, order) {
 	// TODO: Rotate color class
 	let chatContainer = '';
 
-	chatContainer += '<div class="chat-container hidden" id="chat-' + id + '">' +
+	chatContainer += '<div class="chat-container" id="chat-' + id + '">' +
 		'<div class="main-chat-header ' + colorClasses[order % colorClasses.length] +'">' +
 			'<button type="button" class="close" aria-hidden="true">×</button>' +
 			'<div>' + username + '</div>' +
@@ -471,7 +475,7 @@ function showChat(id) {
 	$('.chat-container').addClass('hidden');
 	$('#chat-' + id).removeClass('hidden');
 
-	let $notification = $('#sidebar-chat-' + id).find('.sidebar-chat-notification');
+	let $notification = $('#sidebar-chat-' + id).find('.sidebarChatNotification');
 	$notification.text(0);
 }
 
@@ -492,7 +496,8 @@ function newTimestamp(description) {
 }
 
 function addNotification(id) {
-	let $notification = $('#sidebar-chat-' + id).find('.sidebarChasidebar-chat-notificationtNotification');
+	let $notification = $('#sidebar-chat-' + id).find('.sidebarChatNotification');
 
-	$notification.text(parseInt($notification.text()) + 1);
+	$notification.text(parseInt($notification.text())++);
 }
+;

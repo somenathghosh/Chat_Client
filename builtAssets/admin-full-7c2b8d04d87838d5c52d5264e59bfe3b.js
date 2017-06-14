@@ -1,6 +1,10 @@
 /* eslint-disable new-cap, max-len, no-var, key-spacing, quotes */
+
 // To-do
+
 // Add scroll to load more messages for Admins
+
+
 
 // Initialize variables
 var $window = $(window);
@@ -496,3 +500,4 @@ function addNotification(id) {
 
 	$notification.text(parseInt($notification.text()) + 1);
 }
+;

@@ -1,5 +1,6 @@
 {
   "assets": {
+    "admin-full.js": "admin-full-7c2b8d04d87838d5c52d5264e59bfe3b.js",
     "admin.js": "admin-0738a295587776cbcce6eb8cc9b09a0e.js",
     "bootstrap.min.js": "bootstrap.min-26cfe10150821f745777fee2a6aaea3e.js",
     "client.js": "client-2e281b7f0fbeb82afbe8a2e2806cb52a.js",
@@ -31,11 +32,15 @@
     "socket.io.slim.js.map": "socket.io.slim.js-9fdaffd5c31cc071ba6f2078e76a3c18.map",
     "font-awesome.css": "font-awesome-6408f60555d2e6c8c46e63dd8d217ab0.css",
     "font-awesome.css.map": "font-awesome.css-2f9f7a0bc97622c70ccbe45850e08114.map",
-    "font-awesome.min.css": "font-awesome.min-5cce860c011c7e905cbb07470102baa2.css",
-    "admin - Copy.js": "admin - Copy-0738a295587776cbcce6eb8cc9b09a0e.js",
-    "admin-full.js": "admin-full-34e1f3fd2e564e7c9acef690e10b4744.js"
+    "font-awesome.min.css": "font-awesome.min-5cce860c011c7e905cbb07470102baa2.css"
   },
   "files": {
+    "admin-full-3c05450f7f8601edc76a64846a54ca58.js": {
+      "logical_path": "admin-full.js",
+      "mtime": "2017-06-14T02:30:51.000Z",
+      "size": 14301,
+      "digest": "3c05450f7f8601edc76a64846a54ca58"
+    },
     "admin-0738a295587776cbcce6eb8cc9b09a0e.js": {
       "logical_path": "admin.js",
       "mtime": "2017-06-13T12:01:12.000Z",
@@ -228,23 +233,83 @@
       "size": 31005,
       "digest": "5cce860c011c7e905cbb07470102baa2"
     },
-    "admin - Copy-0738a295587776cbcce6eb8cc9b09a0e.js": {
-      "logical_path": "admin - Copy.js",
-      "mtime": "2017-06-13T12:01:12.000Z",
-      "size": 10491,
-      "digest": "0738a295587776cbcce6eb8cc9b09a0e"
-    },
-    "admin-full-0738a295587776cbcce6eb8cc9b09a0e.js": {
+    "admin-full-72ee1c03f55a40378b09d50deecd3f66.js": {
       "logical_path": "admin-full.js",
-      "mtime": "2017-06-13T12:01:12.000Z",
-      "size": 10491,
-      "digest": "0738a295587776cbcce6eb8cc9b09a0e"
+      "mtime": "2017-06-14T02:32:48.000Z",
+      "size": 14420,
+      "digest": "72ee1c03f55a40378b09d50deecd3f66"
     },
-    "admin-full-34e1f3fd2e564e7c9acef690e10b4744.js": {
+    "admin-full-1cc0db0c18cbd77eedf6b4e731cd8ef2.js": {
       "logical_path": "admin-full.js",
-      "mtime": "2017-06-13T12:53:48.000Z",
-      "size": 10516,
-      "digest": "34e1f3fd2e564e7c9acef690e10b4744"
+      "mtime": "2017-06-14T02:33:49.000Z",
+      "size": 14477,
+      "digest": "1cc0db0c18cbd77eedf6b4e731cd8ef2"
+    },
+    "admin-full-7457268244859a07ab2be2780fbd058e.js": {
+      "logical_path": "admin-full.js",
+      "mtime": "2017-06-14T02:34:15.000Z",
+      "size": 14585,
+      "digest": "7457268244859a07ab2be2780fbd058e"
+    },
+    "admin-full-646c5d8a791e09b40164bae553faf32d.js": {
+      "logical_path": "admin-full.js",
+      "mtime": "2017-06-14T02:35:16.000Z",
+      "size": 14691,
+      "digest": "646c5d8a791e09b40164bae553faf32d"
+    },
+    "admin-full-76d9007064dbffe7b2e41526f2fb4309.js": {
+      "logical_path": "admin-full.js",
+      "mtime": "2017-06-14T02:36:29.000Z",
+      "size": 14655,
+      "digest": "76d9007064dbffe7b2e41526f2fb4309"
+    },
+    "admin-full-578d3b035b4921fdca59fafa3e25e62d.js": {
+      "logical_path": "admin-full.js",
+      "mtime": "2017-06-14T02:37:23.000Z",
+      "size": 14685,
+      "digest": "578d3b035b4921fdca59fafa3e25e62d"
+    },
+    "admin-full-32f2ac0a1ce7761335b8e261fc820ecf.js": {
+      "logical_path": "admin-full.js",
+      "mtime": "2017-06-14T02:38:40.000Z",
+      "size": 14695,
+      "digest": "32f2ac0a1ce7761335b8e261fc820ecf"
+    },
+    "admin-full-4100608bfe4c53f1a6a0d25b129d6e9a.js": {
+      "logical_path": "admin-full.js",
+      "mtime": "2017-06-14T02:41:06.000Z",
+      "size": 14673,
+      "digest": "4100608bfe4c53f1a6a0d25b129d6e9a"
+    },
+    "admin-full-1a1d37b9acefeaf1f8a7efe77f6735ce.js": {
+      "logical_path": "admin-full.js",
+      "mtime": "2017-06-14T02:41:39.000Z",
+      "size": 14703,
+      "digest": "1a1d37b9acefeaf1f8a7efe77f6735ce"
+    },
+    "admin-full-679c48c23deb4545465b8484ca66f579.js": {
+      "logical_path": "admin-full.js",
+      "mtime": "2017-06-14T02:43:13.000Z",
+      "size": 14724,
+      "digest": "679c48c23deb4545465b8484ca66f579"
+    },
+    "admin-full-7d570a0780d7a5dc0c7a21a0ec02f1ef.js": {
+      "logical_path": "admin-full.js",
+      "mtime": "2017-06-14T02:43:30.000Z",
+      "size": 14750,
+      "digest": "7d570a0780d7a5dc0c7a21a0ec02f1ef"
+    },
+    "admin-full-978f82e776b1dd6a494249e3a7812f9d.js": {
+      "logical_path": "admin-full.js",
+      "mtime": "2017-06-14T02:44:21.000Z",
+      "size": 14731,
+      "digest": "978f82e776b1dd6a494249e3a7812f9d"
+    },
+    "admin-full-7c2b8d04d87838d5c52d5264e59bfe3b.js": {
+      "logical_path": "admin-full.js",
+      "mtime": "2017-06-14T02:47:57.000Z",
+      "size": 14760,
+      "digest": "7c2b8d04d87838d5c52d5264e59bfe3b"
     }
   }
 }
