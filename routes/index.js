@@ -7,7 +7,7 @@ const passport 	= require('passport');
 const User = require('../models/user');
 const Room = require('../models/room');
 const randomalpha = require('randomstring');
-const redirectURI = {customer:'/client', admin:'/admin-full'  };
+const redirectURI = {customer:'/client', admin:'/admin'  };
 
 router.get('/', function(req, res, next) {
 	// If user is already logged in, then redirect to rooms page
