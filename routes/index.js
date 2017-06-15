@@ -47,7 +47,17 @@ router.post('/login', function(req, res, next) {
 	// console.log(next);
 	passport.authenticate('local', function(err, user, info) {
     if (err) { return next(err); }
-    if (!user) { return res.redirect('/'); }
+		console.log(user);
+    if (!user) {
+			console.log('user does not exist');
+			return res.render('login', {
+				success: null,
+				errors: [info.message],
+				showRegisterForm: req.flash('showRegisterForm')[0],
+				iya: 'http://dummyimage.com/250x250/000/fff&text='+randomalpha.generate({length:1, charset: 'SBPM'})
+			});
+		}
+
 
     // req / res held in closure
     req.login(user, function(err) {
@@ -101,7 +111,7 @@ router.post('/register', function(req, res, next) {
 });
 
 // Rooms
-router.get('/client', [User.isAuthenticated, function(req, res, next) {
+router.get('/client', [User.isAuthenticated, User.isAuthorize, function(req, res, next) {
 	// console.log(req.user);
 	let user = req.user;
 	res.render('client', {user});
@@ -111,10 +121,17 @@ router.get('/client', [User.isAuthenticated, function(req, res, next) {
 	// });
 }]);
 
-router.get('/admin', [User.isAuthenticated, function(req, res, next) {
+router.get('/admin', [User.isAuthenticated, User.isAuthorize, function(req, res, next) {
 	// If user is already logged in, then redirect to rooms page
 	let user = req.user;
+	// console.log(req.originalUrl);
 	res.render('admin', {user: user});
+}]);
+
+router.get('/admin-full', [User.isAuthenticated, function(req, res, next) {
+	// If user is already logged in, then redirect to rooms page
+	let user = req.user;
+	res.render('admin-full', {user: user});
 }]);
 
 
