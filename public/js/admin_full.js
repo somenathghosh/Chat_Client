@@ -17,6 +17,7 @@ var $inputMessage; // Input message input box
 var $messages; // Messages area
 
 var username;	// Store admin username
+var company; // store company
 var authenticated = false; // Boolean to check if admin is authenticated
 var connected = false;
 var typing = false; // Boolean to check if admin is typing
@@ -31,6 +32,7 @@ var colorClasses = ['paletton-blue', 'paletton-purple', 'paletton-green', 'palet
 
 console.log('from admin js', _admin);
 username = _admin.username;
+
 //username = "ADMIN";
 
 // ask for Login authentication to server
@@ -59,7 +61,7 @@ socket.on('login', function(data) {
 	}
 });
 
-/*socket.on('chat message', function(data) {
+/* socket.on('chat message', function(data) {
 	console.log('200');
 	$inputMessage = $('#' + data.roomID);
 	var $parent = $inputMessage.parent();

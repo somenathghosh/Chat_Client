@@ -4,3 +4,4 @@ cert/*
 .editorconfig
 .jshintrc
 .eslintrc
+builtAssets

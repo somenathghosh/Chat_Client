@@ -68,24 +68,24 @@ app.use(helmet.contentSecurityPolicy({
 }));
 
 // static stuffs
-let bundles = {};
-app.use(require('connect-assets')({
-    paths: [
-        'public/js',
-        'public/css',
-        'public/components/jquery/dist',
-        'public/components/bootstrap/dist/js',
-        'public/components/bootstrap/dist/css',
-        'node_modules/socket.io-client/dist',
-        'public/components/components-font-awesome/css'
-    ],
-    build: true,
-    fingerprinting: true,
-    servePath: 'public/dist',
-    sourceMaps: true,
-    compress: config.env === 'production', // make it true in prodcuton.
-    bundle: config.env === 'production'
-}));
+// let bundles = {};
+// app.use(require('connect-assets')({
+//     paths: [
+//         'public/js',
+//         'public/css',
+//         'public/components/jquery/dist',
+//         'public/components/bootstrap/dist/js',
+//         'public/components/bootstrap/dist/css',
+//         'node_modules/socket.io-client/dist',
+//         'public/components/components-font-awesome/css'
+//     ],
+//     build: true,
+//     fingerprinting: true,
+//     servePath: 'public/dist',
+//     sourceMaps: true,
+//     compress: config.env === 'production', // make it true in prodcuton.
+//     bundle: config.env === 'production'
+// }));
 
 
 // routes
