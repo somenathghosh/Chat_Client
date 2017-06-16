@@ -1,3 +1,4 @@
+/* eslint-disable new-cap, max-len, no-var, key-spacing, quotes */
 'use strict';
 const io = require('socket.io')();
 const uuid = require('uuid/v4');
@@ -6,6 +7,7 @@ const config = require('../config');
 const btoa = require('btoa');
 const _ = require('underscore');
 const _redq = require('../redq');
+const kue = require('../qfifo');
 // const mail = require('../mail');	//Configure mail.js and un-comment the mail code
 
 // pull all admin users here
@@ -17,24 +19,12 @@ require('../models/user').findAdmin()
 	.catch(function(err) {
 		console.log(err);
 	});
-//
-const kue = uuid();
-_redq.createQueue({qname: kue}, function (err, resp) {
-  console.log(err, resp);
-  if (resp===1) {
-      console.log("Q created ==> ", kue);
-  }
-	if (err) {
-		console.log('Could not create Q, exisitng!!!');
-		process.exit(99);
-	}
-});
 
 let admins = {};
 let users = {};
 
 io.on('connection', function(socket) {
-	//Login Admin
+	// Login Admin
 	socket.on('login', function(data) {
 		if (btoa(data.password) != config.key) {
 			socket.emit('login', {
@@ -62,7 +52,9 @@ io.on('connection', function(socket) {
 			}
 		}
 	});
-	//Init admin
+
+
+	// Init admin
 	socket.on('add admin', function(data) {
 		this.isAdmin = data.isAdmin;
 		socket.username = data.admin;
@@ -74,7 +66,7 @@ io.on('connection', function(socket) {
 
 		admins[socket.username] = socket;
 
-		//If some user is already online on chat
+		// If some user is already online on chat
 		if (Object.keys(users).length > 0) {
 			_.each(users, function(userSocket) {
 				dbFunctions.getMessages(userSocket.roomID, 0)
@@ -93,7 +85,8 @@ io.on('connection', function(socket) {
 			});
 		}
 	});
-	//Init user
+
+	// Init user
 	socket.on('add user', function(data) {
 		socket.isAdmin = false;
     console.log(data);
@@ -120,15 +113,7 @@ io.on('connection', function(socket) {
 			newUser = true;
 			// console.log(users[socket.roomID]);
 			// add new users to the Q
-			_redq.sendMessage({qname:kue, message: JSON.stringify(users[socket.roomID])}, function (err, resp) {
-			    if (resp) {
-			        console.log("Message sent. ID:", resp);
-			    }
-					if (err) {
-						console.log(err);
-						console.log('Message send error');
-					}
-			});
+			kue.enqueue(socket);
 		}
 		//Fetch message history
 		dbFunctions.getMessages(socket.roomID, 0)
@@ -147,15 +132,11 @@ io.on('connection', function(socket) {
 					if (newUser) {
 						socket.emit('log message', "Hello " + socket.userDetails[0] + ", How can I help you?");
 						//Make all available admins join this users room.
-						// Pop the Users
-						_redq.popMessage({qname:kue}, function (err, resp) {
-						    if (resp.id) {
-						        console.log("Message received.", resp.mesage);
-						    }
-						    else {
-						        console.log("No messages for me...")
-						    }
-						});
+
+						console.log(kue.isEmpty());
+						console.log(kue.size());
+						console.log(kue.dequeue());
+						console.log(kue.isEmpty());
 						_.each(admins, function(adminSocket) {
 							adminSocket.join(socket.roomID);
 							adminSocket.emit("New Client", {
@@ -271,6 +252,8 @@ io.on('connection', function(socket) {
 			socket.MsgHistoryLen += 10;
 		}
 	});
+
+
 });
 
 module.exports = io;
