@@ -1,3 +1,4 @@
+/* eslint-disable new-cap, max-len, no-var, key-spacing, quotes */
 // Initialize variables
 var $window = $(window);
 var $messages = $('.messages'); //Message area

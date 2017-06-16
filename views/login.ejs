@@ -2,8 +2,9 @@
 <html >
   <head>
     <meta charset="UTF-8">
-    <title>Chat IO</title>
-    <%- css("login.css") %>
+    <title>Chat_Client</title>
+
+    <link rel="stylesheet" href="/css/login.css">
     <link rel="stylesheet" href="/css/style.css">
   </head>
   <body style="background-image: url('/img/6.jpg')">
@@ -24,6 +25,7 @@
               <input type="text" name="lname" placeholder="last name" required/>
               <input type="email" name="email" placeholder="email"required/>
               <input type="text" name="role" placeholder="role"required/>
+              <input type="text" name="company" placeholder="role"required/>
               <input type="password" name="password" placeholder="password"required/>
               <input type="password" name="confirm-password" placeholder="confirm password"required/>
               <button type="submit">create</button>
@@ -53,7 +55,7 @@
 
 
 
-    <%- js("jquery.min.js") %>
+    <script src="components/jquery/dist/jquery.min.js"></script>
     <% if(showRegisterForm != null && showRegisterForm === true) { %>
         <script>
           $('.register-form').show(); $('.login-form, .social-buttons, .form-line').hide();

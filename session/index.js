@@ -16,6 +16,8 @@ var init = function () {
 			secret: config.sessionSecret,
 			resave: false,
 			saveUninitialized: false,
+			rolling: true,
+			maxAge: 360000,
 			unset: 'destroy',
 			store: new MongoStore({ mongooseConnection: db.Mongoose.connection,
 				collection: 'session',
@@ -26,7 +28,9 @@ var init = function () {
 			secret: 'sfsdsjkdhfs97',
 			resave: false,
 			unset: 'destroy',
-			saveUninitialized: true
+			saveUninitialized: true,
+			sameSite: true,
+
 		});
 	}
 }

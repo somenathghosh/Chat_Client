@@ -68,24 +68,24 @@ app.use(helmet.contentSecurityPolicy({
 }));
 
 // static stuffs
-var bundles = {};
-app.use(require('connect-assets')({
-    paths: [
-        './public/js',
-        './public/css',
-        './public/components/jquery/dist',
-        './public/components/bootstrap/dist/js',
-        './public/components/bootstrap/dist/css',
-        './node_modules/socket.io-client/dist',
-        './public/components/components-font-awesome/css'
-    ],
-    build: true,
-    fingerprinting: true,
-    servePath: 'public/dist',
-    sourceMaps: true,
-    compress: config.env === 'production', // make it true in prodcuton.
-    bundle: config.env === 'production'
-}));
+// let bundles = {};
+// app.use(require('connect-assets')({
+//     paths: [
+//         'public/js',
+//         'public/css',
+//         'public/components/jquery/dist',
+//         'public/components/bootstrap/dist/js',
+//         'public/components/bootstrap/dist/css',
+//         'node_modules/socket.io-client/dist',
+//         'public/components/components-font-awesome/css'
+//     ],
+//     build: true,
+//     fingerprinting: true,
+//     servePath: 'public/dist',
+//     sourceMaps: true,
+//     compress: config.env === 'production', // make it true in prodcuton.
+//     bundle: config.env === 'production'
+// }));
 
 
 // routes
@@ -133,15 +133,20 @@ function startApp() {
 	io.set('transports', ['websocket']);
 	// attaching redis subpub adapter
 	io.adapter(adapter);
-
 }
 
 app.use(function(req, res, next) {
-  res.status(404).sendFile(process.cwd() + '/views/404.htm');
+  if (config.env === 'development') {
+    console.log(err.stack);
+  }
+  res.status(404).render('404.ejs');
 });
 
 app.use(function(req, res, next) {
-  res.status(500).sendFile(process.cwd() + '/views/500.htm');
+  if (config.env === 'development') {
+    console.log(err.stack);
+  }
+  res.status(500).render('500.ejs');
 });
 
 startApp();

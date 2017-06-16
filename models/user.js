@@ -63,11 +63,26 @@ var isAuthenticated = function (req, res, next) {
 	}
 }
 
+var isAuthorize = function (req, res, next){
+	// let user = req.user;
+	let roleMatrix = {'admin':['/admin','/admin-full'],
+										'customer':['/client'],
+										};
+	console.log(req.user.role, req.originalUrl);
+	if (roleMatrix[req.user.role].indexOf(req.originalUrl) < 0){
+		res.redirect('/');
+	}
+	else {
+		next();
+	}
+}
+
 module.exports = {
 	create,
 	findOne,
 	findById,
 	find,
 	findOrCreate,
-	isAuthenticated
+	isAuthenticated,
+	isAuthorize
 };

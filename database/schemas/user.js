@@ -74,9 +74,17 @@ var UserSchema = new Mongoose.Schema({
     role: {
         type: String,
         trim: true,
+        required: true,
         lowercase: true,
         default: 'agent',
         match: /^(?:agent|admin|customer)$/i
+    },
+    company: {
+        type: String,
+        trim: true,
+        required: true,
+        lowercase: true,
+        default: 'Carolina Health Care'
     },
     uid: {
         type: String,
@@ -156,10 +164,10 @@ UserSchema.method('toJSON', function() {
         lastName: this.lastName,
         email: this.email,
         phone: this.phone,
+        company: this.company,
         avatar: this.avatar,
         uuid: this.uid,
-        picture: this.picture,
-        socialId:this.socialId
+        picture: this.picture
     };
 });
 

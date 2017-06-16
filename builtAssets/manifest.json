@@ -1,5 +1,6 @@
 {
   "assets": {
+<<<<<<< HEAD
     "admin-full.js": "admin-full-7c2b8d04d87838d5c52d5264e59bfe3b.js",
     "admin.js": "admin-0738a295587776cbcce6eb8cc9b09a0e.js",
     "bootstrap.min.js": "bootstrap.min-26cfe10150821f745777fee2a6aaea3e.js",
@@ -33,6 +34,9 @@
     "font-awesome.css": "font-awesome-6408f60555d2e6c8c46e63dd8d217ab0.css",
     "font-awesome.css.map": "font-awesome.css-2f9f7a0bc97622c70ccbe45850e08114.map",
     "font-awesome.min.css": "font-awesome.min-5cce860c011c7e905cbb07470102baa2.css"
+=======
+    "admin.js": "admin-0961ea169955ea509e20ba03a06d9eae.js"
+>>>>>>> 9b6c58a7fd4e41c90b63a858df4bd7c0864153eb
   },
   "files": {
     "admin-full-3c05450f7f8601edc76a64846a54ca58.js": {
@@ -43,6 +47,7 @@
     },
     "admin-0738a295587776cbcce6eb8cc9b09a0e.js": {
       "logical_path": "admin.js",
+<<<<<<< HEAD
       "mtime": "2017-06-13T12:01:12.000Z",
       "size": 10491,
       "digest": "0738a295587776cbcce6eb8cc9b09a0e"
@@ -310,6 +315,11 @@
       "mtime": "2017-06-14T02:47:57.000Z",
       "size": 14760,
       "digest": "7c2b8d04d87838d5c52d5264e59bfe3b"
+=======
+      "mtime": "2017-06-12T17:26:27.000Z",
+      "size": 5394,
+      "digest": "0961ea169955ea509e20ba03a06d9eae"
+>>>>>>> 9b6c58a7fd4e41c90b63a858df4bd7c0864153eb
     }
   }
 }

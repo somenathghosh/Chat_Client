@@ -4,9 +4,10 @@
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat App</title>
-    <!-- <link rel="stylesheet" href="/css/style.css"> -->
-    <%- css("style.css") %>
-    <%- css("font-awesome.min.css") %>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/components/components-font-awesome/css/font-awesome.min.css">
+
+
 </head>
 
 <body>
@@ -44,10 +45,11 @@
     <script>
         let _client =<%-JSON.stringify(user)%>
     </script>
-    <%- js("jquery.min.js") %>
-    <%- js("socket.io.js") %>
-    <!-- <script src="/socket.io/socket.io.js"></script> -->
-    <%- js("client.js") %>
+
+    <script src="components/jquery/dist/jquery.min.js"></script>
+    <script src="socket.io-client/dist/socket.io.js"></script>
+    <script src="js/client.js"></script>
+
 </body>
 
 </html>
