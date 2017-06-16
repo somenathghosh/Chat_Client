@@ -4,8 +4,31 @@ const uuid = require('uuid/v4');
 const dbFunctions = require('../dbStore/dbFunctions').new();
 const config = require('../config');
 const btoa = require('btoa');
-const _ = require("underscore");
-const mail = require('../mail');	//Configure mail.js and un-comment the mail code
+const _ = require('underscore');
+const _redq = require('../redq');
+// const mail = require('../mail');	//Configure mail.js and un-comment the mail code
+
+// pull all admin users here
+require('../models/user').findAdmin()
+	.then(function(users) {
+		console.log(users);
+		config.admin_users = users; // override the config admin users
+	})
+	.catch(function(err) {
+		console.log(err);
+	});
+//
+const kue = uuid();
+_redq.createQueue({qname: kue}, function (err, resp) {
+  console.log(err, resp);
+  if (resp===1) {
+      console.log("Q created ==> ", kue);
+  }
+	if (err) {
+		console.log('Could not create Q, exisitng!!!');
+		process.exit(99);
+	}
+});
 
 let admins = {};
 let users = {};
@@ -95,6 +118,17 @@ io.on('connection', function(socket) {
 		if (!users[socket.roomID]) {  // Check if different instance of same user. (ie. Multiple tabs)
 			users[socket.roomID] = socket;
 			newUser = true;
+			// console.log(users[socket.roomID]);
+			// add new users to the Q
+			_redq.sendMessage({qname:kue, message: JSON.stringify(users[socket.roomID])}, function (err, resp) {
+			    if (resp) {
+			        console.log("Message sent. ID:", resp);
+			    }
+					if (err) {
+						console.log(err);
+						console.log('Message send error');
+					}
+			});
 		}
 		//Fetch message history
 		dbFunctions.getMessages(socket.roomID, 0)
@@ -113,6 +147,15 @@ io.on('connection', function(socket) {
 					if (newUser) {
 						socket.emit('log message', "Hello " + socket.userDetails[0] + ", How can I help you?");
 						//Make all available admins join this users room.
+						// Pop the Users
+						_redq.popMessage({qname:kue}, function (err, resp) {
+						    if (resp.id) {
+						        console.log("Message received.", resp.mesage);
+						    }
+						    else {
+						        console.log("No messages for me...")
+						    }
+						});
 						_.each(admins, function(adminSocket) {
 							adminSocket.join(socket.roomID);
 							adminSocket.emit("New Client", {

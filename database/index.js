@@ -19,7 +19,7 @@ Mongoose.connection.on('connect', function() {
 // mpromise (mongoose's default promise library) is deprecated,
 // Plug-in your own promise library instead.
 // Use native promises
-Mongoose.Promise = global.Promise;
+Mongoose.Promise = require('bluebird');
 
 module.exports = {Mongoose,
 	models: {

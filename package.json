@@ -17,6 +17,7 @@
   "dependencies": {
     "assert": "1.4.1",
     "bcrypt-nodejs": "0.0.3",
+    "bluebird": "3.5.0",
     "body-parser": "1.17.2",
     "btoa": "1.1.2",
     "compression": "1.6.2",

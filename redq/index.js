@@ -17,21 +17,21 @@ redisClient.on('error', function(err) {
   console.log(err.stack);
 });
 
-const rsmq = new RedisSMQ( {client: redisClient, ns: 'rsmq'} );
+const rsmq = new RedisSMQ( {client: redisClient});
 
-rsmq.createQueue({qname:"myqueue"}, function (err, resp) {
-        console.log(err,resp);
-        if (resp===1) {
-            console.log("queue created")
-        }
-        setTimeout(function() {
-          rsmq.deleteQueue("rsmq:myqueue:Q", function(err) {
-              console.log('myqueue deleted');
-          });
-
-        }, 10000);
-
-});
+// rsmq.createQueue({qname:"myqueue"}, function (err, resp) {
+//         console.log(err,resp);
+//         if (resp===1) {
+//             console.log("queue created")
+//         }
+//         setTimeout(function() {
+//           rsmq.deleteQueue("rsmq:myqueue:Q", function(err) {
+//               console.log('myqueue deleted');
+//           });
+//
+//         }, 10000);
+//
+// });
 // // Send a message
 // rsmq.sendMessage({qname:"myqueue", message:"Hello World"}, function (err, resp) {
 //     if (resp) {

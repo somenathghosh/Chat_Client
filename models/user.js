@@ -1,23 +1,41 @@
 'use strict';
 
-var userModel = require('../database').models.user;
+const userModel = require('../database').models.user;
+const Promise = require('bluebird');
 
-var create = function (data, callback){
-	var newUser = new userModel(data);
+const create = function(data, callback){
+	let newUser = new userModel(data);
 	newUser.save(callback);
 };
 
-var findOne = function (data, callback){
+const findOne = function (data, callback){
 	userModel.findOne(data, callback);
 }
 
-var findById = function (id, callback){
+const findById = function (id, callback){
 	userModel.findById(id, callback);
 }
 
-var find = function (data, callback){
+const find = function (data, callback){
 	userModel.find(data, callback);
 }
+
+const findAdmin = function() {
+	return new Promise(function(resolve, reject) {
+		userModel
+			.find({'role':'admin'})
+			.then(function(users){
+				let admins = [];
+				for (let i=0; i< users.length; i++) {
+					admins.push(users[i].username);
+				}
+				resolve(admins);
+			})
+			.catch(function(err){
+				reject(err);
+			});
+	});
+};
 
 
 /**
@@ -84,5 +102,6 @@ module.exports = {
 	find,
 	findOrCreate,
 	isAuthenticated,
-	isAuthorize
+	isAuthorize,
+	findAdmin,
 };
