@@ -1,6 +1,7 @@
 /* eslint-disable new-cap, max-len, no-var, key-spacing, quotes */
 // Initialize variables
 var $window = $(window);
+var $newChat = $('#chatSound')[0];
 var $messages = $('.messages'); //Message area
 var $inputMessage = $('.inputMessage');  //Text area to input msg
 var $nameInput = $('.nameInput') //Name input
@@ -47,6 +48,7 @@ $('.msg_head').click(function() {
 		sessionStorage.setItem('active', true);
 		active = true;
 	}
+
 });
 
 $submitBtn.click(function() {
@@ -132,6 +134,8 @@ socket.on('chat message', function(data) {
 	var $messageBodyDiv = $('<div class="' + sender + '">' + data.msg + '<span class="timestamp">' +
 		((data.timestamp).toLocaleString().substr(15, 6)) + '</span></div>').insertBefore($newMsg);
 	$messages[0].scrollTop = $messages[0].scrollHeight;
+
+	$newChat.play();
 });
 
 socket.on('typing', function(data) {
