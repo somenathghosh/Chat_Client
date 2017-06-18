@@ -1,0 +1,2 @@
+)]}'
+{"version":3,"sources":["public\\js\\login.js"],"names":[],"mappings":"AAAA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA","sourcesContent":["'use strict';\r\n\r\nwindow.l_show = function(){\r\n  $('.register-form').show(); $('.login-form, .social-buttons, .form-line').hide();\r\n}\r\n\r\nwindow.l_toggle = function() {\r\n  $('.message a').click(function(){\r\n      $('form, .social-buttons, .form-line').animate({height: \"toggle\", opacity: \"toggle\"}, \"slow\");\r\n  });\r\n}\n;\n"],"sourceRoot":"/"}

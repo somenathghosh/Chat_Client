@@ -9,12 +9,12 @@ const config = {
 	redis_hostname : process.env.REDIS_HOST, 				// Redis Hostname
 	redis_password : process.env.REDIS_PASSWORD,
 	admin_users : ['admin', 'admin2', 'somenath.ghosh'], 					// Add usernames for different admins
-	key : process.env.ADMIN_PASS,						// Admin Password btoa hashed (Default = 'password')
+	key : process.env.ADMIN_PASS || 'cGFzc3dvcmQ=',						// Admin Password btoa hashed (Default = 'password')
 	env : process.env.NODE_ENV || 'development',
 	sessionSecret: 'hds092384023j54351421&^$#@hvsvsd--t8153c-076][]',
 	mongo:  process.env.MONGODB_URI,
 	redis: process.env.REDIS_URL,
-	passwordRegex: '^.{8,64}$',
+	passwordRegex: '^.{8,64}$'
 };
 
 module.exports = config;

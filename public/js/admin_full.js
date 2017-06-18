@@ -6,6 +6,7 @@
 var $window = $(window);
 var $newUser = $('#windowSound')[0];
 var $newChat = $('#chatSound')[0];
+var $newChatConn = $('#newConnectionSound')[0];
 var $pokeAdmin = $('#pokeSound')[0];
 var $usernameInput = $('.usernameInput'); // Input for username
 var $passwordInput = $('.passwordInput'); // Input for password
@@ -31,6 +32,7 @@ Notification.requestPermission();
 
 var totalChats = 0; // Used to rotate colors for new chats
 var colorClasses = ['paletton-blue', 'paletton-purple', 'paletton-green', 'paletton-orange'];
+var disconnectTimers = []; // Holde the timers to show disconnect button for chats
 
 console.log('from admin js', _admin);
 username = _admin.username;
@@ -38,7 +40,6 @@ username = _admin.username;
 // username = "ADMIN";
 
 // ask for Login authentication to server
-console.log(username);
 setUsername(username);
 
 socket.on('login', function(data) {
@@ -99,9 +100,8 @@ socket.on('chat message', function(data) {
 	let $chatContainer = $('#chat-' + data.roomID);
 	let $messageContainer = $chatContainer.find('.chat-messages');
 
-	let message = '<div class="message ' + (data.isAdmin ? 'message-sender' : 'message-receiver') + '">' +
-        '<div class="message-text">' + data.msg + '</div>' +
-    '</div>';
+	let $message = createMessage(data.msg, null, null, data.isAdmin);
+	console.log(data);
 
 	//var $timestampDiv = $('<span class="timestamp">').text((data.timestamp).toLocaleString().substr(15, 6));
 	//var $messageDiv = $('<li class="message"/>').append($usernameDiv, $messageBodyDiv, $timestampDiv);
@@ -110,7 +110,7 @@ socket.on('chat message', function(data) {
 		addNotification(data.roomID)
 	}
 
-	$messageContainer.append(message);
+	$messageContainer.append($message);
 	$messageContainer.scrollTop = $messageContainer.scrollHeight;
 	$newChat.play();
 });
@@ -174,32 +174,54 @@ socket.on('New Client', function(data) {
 
 		$('.chat-area').append(newChatContainer(data.roomID, data.details[0], "Company", order));
 		$('#sidebar').append(newSidebarChat(data.roomID, data.details[0], "Company", order));
+		
+		let $messages = $('#chat-' + data.roomID).find('.chat-messages');
+		let $chatContainer = $('#chat-' + data.roomID);
+		let $messageContainer = $chatContainer.find('.chat-messages');
+
+		var len = data.history.length;
+		var isSender;
+		if(len > 0) {
+			$('#chat-' + data.roomID).find('.chat-messages').append(newTimestamp('History'));
+
+			for (var i = len - 1; i >= 0; i--) {
+				if (data["history"][i]["who"])
+					isSender = true;
+				else
+					isSender = false;
+
+				$messages.append(createMessage(data["history"][i]["what"], null, data["history"][i]["when"], isSender));
+			}
+		}
+
 		$('#chat-' + data.roomID).find('.chat-messages').append(newTimestamp('Chat Start'));
+		$messageContainer.scrollTop = $messageContainer.scrollHeight;
 
-		//TODO: Load history, check if new
-
+		$inputMessage = $('#' + data.roomID);
 		$inputMessage.on('keypress', function(e) {
 			isTyping(e);
 		});
 	}
 	else {
 		$('#chat-' + data.roomID).find('.chat-messages').append(newTimestamp('Client Reconnected'));
+		clearTimeout(disconnectTimers[data.roomID]);
 	}
 
 	if($('#chat-' + data.roomID).hasClass('hidden')) {
 		addNotification(data.roomID)
 	}
+
+	$newChatConn.play();
 });
 
 socket.on('typing', function(data) {
 	console.log('600');
-	$inputMessage = $('#' + data.roomID);
-	var $parent = $inputMessage.parent();
-	var $typing = $parent.children(".typing");
+	let $messages = $('#chat-' + data.roomID).find('.chat-messages');
+
 	if (data.isTyping)
-		$typing.append("<small>" + data.person + " is typing...<small>");
+		$messages.append("<small class='typing'>" + data.person + " is typing...<small>");
 	else
-		$typing.text('');
+		$messages.find($('.typing')).remove();
 });
 
 socket.on('client ack', function() {
@@ -211,9 +233,12 @@ socket.on('User Disconnected', function(roomID) {
 	console.log('800');
 	$newUser.pause();
 	$inputMessage = $('#' + roomID);
-	$inputMessage.off();
-	var $parent = $inputMessage.parent();
-	$parent.remove();
+	
+	$('#chat-' + roomID).find('.chat-messages').append(newTimestamp('Client Disconnected'));
+
+	disconnectTimers = setTimeout(function() {
+		 $('#chat-' + roomID).find('.chat-messages').append(newCloseChatButton(roomID));
+	}, 5*60*1000);
 });
 
 socket.on('poke admin', function() {
@@ -449,9 +474,9 @@ function newChatContainer(id, username, company, order) {
 
 	chatContainer += '<div class="chat-container hidden" id="chat-' + id + '">' +
 		'<div class="main-chat-header ' + colorClasses[order % colorClasses.length] +'">' +
-			'<button type="button" class="close" aria-hidden="true">Ã—</button>' +
+			'<button type="button" class="close" aria-hidden="true" onclick="removeChat(\'' + id + '\')">×</button>' +
 			'<div>' + username + '</div>' +
-			'<div>' + company + '</div>' +
+			'<div><small>' + company + '</small></div>' +
 		'</div>' +
 		'<div class="chat-messages"></div>' +
 		'<div class="chat-input">' +
@@ -460,7 +485,7 @@ function newChatContainer(id, username, company, order) {
                     '<input type="text" class="form-control" id="' + id +'" placeholder="Type Message">' +
                 '</div>' +
                 '<div class="col-xs-3 form-group">' +
-                    '<button type="button" class="btn btn-primary form-control">Send</button>' +
+                    '<button type="button" class="btn btn-primary form-control" onclick="sendMessage(\'' + id + '\')">Send</button>' +
                 '</div>' +
             '</div>' +
         '</div>' +
@@ -475,7 +500,7 @@ function newSidebarChat(id, username, company, order) {
 
 	chatContainer += '<div class="sidebar-chat ' + colorClasses[order % colorClasses.length] +'" id="sidebar-chat-' + id +'" onclick="showChat(\'' + id + '\')">' +
         '<div>' + username + '</div>' +
-        '<div>' + username + '</div>' +
+        '<div><small>' + company + '</small></div>' +
         '<span class="sidebar-chat-notification">0</span>' +
     '</div>';
 
@@ -490,10 +515,30 @@ function showChat(id) {
 	$notification.text(0);
 }
 
+function createMessage(message, name, time, isSender) {
+	let $message = '';
+
+	message = '<div class="message ' + (isSender ? 'message-sender' : 'message-receiver') + '">' +
+        '<div class="message-text">' + message + '</div>' +
+    '</div>';
+
+    return message;
+}
+
 function newTimestamp(description) {
 	let timestamp = '';
 	let date = new Date();
-	let currentTime = date.getHours() + ':' + date.getMinutes();
+	let hours = date.getHours();
+	let minutes = date.getMinutes();
+
+	if(hours < 10) {
+		hours = "0" + hours;
+	}
+	if(minutes < 10) {
+		minutes = "0" + minutes;
+	}
+
+	let currentTime = hours + ':' + minutes;
 
 	timestamp += '<div class="time-message">' +
         '<div class="mid-horizontal-line"></div>' +
@@ -506,8 +551,36 @@ function newTimestamp(description) {
 	return timestamp;
 }
 
+function newCloseChatButton(id) {
+	let button = '';
+
+	button = '<div class="close-chat">' + 
+		'<button class="btn btn-primary" onclick="removeChat(\'' + id + '\')">Close Chat</button>' +
+	'</div>';
+
+	return button;
+}
+
 function addNotification(id) {
-	let $notification = $('#sidebar-chat-' + id).find('.sidebarChasidebar-chat-notificationtNotification');
+	let $notification = $('#sidebar-chat-' + id).find('.sidebar-chat-notification');
 
 	$notification.text(parseInt($notification.text()) + 1);
+}
+
+function removeChat(id) {
+	console.log('1500');
+	let $chatWindow = $('#chat-' + id);
+	let $chartSidebar = $('#sidebar-chat-' + id);
+	let $firstChat = $('.chat-area').find('.chat-container').first();
+
+	if($firstChat.length > 0) {
+		$firstChat.removeClass('hidden');
+	}
+
+	$chatWindow.remove();
+	$chartSidebar.remove();
+
+	socket.emit('leave', {
+		roomID: id
+	});
 }

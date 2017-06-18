@@ -1,4 +1,4 @@
-{
+  {
   "name": "Chat_Client",
   "version": "0.0.1",
   "description": "Simple application using socket.io",

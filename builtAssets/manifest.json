@@ -1,13 +1,325 @@
 {
   "assets": {
+<<<<<<< HEAD
+    "admin-full.js": "admin-full-7c2b8d04d87838d5c52d5264e59bfe3b.js",
+    "admin.js": "admin-0738a295587776cbcce6eb8cc9b09a0e.js",
+    "bootstrap.min.js": "bootstrap.min-26cfe10150821f745777fee2a6aaea3e.js",
+    "client.js": "client-2e281b7f0fbeb82afbe8a2e2806cb52a.js",
+    "login.js": "login-6cc15f2e739b98654c0479b17c33d506.js",
+    "adminStyle.css": "adminStyle-c8d4c526d1ffe4d679b48699486f4151.css",
+    "bootstrap.min.css": "bootstrap.min-0096d5c2f40bc90df7fb886256144a0c.css",
+    "login.css": "login-c1146d284ccaaab20fd2c70055ab1898.css",
+    "sidebar-collapse.css": "sidebar-collapse-ed5d362ae9c8ed83b18d15445668ffdc.css",
+    "style.css": "style-786399d8ace24c8b985d2e3f6093795d.css",
+    "core.js": "core-49c222dbec5a3106b48b79abdb7bfe2e.js",
+    "jquery.js": "jquery-097fb249c346e287cc5bcce6106d515f.js",
+    "jquery.min.js": "jquery.min-9eb5716adaaef3cf9e95391fe4527aa5.js",
+    "jquery.min.map": "jquery.min-b08266448855bc87166a8c589d411b2c.map",
+    "jquery.slim.js": "jquery.slim-f9029f01e31837f2cd14ad6634f1f37d.js",
+    "jquery.slim.min.js": "jquery.slim.min-930a344ce084860daf9a49a08409bf60.js",
+    "jquery.slim.min.map": "jquery.slim.min-516b563cce053a3db59c0c3de8c8fac5.map",
+    "bootstrap.js": "bootstrap-c92e063c04904528183df9c15f620065.js",
+    "npm.js": "npm-1674ab15d729bb14e2b56e3063bdb3d5.js",
+    "bootstrap-theme.css": "bootstrap-theme-7886ce381e86fb22921308e3eb23392d.css",
+    "bootstrap-theme.css.map": "bootstrap-theme.css-a796208c9b2349c29960209bf3a70d10.map",
+    "bootstrap-theme.min.css": "bootstrap-theme.min-3057f7fe2307a23a04bea86e590e0e55.css",
+    "bootstrap-theme.min.css.map": "bootstrap-theme.min.css-071f28ecd127e72636948dff2fea56d6.map",
+    "bootstrap.css": "bootstrap-9d59170462348a04160af7a0a18c277a.css",
+    "bootstrap.css.map": "bootstrap.css-efe88e30a08d9cb52827f9c96528c6ba.map",
+    "bootstrap.min.css.map": "bootstrap.min.css-aafc466bc91717ee1339053846e8077c.map",
+    "socket.io.js": "socket.io-3362ccc7ae13694b98b3206077372f40.js",
+    "socket.io.js.map": "socket.io.js-24ba0d2ac4555f0bb127823e970fc988.map",
+    "socket.io.slim.js": "socket.io.slim-f25b68b094404f4290c453a5c80f2249.js",
+    "socket.io.slim.js.map": "socket.io.slim.js-9fdaffd5c31cc071ba6f2078e76a3c18.map",
+    "font-awesome.css": "font-awesome-6408f60555d2e6c8c46e63dd8d217ab0.css",
+    "font-awesome.css.map": "font-awesome.css-2f9f7a0bc97622c70ccbe45850e08114.map",
+    "font-awesome.min.css": "font-awesome.min-5cce860c011c7e905cbb07470102baa2.css"
+=======
     "admin.js": "admin-0961ea169955ea509e20ba03a06d9eae.js"
+>>>>>>> 9b6c58a7fd4e41c90b63a858df4bd7c0864153eb
   },
   "files": {
-    "admin-0961ea169955ea509e20ba03a06d9eae.js": {
+    "admin-full-3c05450f7f8601edc76a64846a54ca58.js": {
+      "logical_path": "admin-full.js",
+      "mtime": "2017-06-14T02:30:51.000Z",
+      "size": 14301,
+      "digest": "3c05450f7f8601edc76a64846a54ca58"
+    },
+    "admin-0738a295587776cbcce6eb8cc9b09a0e.js": {
       "logical_path": "admin.js",
+<<<<<<< HEAD
+      "mtime": "2017-06-13T12:01:12.000Z",
+      "size": 10491,
+      "digest": "0738a295587776cbcce6eb8cc9b09a0e"
+    },
+    "bootstrap.min-26cfe10150821f745777fee2a6aaea3e.js": {
+      "logical_path": "bootstrap.min.js",
+      "mtime": "2017-06-12T02:06:17.000Z",
+      "size": 37045,
+      "digest": "26cfe10150821f745777fee2a6aaea3e"
+    },
+    "client-2e281b7f0fbeb82afbe8a2e2806cb52a.js": {
+      "logical_path": "client.js",
+      "mtime": "2017-06-13T12:35:22.000Z",
+      "size": 6709,
+      "digest": "2e281b7f0fbeb82afbe8a2e2806cb52a"
+    },
+    "login-6cc15f2e739b98654c0479b17c33d506.js": {
+      "logical_path": "login.js",
+      "mtime": "2017-06-13T12:01:12.000Z",
+      "size": 318,
+      "digest": "6cc15f2e739b98654c0479b17c33d506"
+    },
+    "adminStyle-c8d4c526d1ffe4d679b48699486f4151.css": {
+      "logical_path": "adminStyle.css",
+      "mtime": "2017-06-13T12:01:12.000Z",
+      "size": 2822,
+      "digest": "c8d4c526d1ffe4d679b48699486f4151"
+    },
+    "bootstrap.min-0096d5c2f40bc90df7fb886256144a0c.css": {
+      "logical_path": "bootstrap.min.css",
+      "mtime": "2017-06-12T02:06:03.000Z",
+      "size": 121201,
+      "digest": "0096d5c2f40bc90df7fb886256144a0c"
+    },
+    "login-c1146d284ccaaab20fd2c70055ab1898.css": {
+      "logical_path": "login.css",
+      "mtime": "2017-06-13T12:01:12.000Z",
+      "size": 7227,
+      "digest": "c1146d284ccaaab20fd2c70055ab1898"
+    },
+    "sidebar-collapse-ed5d362ae9c8ed83b18d15445668ffdc.css": {
+      "logical_path": "sidebar-collapse.css",
+      "mtime": "2017-06-13T05:00:43.000Z",
+      "size": 1160,
+      "digest": "ed5d362ae9c8ed83b18d15445668ffdc"
+    },
+    "style-786399d8ace24c8b985d2e3f6093795d.css": {
+      "logical_path": "style.css",
+      "mtime": "2017-06-13T04:27:34.000Z",
+      "size": 2915,
+      "digest": "786399d8ace24c8b985d2e3f6093795d"
+    },
+    "core-49c222dbec5a3106b48b79abdb7bfe2e.js": {
+      "logical_path": "core.js",
+      "mtime": "2017-06-11T16:12:33.000Z",
+      "size": 11671,
+      "digest": "49c222dbec5a3106b48b79abdb7bfe2e"
+    },
+    "jquery-097fb249c346e287cc5bcce6106d515f.js": {
+      "logical_path": "jquery.js",
+      "mtime": "2017-06-11T16:12:33.000Z",
+      "size": 278290,
+      "digest": "097fb249c346e287cc5bcce6106d515f"
+    },
+    "jquery.min-9eb5716adaaef3cf9e95391fe4527aa5.js": {
+      "logical_path": "jquery.min.js",
+      "mtime": "2017-06-11T16:12:33.000Z",
+      "size": 86661,
+      "digest": "9eb5716adaaef3cf9e95391fe4527aa5"
+    },
+    "jquery.min-b08266448855bc87166a8c589d411b2c.map": {
+      "logical_path": "jquery.min.map",
+      "mtime": "2017-06-11T16:12:33.000Z",
+      "size": 131666,
+      "digest": "b08266448855bc87166a8c589d411b2c"
+    },
+    "jquery.slim-f9029f01e31837f2cd14ad6634f1f37d.js": {
+      "logical_path": "jquery.slim.js",
+      "mtime": "2017-06-11T16:12:33.000Z",
+      "size": 223414,
+      "digest": "f9029f01e31837f2cd14ad6634f1f37d"
+    },
+    "jquery.slim.min-930a344ce084860daf9a49a08409bf60.js": {
+      "logical_path": "jquery.slim.min.js",
+      "mtime": "2017-06-11T16:12:33.000Z",
+      "size": 69599,
+      "digest": "930a344ce084860daf9a49a08409bf60"
+    },
+    "jquery.slim.min-516b563cce053a3db59c0c3de8c8fac5.map": {
+      "logical_path": "jquery.slim.min.map",
+      "mtime": "2017-06-11T16:12:33.000Z",
+      "size": 104583,
+      "digest": "516b563cce053a3db59c0c3de8c8fac5"
+    },
+    "bootstrap-c92e063c04904528183df9c15f620065.js": {
+      "logical_path": "bootstrap.js",
+      "mtime": "2017-06-11T16:12:33.000Z",
+      "size": 72082,
+      "digest": "c92e063c04904528183df9c15f620065"
+    },
+    "npm-1674ab15d729bb14e2b56e3063bdb3d5.js": {
+      "logical_path": "npm.js",
+      "mtime": "2017-06-11T16:12:33.000Z",
+      "size": 499,
+      "digest": "1674ab15d729bb14e2b56e3063bdb3d5"
+    },
+    "bootstrap-theme-7886ce381e86fb22921308e3eb23392d.css": {
+      "logical_path": "bootstrap-theme.css",
+      "mtime": "2017-06-11T16:12:33.000Z",
+      "size": 26720,
+      "digest": "7886ce381e86fb22921308e3eb23392d"
+    },
+    "bootstrap-theme.css-a796208c9b2349c29960209bf3a70d10.map": {
+      "logical_path": "bootstrap-theme.css.map",
+      "mtime": "2017-06-11T16:12:33.000Z",
+      "size": 47706,
+      "digest": "a796208c9b2349c29960209bf3a70d10"
+    },
+    "bootstrap-theme.min-3057f7fe2307a23a04bea86e590e0e55.css": {
+      "logical_path": "bootstrap-theme.min.css",
+      "mtime": "2017-06-11T16:12:33.000Z",
+      "size": 23415,
+      "digest": "3057f7fe2307a23a04bea86e590e0e55"
+    },
+    "bootstrap-theme.min.css-071f28ecd127e72636948dff2fea56d6.map": {
+      "logical_path": "bootstrap-theme.min.css.map",
+      "mtime": "2017-06-11T16:12:33.000Z",
+      "size": 25648,
+      "digest": "071f28ecd127e72636948dff2fea56d6"
+    },
+    "bootstrap-9d59170462348a04160af7a0a18c277a.css": {
+      "logical_path": "bootstrap.css",
+      "mtime": "2017-06-11T16:12:33.000Z",
+      "size": 152768,
+      "digest": "9d59170462348a04160af7a0a18c277a"
+    },
+    "bootstrap.css-efe88e30a08d9cb52827f9c96528c6ba.map": {
+      "logical_path": "bootstrap.css.map",
+      "mtime": "2017-06-11T16:12:33.000Z",
+      "size": 389287,
+      "digest": "efe88e30a08d9cb52827f9c96528c6ba"
+    },
+    "bootstrap.min.css-aafc466bc91717ee1339053846e8077c.map": {
+      "logical_path": "bootstrap.min.css.map",
+      "mtime": "2017-06-11T16:12:33.000Z",
+      "size": 542194,
+      "digest": "aafc466bc91717ee1339053846e8077c"
+    },
+    "socket.io-3362ccc7ae13694b98b3206077372f40.js": {
+      "logical_path": "socket.io.js",
+      "mtime": "2017-06-13T12:28:08.000Z",
+      "size": 61214,
+      "digest": "3362ccc7ae13694b98b3206077372f40"
+    },
+    "socket.io.js-24ba0d2ac4555f0bb127823e970fc988.map": {
+      "logical_path": "socket.io.js.map",
+      "mtime": "2017-06-13T12:28:08.000Z",
+      "size": 402867,
+      "digest": "24ba0d2ac4555f0bb127823e970fc988"
+    },
+    "socket.io.slim-f25b68b094404f4290c453a5c80f2249.js": {
+      "logical_path": "socket.io.slim.js",
+      "mtime": "2017-06-13T12:28:08.000Z",
+      "size": 52903,
+      "digest": "f25b68b094404f4290c453a5c80f2249"
+    },
+    "socket.io.slim.js-9fdaffd5c31cc071ba6f2078e76a3c18.map": {
+      "logical_path": "socket.io.slim.js.map",
+      "mtime": "2017-06-13T12:28:08.000Z",
+      "size": 348929,
+      "digest": "9fdaffd5c31cc071ba6f2078e76a3c18"
+    },
+    "font-awesome-6408f60555d2e6c8c46e63dd8d217ab0.css": {
+      "logical_path": "font-awesome.css",
+      "mtime": "2017-06-13T12:01:12.000Z",
+      "size": 39752,
+      "digest": "6408f60555d2e6c8c46e63dd8d217ab0"
+    },
+    "font-awesome.css-2f9f7a0bc97622c70ccbe45850e08114.map": {
+      "logical_path": "font-awesome.css.map",
+      "mtime": "2017-06-13T12:01:12.000Z",
+      "size": 21785,
+      "digest": "2f9f7a0bc97622c70ccbe45850e08114"
+    },
+    "font-awesome.min-5cce860c011c7e905cbb07470102baa2.css": {
+      "logical_path": "font-awesome.min.css",
+      "mtime": "2017-06-13T12:01:12.000Z",
+      "size": 31005,
+      "digest": "5cce860c011c7e905cbb07470102baa2"
+    },
+    "admin-full-72ee1c03f55a40378b09d50deecd3f66.js": {
+      "logical_path": "admin-full.js",
+      "mtime": "2017-06-14T02:32:48.000Z",
+      "size": 14420,
+      "digest": "72ee1c03f55a40378b09d50deecd3f66"
+    },
+    "admin-full-1cc0db0c18cbd77eedf6b4e731cd8ef2.js": {
+      "logical_path": "admin-full.js",
+      "mtime": "2017-06-14T02:33:49.000Z",
+      "size": 14477,
+      "digest": "1cc0db0c18cbd77eedf6b4e731cd8ef2"
+    },
+    "admin-full-7457268244859a07ab2be2780fbd058e.js": {
+      "logical_path": "admin-full.js",
+      "mtime": "2017-06-14T02:34:15.000Z",
+      "size": 14585,
+      "digest": "7457268244859a07ab2be2780fbd058e"
+    },
+    "admin-full-646c5d8a791e09b40164bae553faf32d.js": {
+      "logical_path": "admin-full.js",
+      "mtime": "2017-06-14T02:35:16.000Z",
+      "size": 14691,
+      "digest": "646c5d8a791e09b40164bae553faf32d"
+    },
+    "admin-full-76d9007064dbffe7b2e41526f2fb4309.js": {
+      "logical_path": "admin-full.js",
+      "mtime": "2017-06-14T02:36:29.000Z",
+      "size": 14655,
+      "digest": "76d9007064dbffe7b2e41526f2fb4309"
+    },
+    "admin-full-578d3b035b4921fdca59fafa3e25e62d.js": {
+      "logical_path": "admin-full.js",
+      "mtime": "2017-06-14T02:37:23.000Z",
+      "size": 14685,
+      "digest": "578d3b035b4921fdca59fafa3e25e62d"
+    },
+    "admin-full-32f2ac0a1ce7761335b8e261fc820ecf.js": {
+      "logical_path": "admin-full.js",
+      "mtime": "2017-06-14T02:38:40.000Z",
+      "size": 14695,
+      "digest": "32f2ac0a1ce7761335b8e261fc820ecf"
+    },
+    "admin-full-4100608bfe4c53f1a6a0d25b129d6e9a.js": {
+      "logical_path": "admin-full.js",
+      "mtime": "2017-06-14T02:41:06.000Z",
+      "size": 14673,
+      "digest": "4100608bfe4c53f1a6a0d25b129d6e9a"
+    },
+    "admin-full-1a1d37b9acefeaf1f8a7efe77f6735ce.js": {
+      "logical_path": "admin-full.js",
+      "mtime": "2017-06-14T02:41:39.000Z",
+      "size": 14703,
+      "digest": "1a1d37b9acefeaf1f8a7efe77f6735ce"
+    },
+    "admin-full-679c48c23deb4545465b8484ca66f579.js": {
+      "logical_path": "admin-full.js",
+      "mtime": "2017-06-14T02:43:13.000Z",
+      "size": 14724,
+      "digest": "679c48c23deb4545465b8484ca66f579"
+    },
+    "admin-full-7d570a0780d7a5dc0c7a21a0ec02f1ef.js": {
+      "logical_path": "admin-full.js",
+      "mtime": "2017-06-14T02:43:30.000Z",
+      "size": 14750,
+      "digest": "7d570a0780d7a5dc0c7a21a0ec02f1ef"
+    },
+    "admin-full-978f82e776b1dd6a494249e3a7812f9d.js": {
+      "logical_path": "admin-full.js",
+      "mtime": "2017-06-14T02:44:21.000Z",
+      "size": 14731,
+      "digest": "978f82e776b1dd6a494249e3a7812f9d"
+    },
+    "admin-full-7c2b8d04d87838d5c52d5264e59bfe3b.js": {
+      "logical_path": "admin-full.js",
+      "mtime": "2017-06-14T02:47:57.000Z",
+      "size": 14760,
+      "digest": "7c2b8d04d87838d5c52d5264e59bfe3b"
+=======
       "mtime": "2017-06-12T17:26:27.000Z",
       "size": 5394,
       "digest": "0961ea169955ea509e20ba03a06d9eae"
+>>>>>>> 9b6c58a7fd4e41c90b63a858df4bd7c0864153eb
     }
   }
 }
