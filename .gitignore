@@ -5,3 +5,4 @@ cert/*
 .jshintrc
 .eslintrc
 builtAssets
+node_modules
