@@ -147,6 +147,7 @@ io.on('connection', function(socket) {
 		dbFunctions.pushMessage(data);
 
 		socket.broadcast.to(data.roomID).emit('chat message', data);
+		console.log(data);
 	});
 
 	socket.on("typing", function(data) {
@@ -205,7 +206,8 @@ io.on('connection', function(socket) {
 	socket.on('leave', function(data) {
 		if (socket.isAdmin) {
 			admins[socket.username].leave(data.roomID);
-			socket.emit("admin removed", socket.username)
+			data.isAdmin = socket.isAdmin;
+			socket.broadcast.to(data.roomID).emit('admin disconnected', data);
 		}
 		else {
 			if (io.sockets.adapter.rooms[socket.roomID]) {

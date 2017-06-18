@@ -198,6 +198,12 @@ socket.on('reconnect', function() {
 	}, 4000);
 });
 
+socket.on('admin disconnected', function() {
+	console.log('1600');
+
+	$Typing.append("Admin disconnected. Session ended.");
+});
+
 function timeoutFunction() {
 	typing = false;
 	socket.emit("typing", {

@@ -182,8 +182,6 @@ socket.on('New Client', function(data) {
 		$('#chat-' + data.roomID).find('.chat-messages').append(newTimestamp('Chat Start'));
 		$messageContainer.scrollTop = $messageContainer.scrollHeight;
 
-		//TODO: Notify admin of new user
-
 		$inputMessage = $('#' + data.roomID);
 		$inputMessage.on('keypress', function(e) {
 			isTyping(e);
@@ -459,7 +457,7 @@ function newChatContainer(id, username, company, order) {
 		'<div class="main-chat-header ' + colorClasses[order % colorClasses.length] +'">' +
 			'<button type="button" class="close" aria-hidden="true" onclick="removeChat(\'' + id + '\')">×</button>' +
 			'<div>' + username + '</div>' +
-			'<div>' + company + '</div>' +
+			'<div><small>' + company + '</small></div>' +
 		'</div>' +
 		'<div class="chat-messages"></div>' +
 		'<div class="chat-input">' +
@@ -483,7 +481,7 @@ function newSidebarChat(id, username, company, order) {
 
 	chatContainer += '<div class="sidebar-chat ' + colorClasses[order % colorClasses.length] +'" id="sidebar-chat-' + id +'" onclick="showChat(\'' + id + '\')">' +
         '<div>' + username + '</div>' +
-        '<div>' + company + '</div>' +
+        '<div><small>' + company + '</small></div>' +
         '<span class="sidebar-chat-notification">0</span>' +
     '</div>';
 
