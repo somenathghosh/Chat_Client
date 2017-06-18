@@ -117,3 +117,8 @@
     position: relative;
     z-index: -1;
 }
+
+.close-chat {
+    width: 100%;
+    text-align: center;
+}

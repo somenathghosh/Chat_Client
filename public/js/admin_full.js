@@ -30,6 +30,7 @@ Notification.requestPermission();
 
 var totalChats = 0; // Used to rotate colors for new chats
 var colorClasses = ['paletton-blue', 'paletton-purple', 'paletton-green', 'paletton-orange'];
+var disconnectTimers = []; // Holde the timers to show disconnect button for chats
 
 console.log('from admin js', _admin);
 username = _admin.username;
@@ -189,6 +190,7 @@ socket.on('New Client', function(data) {
 	}
 	else {
 		$('#chat-' + data.roomID).find('.chat-messages').append(newTimestamp('Client Reconnected'));
+		clearTimeout(disconnectTimers[data.roomID]);
 	}
 
 	if($('#chat-' + data.roomID).hasClass('hidden')) {
@@ -219,6 +221,10 @@ socket.on('User Disconnected', function(roomID) {
 	$inputMessage = $('#' + roomID);
 	
 	$('#chat-' + roomID).find('.chat-messages').append(newTimestamp('Client Disconnected'));
+
+	disconnectTimers = setTimeout(function() {
+		 $('#chat-' + roomID).find('.chat-messages').append(newCloseChatButton(roomID));
+	}, 5*60*1000);
 });
 
 socket.on('poke admin', function() {
@@ -503,8 +509,6 @@ function createMessage(message, name, time, isSender) {
         '<div class="message-text">' + message + '</div>' +
     '</div>';
 
-console.log(message);
-
     return message;
 }
 
@@ -532,6 +536,16 @@ function newTimestamp(description) {
     '</div>';
 
 	return timestamp;
+}
+
+function newCloseChatButton(id) {
+	let button = '';
+
+	button = '<div class="close-chat">' + 
+		'<button class="btn btn-primary" onclick="removeChat(\'' + id + '\')">Close Chat</button>' +
+	'</div>';
+
+	return button;
 }
 
 function addNotification(id) {
