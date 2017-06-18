@@ -6,6 +6,7 @@
 var $window = $(window);
 var $newUser = $('#windowSound')[0];
 var $newChat = $('#chatSound')[0];
+var $newChatConn = $('#newConnectionSound')[0];
 var $pokeAdmin = $('#pokeSound')[0];
 var $usernameInput = $('.usernameInput'); // Input for username
 var $passwordInput = $('.passwordInput'); // Input for password
@@ -163,17 +164,19 @@ socket.on('New Client', function(data) {
 		let $chatContainer = $('#chat-' + data.roomID);
 		let $messageContainer = $chatContainer.find('.chat-messages');
 
-		$('#chat-' + data.roomID).find('.chat-messages').append(newTimestamp('History'));
-		//TODO: Load history, check if new
 		var len = data.history.length;
 		var isSender;
-		for (var i = len - 1; i >= 0; i--) {
-			if (data["history"][i]["who"])
-				isSender = true;
-			else
-				isSender = false;
+		if(len > 0) {
+			$('#chat-' + data.roomID).find('.chat-messages').append(newTimestamp('History'));
 
-			$messages.append(createMessage(data["history"][i]["what"], null, data["history"][i]["when"], isSender));
+			for (var i = len - 1; i >= 0; i--) {
+				if (data["history"][i]["who"])
+					isSender = true;
+				else
+					isSender = false;
+
+				$messages.append(createMessage(data["history"][i]["what"], null, data["history"][i]["when"], isSender));
+			}
 		}
 
 		$('#chat-' + data.roomID).find('.chat-messages').append(newTimestamp('Chat Start'));
@@ -193,6 +196,8 @@ socket.on('New Client', function(data) {
 	if($('#chat-' + data.roomID).hasClass('hidden')) {
 		addNotification(data.roomID)
 	}
+
+	$newChatConn.play();
 });
 
 socket.on('typing', function(data) {
@@ -452,7 +457,7 @@ function newChatContainer(id, username, company, order) {
 
 	chatContainer += '<div class="chat-container hidden" id="chat-' + id + '">' +
 		'<div class="main-chat-header ' + colorClasses[order % colorClasses.length] +'">' +
-			'<button type="button" class="close" aria-hidden="true">×</button>' +
+			'<button type="button" class="close" aria-hidden="true" onclick="removeChat(\'' + id + '\')">×</button>' +
 			'<div>' + username + '</div>' +
 			'<div>' + company + '</div>' +
 		'</div>' +
@@ -535,4 +540,22 @@ function addNotification(id) {
 	let $notification = $('#sidebar-chat-' + id).find('.sidebar-chat-notification');
 
 	$notification.text(parseInt($notification.text()) + 1);
+}
+
+function removeChat(id) {
+	console.log('1500');
+	let $chatWindow = $('#chat-' + id);
+	let $chartSidebar = $('#sidebar-chat-' + id);
+	let $firstChat = $('.chat-area').find('.chat-container').first();
+
+	if($firstChat.length > 0) {
+		$firstChat.removeClass('hidden');
+	}
+
+	$chatWindow.remove();
+	$chartSidebar.remove();
+
+	socket.emit('leave', {
+		roomID: id
+	});
 }

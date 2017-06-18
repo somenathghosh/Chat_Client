@@ -202,6 +202,50 @@ io.on('connection', function(socket) {
 		}
 	});
 
+	socket.on('leave', function(data) {
+		if (socket.isAdmin) {
+			admins[socket.username].leave(data.roomID);
+			socket.emit("admin removed", socket.username)
+		}
+		else {
+			if (io.sockets.adapter.rooms[socket.roomID]) {
+				var total = io.sockets.adapter.rooms[socket.roomID]["length"];
+				var totAdmins = Object.keys(admins).length;
+				var clients = total - totAdmins;
+				if (clients == 0) {
+					//check if user reconnects in 4 seconds
+					setTimeout(function() {
+						if (io.sockets.adapter.rooms[socket.roomID])
+							total = io.sockets.adapter.rooms[socket.roomID]["length"];
+						totAdmins = Object.keys(admins).length;
+						if (total <= totAdmins) {
+							/*mail.sendMail({
+								roomID: socket.roomID,
+								MsgLen: socket.TotalMsgLen,
+								email: socket.userDetails
+							});*/
+							delete users[socket.roomID];
+							// dbFunctions.deleteRoom(socket.roomID);
+							socket.broadcast.to(socket.roomID).emit("User Disconnected", socket.roomID);
+							_.each(admins, function(adminSocket) {
+								adminSocket.leave(socket.roomID)
+							});
+						}
+					}, 4000);
+				}
+			} else {
+				if (socket.userDetails)
+					/*mail.sendMail({
+						roomID: socket.roomID,
+						MsgLen: socket.TotalMsgLen,
+						email: socket.userDetails
+					});*/
+				delete users[socket.roomID];
+				// dbFunctions.deleteRoom(socket.roomID);
+			}
+		}
+	});
+
 	socket.on('poke admin', function(targetAdmin) {
 		admins[targetAdmin].emit("poke admin", {})
 	});

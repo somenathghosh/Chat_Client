@@ -44,8 +44,12 @@
     background-color: red;
 }
 .user-header-name {
+    display: inline-block;
     font-size: 18px;
     margin: 5px;
+}
+.user-header-name > a {
+    color: #fff;
 }
 .chat-messages {
     height: calc(100% - 110px);

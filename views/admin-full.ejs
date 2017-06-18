@@ -18,7 +18,15 @@
                     <div class="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar">
                         <div class="user-header">
                             <img class="user-image" src="./img/user.svg" />
-                            <span class="user-header-name"><%- user.firstName %></span>
+                            <div class="dropdown user-header-name"">
+                                <a href="#" data-toggle="dropdown" class="dropdown-toggle"><%- user.firstName %> <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="#">Action</a></li>
+                                    <li><a href="#">Another action</a></li>
+                                    <li role="separator" class="divider"></li>
+                                    <li><a href="/logout">Logout</a></li>
+                                </ul>
+                            </div>
                         </div>
                         <div class="sidebar-chat paletton-blue" onclick="showChat('1');">
                             <div class="sidebar-chat-name">Chat 1</div>
@@ -87,6 +95,9 @@
     </ul>
     <audio id="windowSound">
         <source src="/sounds/new_chat_window.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="newConnectionSound">
+        <source src="/sounds/new_chat_connection.mp3" type="audio/mpeg">
     </audio>
     <audio id="chatSound">
         <source src="/sounds/new_message.mp3" type="audio/mpeg">
