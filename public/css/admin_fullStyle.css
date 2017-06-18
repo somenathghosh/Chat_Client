@@ -19,7 +19,7 @@
 .main-chat-header {
     height: 60px;
     padding: 10px;
-    background-color: #000;
+    background-color: rgba(0, 0, 0, 0.26);
     color: white;
     box-shadow: 0px -0px 9px 0px grey;
 }
@@ -45,6 +45,10 @@
 }
 .user-header-name {
     font-size: 18px;
+    margin: 5px;
+}
+.user-header-company {
+    font-size: 12px;
     margin: 5px;
 }
 .chat-messages {

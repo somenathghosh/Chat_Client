@@ -15,6 +15,8 @@ var $chatPage = $('.chat.page'); // The chat page
 var $userList = $('.adminList'); // List of online admins
 var $inputMessage; // Input message input box
 var $messages; // Messages area
+var $acceptClient = $('.accept-client');
+var $noClientQ = $('#no-clients-q');
 
 var username;	// Store admin username
 var company; // store company
@@ -33,7 +35,7 @@ var colorClasses = ['paletton-blue', 'paletton-purple', 'paletton-green', 'palet
 console.log('from admin js', _admin);
 username = _admin.username;
 
-//username = "ADMIN";
+// username = "ADMIN";
 
 // ask for Login authentication to server
 console.log(username);
@@ -54,6 +56,7 @@ socket.on('login', function(data) {
 		connected = true;
 	} else {
 		alert(data.err);
+		$errorPage.show();
 		$usernameInput.val('');
 		$passwordInput.val('');
 		username = null;
@@ -78,7 +81,18 @@ socket.on('login', function(data) {
 	$messages[0].scrollTop = $messages[0].scrollHeight;
 	$newChat.play();
 });*/
+// When admin clicks on accept client
+//
+$acceptClient.click(function() {
+	if ($noClientQ.val() <= 0) {
+		alert('No Client');
+	}
+	socket.emit('req client', {
+		admin: username,
+		isAdmin: true
+	});
 
+});
 socket.on('chat message', function(data) {
 	console.log('200');
 	$inputMessage = $('#' + data.roomID);
@@ -143,7 +157,7 @@ socket.on('admin removed', function(username) {
 			$newUser.pause();
 			$parent.css('border', '1px solid black');
 			$inputMessage.off('focus');
-			socket.emit('client ack', {});
+				socket.emit('client ack', {});
 		});
 	}
 	$inputMessage.on('keypress', function(e) {
@@ -203,7 +217,6 @@ socket.on('User Disconnected', function(roomID) {
 });
 
 socket.on('poke admin', function() {
-
 	$pokeAdmin.play();
 });
 

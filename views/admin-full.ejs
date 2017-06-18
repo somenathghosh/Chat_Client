@@ -18,7 +18,8 @@
                     <div class="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar">
                         <div class="user-header">
                             <img class="user-image" src="./img/user.svg" />
-                            <span class="user-header-name"><%- user.firstName %></span>
+                            <span class="user-header-name"><%- user.firstName + ' ' + user.lastName %></span>
+                            <span class="user-header-company"><%- user.company %></span>
                         </div>
                         <div class="sidebar-chat paletton-blue" onclick="showChat('1');">
                             <div class="sidebar-chat-name">Chat 1</div>
@@ -37,6 +38,11 @@
                             <div class="sidebar-chat-name">Chat 4</div>
                             <div class="sidebar-chat-company">Company 1</div>
                         </div> -->
+
+                        <div class="col-xs-12 form-group" style="position: absolute; bottom: -5px;">
+                            <p id="no-clients-q"></p>
+                            <button type="button" class="btn btn-danger form-control accept-client">Accept One</button>
+                        </div>
                     </div>
                     <div class="col-xs-12 col-sm-9 chat-area">
                         <div class="chat-container" id="chat-1">
@@ -70,7 +76,7 @@
                                         <input type="text" class="form-control" placeholder="Type Message" />
                                     </div>
                                     <div class="col-xs-3 form-group">
-                                        <button type="button" class="btn btn-danger form-control">Send</button>
+                                        <button type="button" class="btn btn-success form-control">Send</button>
                                     </div>
                                 </div>
                             </div>
