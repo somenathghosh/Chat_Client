@@ -37,16 +37,16 @@ const init = function(){
 	      if (!user) {
 	        return done(null, false, { message: 'Incorrect username or password.' });
 	      }
-				console.log(user);
+				console.log('from passport', user.toJSON());
 	      user.validatePassword(password, function(err, isMatch) {
-	        	if (err) { return done(err); }
-	        	if (!isMatch){
+	        	if (err) {
+							return done(err);
+						}
+	        	if (!isMatch) {
 	        		return done(null, false, { message: 'Incorrect username or password.' });
 	        	}
-
-	        	return done(null, user);
+	        	return done(null, user.toJSON());
 	      });
-
 	    });
 	  }
 	));

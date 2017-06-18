@@ -68,16 +68,29 @@ let DB  = (function(){
 		}
 
 		setDetails (data) {
-			redisClient.hmset(data.roomID + "-details", {
-				'Name': data.Name,
-				'Email': data.Email,
-				'Phone': data.Phone
-			});
+			// check if roomID exists or not
+			this.getDetails(data.roomID)
+			.then(function(detail) {
+				console.log('dbFunctions/setDetails ==>', detail);
+				if (detail[0] === null && detail[1] === null && detail[2] === null){
+					redisClient.hmset(data.roomID + "-details", {
+						'Name': data.Name,
+						'Email': data.Email,
+						'Phone': data.Phone,
+						'Company': data.Company,
+					});
+				}
+			})
+			.catch(function(err){
+				console.log('Error from setDetails', err);
+			})
+			.done();
+
 		}
 
 		getDetails (roomID) {
 			var deffered = Q.defer();
-			redisClient.hmget(roomID + "-details", ["Name", "Email", "Phone"], function(err, result) {
+			redisClient.hmget(roomID + "-details", ["Name", "Email", "Phone","Company"], function(err, result) {
 				if (!err) {
 					deffered.resolve(result)
 				} else {

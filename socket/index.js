@@ -12,11 +12,11 @@ const kue = require('../qfifo');
 
 // pull all admin users here
 require('../models/user').findAdmin().then(function(users) {
-		console.log(users);
-		config.admin_users = users; // override the config admin users
-	}).catch(function(err) {
-		console.log(err);
-	});
+	console.log(users);
+	config.admin_users = users; // override the config admin users
+}).catch(function(err) {
+	console.log(err);
+});
 
 let admins = {};
 let users = {};
@@ -29,9 +29,10 @@ io.on('connection', function(socket) {
 				login: false,
 				err: "Invalid Login",
 			});
-		}
-		else {
-			if (_.find(config.admin_users, function(admin) { return (admin == data.admin); })) {
+		} else {
+			if (_.find(config.admin_users, function(admin) {
+					return (admin == data.admin);
+				})) {
 				if (admins[data.admin]) {
 					socket.emit('login', {
 						login: false,
@@ -87,26 +88,34 @@ io.on('connection', function(socket) {
 	// Init user
 	socket.on('add user', function(data) {
 		socket.isAdmin = false;
-    console.log(data);
+		console.log(data);
 		if (data.isNewUser) {
-			data.roomID = uuid();
+			// data.roomID = uuid(); because you will be getting it from client
+			if (!data.roomID) { // this should not get executed, else you can't track who has logged in.
+				console.log('roomID not provided when new user');
+				data.roomID = uuid();
+			}
 			dbFunctions.setDetails(data);
+			socket.userDetails = [data.Name, data.Email, data.Phone, data.Company];
 			socket.emit("roomID", data.roomID);
 		}
 
 		socket.roomID = data.roomID;
 		// Fetch user details
-		dbFunctions.getDetails(socket.roomID)
-			.then(function(details) {
-				socket.userDetails = details;
-			})
-			.catch(function(error) {
-				console.log("Line 95 : ", error);
-			})
-			.done();
+		if (!data.isNewUser) {
+			dbFunctions.getDetails(socket.roomID)
+				.then(function(details) {
+					console.log('dbFunctions.getDetails ==>', details);
+					socket.userDetails = details;
+				})
+				.catch(function(error) {
+					console.log("Line 95 : ", error);
+				})
+				.done();
+		}
 		socket.join(socket.roomID);
 		var newUser = false;
-		if (!users[socket.roomID]) {  // Check if different instance of same user. (ie. Multiple tabs)
+		if (!users[socket.roomID]) { // Check if different instance of same user. (ie. Multiple tabs)
 			users[socket.roomID] = socket;
 			newUser = true;
 			// console.log(users[socket.roomID]);
@@ -133,7 +142,7 @@ io.on('connection', function(socket) {
 
 						console.log(kue.isEmpty());
 						console.log(kue.size());
-						console.log(kue.dequeue());
+						// console.log(kue.dequeue());
 						console.log(kue.isEmpty());
 						_.each(admins, function(adminSocket) {
 							adminSocket.join(socket.roomID);
@@ -218,11 +227,11 @@ io.on('connection', function(socket) {
 				if (socket.userDetails) {
 					delete users[socket.roomID];
 				}
-					/* mail.sendMail({
-						roomID: socket.roomID,
-						MsgLen: socket.TotalMsgLen,
-						email: socket.userDetails
-					});*/
+				/* mail.sendMail({
+					roomID: socket.roomID,
+					MsgLen: socket.TotalMsgLen,
+					email: socket.userDetails
+				});*/
 
 				// dbFunctions.deleteRoom(socket.roomID);
 			}
@@ -234,8 +243,7 @@ io.on('connection', function(socket) {
 			admins[socket.username].leave(data.roomID);
 			data.isAdmin = socket.isAdmin;
 			socket.broadcast.to(data.roomID).emit('admin disconnected', data);
-		}
-		else {
+		} else {
 			if (io.sockets.adapter.rooms[socket.roomID]) {
 				var total = io.sockets.adapter.rooms[socket.roomID]["length"];
 				var totAdmins = Object.keys(admins).length;
@@ -263,12 +271,12 @@ io.on('connection', function(socket) {
 				}
 			} else {
 				if (socket.userDetails)
-					/*mail.sendMail({
-						roomID: socket.roomID,
-						MsgLen: socket.TotalMsgLen,
-						email: socket.userDetails
-					});*/
-				delete users[socket.roomID];
+				/*mail.sendMail({
+					roomID: socket.roomID,
+					MsgLen: socket.TotalMsgLen,
+					email: socket.userDetails
+				});*/
+					delete users[socket.roomID];
 				// dbFunctions.deleteRoom(socket.roomID);
 			}
 		}

@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="/css/sidebar_collapse.css">
     <link rel="stylesheet" href="/css/adminStyle.css">
     <link rel="stylesheet" href="/css/admin_fullStyle.css">
+    <link rel="stylesheet" href="components/flipclock/compiled/flipclock.css">
 </head>
 
 <body>
@@ -18,7 +19,7 @@
                     <div class="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar">
                         <div class="user-header">
                             <img class="user-image" src="./img/user.svg" />
-                            <div class="dropdown user-header-name"">
+                            <div class="dropdown user-header-name">
                                 <a href="#" data-toggle="dropdown" class="dropdown-toggle"><%- user.firstName %> <b class="caret"></b></a>
                                 <ul class="dropdown-menu">
                                     <li><a href="#">Action</a></li>
@@ -45,9 +46,8 @@
                             <div class="sidebar-chat-name">Chat 4</div>
                             <div class="sidebar-chat-company">Company 1</div>
                         </div> -->
-
+                        <!-- <div class="clock col-xs-12 form-group" style="position: absolute; bottom: -25px;"></div> -->
                         <div class="col-xs-12 form-group" style="position: absolute; bottom: -5px;">
-                            <p id="no-clients-q"></p>
                             <button type="button" class="btn btn-danger form-control accept-client">Accept One</button>
                         </div>
                     </div>
@@ -119,6 +119,19 @@
     <script src="socket.io-client/dist/socket.io.js"></script>
     <script src="components/bootstrap/dist/js/bootstrap.min.js"></script>
     <script src="js/admin_full.js"></script>
+    <script src="components/flipclock/compiled/flipclock.min.js"></script>
+    <!-- <script type="text/javascript">
+        console.log('Clock');
+    	var clock = $('.counter').FlipClock(100, {
+    		clockFace: 'Counter'
+    	});
+
+    	setTimeout(function() {
+    		setInterval(function() {
+    			clock.increment();
+    		}, 1000);
+    	}); -->
+    </script>
 </body>
 
 </html>

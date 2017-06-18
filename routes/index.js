@@ -46,7 +46,7 @@ router.post('/login', function(req, res, next) {
     if (err) {
 			return next(err);
 		}
-		console.log(user);
+		console.log('from login post', user);
     if (!user) {
 			console.log('user does not exist');
 			return res.render('login', {
@@ -56,8 +56,6 @@ router.post('/login', function(req, res, next) {
 				iya: 'http://dummyimage.com/250x250/000/fff&text='+randomalpha.generate({length:1, charset: 'SBPM'}),
 			});
 		}
-
-
     // req / res held in closure
     req.login(user, function(err) {
       if (err) {

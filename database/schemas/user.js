@@ -163,6 +163,7 @@ UserSchema.method('toJSON', function() {
         firstName: this.firstName,
         lastName: this.lastName,
         email: this.email,
+        role: this.role,
         phone: this.phone,
         company: this.company,
         avatar: this.avatar,

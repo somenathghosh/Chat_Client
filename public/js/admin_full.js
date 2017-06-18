@@ -85,15 +85,15 @@ socket.on('login', function(data) {
 // When admin clicks on accept client
 //
 $acceptClient.click(function() {
-	if ($noClientQ.val() <= 0) {
+	if (sessionStorage.getItem('no-client') <= 0) {
 		alert('No Client');
 	}
 	socket.emit('req client', {
 		admin: username,
 		isAdmin: true
 	});
-
 });
+
 socket.on('chat message', function(data) {
 	console.log('200');
 	$inputMessage = $('#' + data.roomID);
@@ -172,9 +172,9 @@ socket.on('New Client', function(data) {
 	if($inputMessage.length < 1) {
 		let order = totalChats++;
 
-		$('.chat-area').append(newChatContainer(data.roomID, data.details[0], "Company", order));
-		$('#sidebar').append(newSidebarChat(data.roomID, data.details[0], "Company", order));
-		
+		$('.chat-area').append(newChatContainer(data.roomID, data.details[0], data.details[3], order));
+		$('#sidebar').append(newSidebarChat(data.roomID, data.details[0], data.details[3], order));
+
 		let $messages = $('#chat-' + data.roomID).find('.chat-messages');
 		let $chatContainer = $('#chat-' + data.roomID);
 		let $messageContainer = $chatContainer.find('.chat-messages');
@@ -233,7 +233,7 @@ socket.on('User Disconnected', function(roomID) {
 	console.log('800');
 	$newUser.pause();
 	$inputMessage = $('#' + roomID);
-	
+
 	$('#chat-' + roomID).find('.chat-messages').append(newTimestamp('Client Disconnected'));
 
 	disconnectTimers = setTimeout(function() {
@@ -554,7 +554,7 @@ function newTimestamp(description) {
 function newCloseChatButton(id) {
 	let button = '';
 
-	button = '<div class="close-chat">' + 
+	button = '<div class="close-chat">' +
 		'<button class="btn btn-primary" onclick="removeChat(\'' + id + '\')">Close Chat</button>' +
 	'</div>';
 
