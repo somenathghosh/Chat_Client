@@ -16,6 +16,8 @@ var $chatPage = $('.chat.page'); // The chat page
 var $userList = $('.adminList'); // List of online admins
 var $inputMessage; // Input message input box
 var $messages; // Messages area
+var $acceptClient = $('.accept-client');
+var $noClientQ = $('#no-clients-q');
 
 var username;	// Store admin username
 var company; // store company
@@ -24,18 +26,19 @@ var connected = false;
 var typing = false; // Boolean to check if admin is typing
 var timeout = undefined; // Timeout to monitor typing
 var socket = io({transports: ['websocket']}); // io socket
+var clientsWaiting = 0;
 $newUser.loop = true;
 $usernameInput.focus();
 Notification.requestPermission();
 
-var totalChats = 0; // Used to rotate colors for new chats
+var totalChats = 1; // Used to rotate colors for new chats
 var colorClasses = ['paletton-blue', 'paletton-purple', 'paletton-green', 'paletton-orange'];
 var disconnectTimers = []; // Holde the timers to show disconnect button for chats
 
 console.log('from admin js', _admin);
 username = _admin.username;
 
-//username = "ADMIN";
+// username = "ADMIN";
 
 // ask for Login authentication to server
 setUsername(username);
@@ -53,8 +56,11 @@ socket.on('login', function(data) {
 		});
 		$userList.append('<li id=' + username + '>' + username + '</li>');
 		connected = true;
+		clientsWaiting = parseInt(data.clientsInQueue);
+		clock.setCounter(clientsWaiting);
 	} else {
 		alert(data.err);
+		$errorPage.show();
 		$usernameInput.val('');
 		$passwordInput.val('');
 		username = null;
@@ -79,6 +85,11 @@ socket.on('login', function(data) {
 	$messages[0].scrollTop = $messages[0].scrollHeight;
 	$newChat.play();
 });*/
+// When admin clicks on accept client
+//
+$acceptClient.click(function() {
+	acceptNewClient();
+});
 
 socket.on('chat message', function(data) {
 	console.log('200');
@@ -97,7 +108,7 @@ socket.on('chat message', function(data) {
 	}
 
 	$messageContainer.append($message);
-	$messageContainer.scrollTop = $messageContainer.scrollHeight;
+	$messageContainer[0].scrollTop = $messageContainer[0].scrollHeight;
 	$newChat.play();
 });
 
@@ -143,7 +154,7 @@ socket.on('admin removed', function(username) {
 			$newUser.pause();
 			$parent.css('border', '1px solid black');
 			$inputMessage.off('focus');
-			socket.emit('client ack', {});
+				socket.emit('client ack', {});
 		});
 	}
 	$inputMessage.on('keypress', function(e) {
@@ -156,37 +167,8 @@ socket.on('New Client', function(data) {
 	$inputMessage = $('#' + data.roomID);
 
 	if($inputMessage.length < 1) {
-		let order = totalChats++;
 
-		$('.chat-area').append(newChatContainer(data.roomID, data.details[0], "Company", order));
-		$('#sidebar').append(newSidebarChat(data.roomID, data.details[0], "Company", order));
-		
-		let $messages = $('#chat-' + data.roomID).find('.chat-messages');
-		let $chatContainer = $('#chat-' + data.roomID);
-		let $messageContainer = $chatContainer.find('.chat-messages');
-
-		var len = data.history.length;
-		var isSender;
-		if(len > 0) {
-			$('#chat-' + data.roomID).find('.chat-messages').append(newTimestamp('History'));
-
-			for (var i = len - 1; i >= 0; i--) {
-				if (data["history"][i]["who"])
-					isSender = true;
-				else
-					isSender = false;
-
-				$messages.append(createMessage(data["history"][i]["what"], null, data["history"][i]["when"], isSender));
-			}
-		}
-
-		$('#chat-' + data.roomID).find('.chat-messages').append(newTimestamp('Chat Start'));
-		$messageContainer.scrollTop = $messageContainer.scrollHeight;
-
-		$inputMessage = $('#' + data.roomID);
-		$inputMessage.on('keypress', function(e) {
-			isTyping(e);
-		});
+		addNewClient(data);
 	}
 	else {
 		$('#chat-' + data.roomID).find('.chat-messages').append(newTimestamp('Client Reconnected'));
@@ -196,9 +178,13 @@ socket.on('New Client', function(data) {
 	if($('#chat-' + data.roomID).hasClass('hidden')) {
 		addNotification(data.roomID)
 	}
-
-	$newChatConn.play();
 });
+
+/*socket.on('accept client', function(data) {
+	console.log('450');
+
+	addNewClient(data);
+});*/
 
 socket.on('typing', function(data) {
 	console.log('600');
@@ -219,16 +205,18 @@ socket.on('User Disconnected', function(roomID) {
 	console.log('800');
 	$newUser.pause();
 	$inputMessage = $('#' + roomID);
-	
-	$('#chat-' + roomID).find('.chat-messages').append(newTimestamp('Client Disconnected'));
+	let $messageContainer = $('#chat-' + roomID).find('.chat-messages');
+
+	$messageContainer.append(newTimestamp('Client Disconnected'));
 
 	disconnectTimers = setTimeout(function() {
 		 $('#chat-' + roomID).find('.chat-messages').append(newCloseChatButton(roomID));
 	}, 5*60*1000);
+
+	$messageContainer[0].scrollTop = $messageContainer[0].scrollHeight;
 });
 
 socket.on('poke admin', function() {
-
 	$pokeAdmin.play();
 });
 
@@ -258,6 +246,17 @@ socket.on('reconnect_failed', function() {
 	var $errorMsg = $errorPage.children(".title");
 	$errorMsg.text("Reconection Failed. Please refresh your page. ");
 	$window.alert("Disconnected from chat.");
+});
+
+socket.on('queue update', function(data) {
+	console.log('2000');
+
+	clientsWaiting = parseInt(data.clientsInQueue);
+	clock.setCounter(clientsWaiting);
+});
+
+var clock = $('.counter').FlipClock(clientsWaiting, {
+	clockFace: 'Counter'
 });
 
 // $passwordInput.keypress(function(event) {
@@ -494,6 +493,44 @@ function newSidebarChat(id, username, company, order) {
 	return chatContainer;
 }
 
+function addNewClient(data) {
+	let order = totalChats++;
+	//console.log(data);
+
+	$('.chat-area').append(newChatContainer(data.roomID, data.details[0], data.details[3], order));
+	$('#sidebar').append(newSidebarChat(data.roomID, data.details[0], data.details[3], order));
+
+	let $messages = $('#chat-' + data.roomID).find('.chat-messages');
+	let $chatContainer = $('#chat-' + data.roomID);
+	let $messageContainer = $chatContainer.find('.chat-messages');
+
+	var len = data.history.length;
+	var isSender;
+	if(len > 0) {
+		$('#chat-' + data.roomID).find('.chat-messages').append(newTimestamp('History'));
+
+		for (var i = len - 1; i >= 0; i--) {
+			if (data["history"][i]["who"])
+				isSender = true;
+			else
+				isSender = false;
+
+			$messages.append(createMessage(data["history"][i]["what"], null, data["history"][i]["when"], isSender));
+		}
+	}
+
+	$('#chat-' + data.roomID).find('.chat-messages').append(newTimestamp('Chat Start'));
+	$messageContainer[0].scrollTop = $messageContainer[0].scrollHeight;
+
+	$inputMessage = $('#' + data.roomID);
+	$inputMessage.on('keypress', function(e) {
+		isTyping(e);
+	});
+
+	$newChatConn.play();
+	//socket.emit('accept client', data)
+}
+
 function showChat(id) {
 	$('.chat-container').addClass('hidden');
 	$('#chat-' + id).removeClass('hidden');
@@ -541,7 +578,7 @@ function newTimestamp(description) {
 function newCloseChatButton(id) {
 	let button = '';
 
-	button = '<div class="close-chat">' + 
+	button = '<div class="close-chat">' +
 		'<button class="btn btn-primary" onclick="removeChat(\'' + id + '\')">Close Chat</button>' +
 	'</div>';
 
@@ -570,4 +607,8 @@ function removeChat(id) {
 	socket.emit('leave', {
 		roomID: id
 	});
+}
+
+function acceptNewClient() {
+	socket.emit('accept client');
 }
