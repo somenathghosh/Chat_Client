@@ -7,8 +7,8 @@
     <link rel="stylesheet" href="components/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="/css/sidebar_collapse.css">
     <link rel="stylesheet" href="/css/adminStyle.css">
-    <link rel="stylesheet" href="/css/admin_fullStyle.css">
     <link rel="stylesheet" href="components/flipclock/compiled/flipclock.css">
+    <link rel="stylesheet" href="/css/admin_fullStyle.css">
 </head>
 
 <body>
@@ -29,9 +29,9 @@
                                 </ul>
                             </div>
                         </div>
-                        <div class="sidebar-chat paletton-blue" onclick="showChat('1');">
-                            <div class="sidebar-chat-name">Chat 1</div>
-                            <div class="sidebar-chat-company"><small>Company 1</small></div>
+                        <div class="sidebar-chat paletton-blue" id="sidebar-chat-1" onclick="showChat('1');">
+                            <div class="sidebar-chat-name">Example Chat</div>
+                            <div class="sidebar-chat-company"><small>Some Company</small></div>
                             <span class="sidebar-chat-notification">2</span>
                         </div>
                         <!-- <div class="sidebar-chat paletton-purple">
@@ -48,15 +48,16 @@
                         </div> -->
                         <!-- <div class="clock col-xs-12 form-group" style="position: absolute; bottom: -25px;"></div> -->
                         <div class="col-xs-12 form-group" style="position: absolute; bottom: -5px;">
-                            <button type="button" class="btn btn-danger form-control accept-client">Accept One</button>
+                            <div class="counter"></div>
+                            <button type="button" class="btn btn-danger form-control accept-client" id="accept-new-client-button">Accept One</button>
                         </div>
                     </div>
                     <div class="col-xs-12 col-sm-9 chat-area">
                         <div class="chat-container" id="chat-1">
                             <div class="main-chat-header paletton-blue">
-                                <button type="button" class="close" aria-hidden="true">x</button>
-                                <div>Chat 1</div>
-                                <div><small>Company 1</small></div>
+                                <button type="button" class="close" aria-hidden="true" onclick="removeChat('1')">x</button>
+                                <div>Example Chat</div>
+                                <div><small>Some Company</small></div>
                             </div>
                             <div class="chat-messages">
                                 <div class="time-message">
@@ -118,20 +119,8 @@
     <script src="components/jquery/dist/jquery.min.js"></script>
     <script src="socket.io-client/dist/socket.io.js"></script>
     <script src="components/bootstrap/dist/js/bootstrap.min.js"></script>
-    <script src="js/admin_full.js"></script>
     <script src="components/flipclock/compiled/flipclock.min.js"></script>
-    <!-- <script type="text/javascript">
-        console.log('Clock');
-    	var clock = $('.counter').FlipClock(100, {
-    		clockFace: 'Counter'
-    	});
-
-    	setTimeout(function() {
-    		setInterval(function() {
-    			clock.increment();
-    		}, 1000);
-    	}); -->
-    </script>
+    <script src="js/admin_full.js"></script>
 </body>
 
 </html>

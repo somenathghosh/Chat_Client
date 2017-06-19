@@ -16,11 +16,22 @@ var $newMsg = $('.msg_push_new'); //Dummy to push new msgs
 var $oldMsg = $('.msg_push_old'); //Dummy to push msg history
 var $submitBtn = $('.submitBtn');
 
-var socket = io('/',{transports: ['websocket']}); //io socket
+var socket = io({transports: ['websocket']}); //io socket
 var typing = false; //Boolean to check if user is typing
 var timeout = undefined; //Timeout to monitor typing
-var id = localStorage.getItem("roomID"); //Room ID in sessionStorage
-var active = sessionStorage.getItem('active'); //Check if chat has been opened.
+// var id; //Room ID in sessionStorage
+var active; //Check if chat has been opened.
+// console.log(_client.uuid);
+console.log('removing roomID from localstore');
+// unset roomID
+localStorage.removeItem("roomID");
+console.log('setting roomID to localstore');
+// set roomID
+localStorage.setItem("roomID", _client.uuid);
+var id = localStorage.getItem("roomID");
+console.log('roomID from localstore', id);
+// unset active ind
+sessionStorage.removeItem('active');
 
 if (active && id) {
 	$form.hide();
@@ -38,8 +49,12 @@ $('.msg_head').click(function() {
 	$widgetBox.slideToggle('slow');
 	if (id != null && !active) {
 		socket.emit('add user', {
-			isNewUser: false,
-			roomID: id
+			isNewUser: true,
+			roomID: id,
+			Name: _client.firstName + ' '+ _client.lastName,
+			Email: _client.email,
+			Phone: _client.phone,
+			Company: _client.company,
 		});
 		console.log('new user');
 		$form.hide();
@@ -48,23 +63,23 @@ $('.msg_head').click(function() {
 		sessionStorage.setItem('active', true);
 		active = true;
 	}
-
 });
 
 $submitBtn.click(function() {
-
 	console.log('300');
 	console.log('submit');
 	$form.hide();
 	$chatBox.show();
 	$inputMessage.focus();
 	sessionStorage.setItem('active', true);
-	console.log('new user');
+	console.log('brand new user');
 	socket.emit('add user', {
 		isNewUser: true,
 		Name: _client.firstName + ' '+ _client.lastName,
 		Email: _client.email,
-		Phone: _client.phone
+		Phone: _client.phone,
+		Company: _client.company,
+		roomID: _client.uuid,
 	});
 
 	return false;
@@ -88,9 +103,6 @@ $submitBtn.click(function() {
 // 	});
 // 	return false;
 // });
-
-
-
 $inputMessage.keypress(function(event) {
 	if (event.which !== 13) {
 		if (typing === false && $inputMessage.is(":focus")) {
@@ -99,7 +111,7 @@ $inputMessage.keypress(function(event) {
 			socket.emit("typing", {
 				isTyping: true,
 				roomID: id,
-				person: "Client"
+				person: "Client",
 			});
 		} else {
 			clearTimeout(timeout);
@@ -118,19 +130,20 @@ $messages.on("scroll", function() {
 		socket.emit("more messages", {});
 })
 
-socket.on('roomID', function(roomID) {
-	console.log('500');
-	id = roomID;
-	localStorage.setItem("roomID", roomID);
-});
+// socket.on('roomID', function(roomID) {
+// 	console.log('500');
+// 	id = roomID;
+// 	localStorage.setItem("roomID", roomID);
+// });
 
 socket.on('chat message', function(data) {
 	console.log('600');
 	var sender;
-	if (data.isAdmin)
-		sender = "msg_a"
-	else
-		sender = "msg_b"
+	if (data.isAdmin) {
+		sender = "msg_a";
+	} else {
+		sender = "msg_b";
+	}
 	var $messageBodyDiv = $('<div class="' + sender + '">' + data.msg + '<span class="timestamp">' +
 		((data.timestamp).toLocaleString().substr(15, 6)) + '</span></div>').insertBefore($newMsg);
 	$messages[0].scrollTop = $messages[0].scrollHeight;
@@ -175,7 +188,6 @@ socket.on('disconnect', function() {
 	console.log("Disconnected!");
 	$inputMessage.prop('disabled', true);
 	$inputMessage.prop('placeholder', "Connection Lost! Reconnecting..");
-
 });
 
 socket.on('reconnect_failed', function() {

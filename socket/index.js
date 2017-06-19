@@ -41,6 +41,7 @@ io.on('connection', function(socket) {
 				} else {
 					socket.emit('login', {
 						login: true,
+						clientsInQueue: kue.size()
 					});
 				}
 			} else {
@@ -140,17 +141,25 @@ io.on('connection', function(socket) {
 						socket.emit('log message', "Hello " + socket.userDetails[0] + ", How can I help you?");
 						// Make all available admins join this users room.
 
-						console.log(kue.isEmpty());
-						console.log(kue.size());
+						//console.log(kue.isEmpty());
+						//console.log(kue.size());
 						// console.log(kue.dequeue());
-						console.log(kue.isEmpty());
+						//console.log(kue.isEmpty());
+
+						socket.history = history;
+						socket.justJoined = false;
+
 						_.each(admins, function(adminSocket) {
-							adminSocket.join(socket.roomID);
-							adminSocket.emit("New Client", {
+							//adminSocket.join(socket.roomID);
+							//TODO: Should this 
+							/*adminSocket.emit("New Client", {
 								roomID: socket.roomID,
 								history: history,
 								details: socket.userDetails,
 								justJoined: false,
+							});*/
+							_.each(admins, function(adminSocket) {
+								adminSocket.emit('queue update', {clientsInQueue: kue.size()});
 							});
 						});
 					}
@@ -169,6 +178,32 @@ io.on('connection', function(socket) {
 				console.log("Line 140 : ", error);
 			})
 			.done();
+	});
+
+	socket.on('accept client', function(data) {
+		if(!kue.isEmpty()) {
+			let newSocket = kue.dequeue();
+
+			socket.join(newSocket.roomID);
+			//console.log('socket ID: ' + newSocket.roomID);
+			socket.emit("New Client", {
+				roomID: newSocket.roomID,
+				history: newSocket.history,
+				details: newSocket.userDetails,
+				justJoined: false,
+				clientsInQueue: kue.size()
+			});
+
+			_.each(admins, function(adminSocket) {
+				socket.emit("queue update", {
+					clientsInQueue: kue.size()
+				});
+			});
+
+			//console.log('client accpted');
+			//console.log(kue.size());
+		}
+		
 	});
 
 	socket.on('chat message', function(data) {

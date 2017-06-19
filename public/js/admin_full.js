@@ -26,11 +26,12 @@ var connected = false;
 var typing = false; // Boolean to check if admin is typing
 var timeout = undefined; // Timeout to monitor typing
 var socket = io({transports: ['websocket']}); // io socket
+var clientsWaiting = 0;
 $newUser.loop = true;
 $usernameInput.focus();
 Notification.requestPermission();
 
-var totalChats = 0; // Used to rotate colors for new chats
+var totalChats = 1; // Used to rotate colors for new chats
 var colorClasses = ['paletton-blue', 'paletton-purple', 'paletton-green', 'paletton-orange'];
 var disconnectTimers = []; // Holde the timers to show disconnect button for chats
 
@@ -55,6 +56,8 @@ socket.on('login', function(data) {
 		});
 		$userList.append('<li id=' + username + '>' + username + '</li>');
 		connected = true;
+		clientsWaiting = parseInt(data.clientsInQueue);
+		clock.setCounter(clientsWaiting);
 	} else {
 		alert(data.err);
 		$errorPage.show();
@@ -85,13 +88,7 @@ socket.on('login', function(data) {
 // When admin clicks on accept client
 //
 $acceptClient.click(function() {
-	if (sessionStorage.getItem('no-client') <= 0) {
-		alert('No Client');
-	}
-	socket.emit('req client', {
-		admin: username,
-		isAdmin: true
-	});
+	acceptNewClient();
 });
 
 socket.on('chat message', function(data) {
@@ -111,7 +108,7 @@ socket.on('chat message', function(data) {
 	}
 
 	$messageContainer.append($message);
-	$messageContainer.scrollTop = $messageContainer.scrollHeight;
+	$messageContainer[0].scrollTop = $messageContainer[0].scrollHeight;
 	$newChat.play();
 });
 
@@ -170,37 +167,8 @@ socket.on('New Client', function(data) {
 	$inputMessage = $('#' + data.roomID);
 
 	if($inputMessage.length < 1) {
-		let order = totalChats++;
 
-		$('.chat-area').append(newChatContainer(data.roomID, data.details[0], data.details[3], order));
-		$('#sidebar').append(newSidebarChat(data.roomID, data.details[0], data.details[3], order));
-
-		let $messages = $('#chat-' + data.roomID).find('.chat-messages');
-		let $chatContainer = $('#chat-' + data.roomID);
-		let $messageContainer = $chatContainer.find('.chat-messages');
-
-		var len = data.history.length;
-		var isSender;
-		if(len > 0) {
-			$('#chat-' + data.roomID).find('.chat-messages').append(newTimestamp('History'));
-
-			for (var i = len - 1; i >= 0; i--) {
-				if (data["history"][i]["who"])
-					isSender = true;
-				else
-					isSender = false;
-
-				$messages.append(createMessage(data["history"][i]["what"], null, data["history"][i]["when"], isSender));
-			}
-		}
-
-		$('#chat-' + data.roomID).find('.chat-messages').append(newTimestamp('Chat Start'));
-		$messageContainer.scrollTop = $messageContainer.scrollHeight;
-
-		$inputMessage = $('#' + data.roomID);
-		$inputMessage.on('keypress', function(e) {
-			isTyping(e);
-		});
+		addNewClient(data);
 	}
 	else {
 		$('#chat-' + data.roomID).find('.chat-messages').append(newTimestamp('Client Reconnected'));
@@ -210,9 +178,13 @@ socket.on('New Client', function(data) {
 	if($('#chat-' + data.roomID).hasClass('hidden')) {
 		addNotification(data.roomID)
 	}
-
-	$newChatConn.play();
 });
+
+/*socket.on('accept client', function(data) {
+	console.log('450');
+
+	addNewClient(data);
+});*/
 
 socket.on('typing', function(data) {
 	console.log('600');
@@ -233,12 +205,15 @@ socket.on('User Disconnected', function(roomID) {
 	console.log('800');
 	$newUser.pause();
 	$inputMessage = $('#' + roomID);
+	let $messageContainer = $('#chat-' + roomID).find('.chat-messages');
 
-	$('#chat-' + roomID).find('.chat-messages').append(newTimestamp('Client Disconnected'));
+	$messageContainer.append(newTimestamp('Client Disconnected'));
 
 	disconnectTimers = setTimeout(function() {
 		 $('#chat-' + roomID).find('.chat-messages').append(newCloseChatButton(roomID));
 	}, 5*60*1000);
+
+	$messageContainer[0].scrollTop = $messageContainer[0].scrollHeight;
 });
 
 socket.on('poke admin', function() {
@@ -271,6 +246,17 @@ socket.on('reconnect_failed', function() {
 	var $errorMsg = $errorPage.children(".title");
 	$errorMsg.text("Reconection Failed. Please refresh your page. ");
 	$window.alert("Disconnected from chat.");
+});
+
+socket.on('queue update', function(data) {
+	console.log('2000');
+
+	clientsWaiting = parseInt(data.clientsInQueue);
+	clock.setCounter(clientsWaiting);
+});
+
+var clock = $('.counter').FlipClock(clientsWaiting, {
+	clockFace: 'Counter'
 });
 
 // $passwordInput.keypress(function(event) {
@@ -507,6 +493,44 @@ function newSidebarChat(id, username, company, order) {
 	return chatContainer;
 }
 
+function addNewClient(data) {
+	let order = totalChats++;
+	//console.log(data);
+
+	$('.chat-area').append(newChatContainer(data.roomID, data.details[0], data.details[3], order));
+	$('#sidebar').append(newSidebarChat(data.roomID, data.details[0], data.details[3], order));
+
+	let $messages = $('#chat-' + data.roomID).find('.chat-messages');
+	let $chatContainer = $('#chat-' + data.roomID);
+	let $messageContainer = $chatContainer.find('.chat-messages');
+
+	var len = data.history.length;
+	var isSender;
+	if(len > 0) {
+		$('#chat-' + data.roomID).find('.chat-messages').append(newTimestamp('History'));
+
+		for (var i = len - 1; i >= 0; i--) {
+			if (data["history"][i]["who"])
+				isSender = true;
+			else
+				isSender = false;
+
+			$messages.append(createMessage(data["history"][i]["what"], null, data["history"][i]["when"], isSender));
+		}
+	}
+
+	$('#chat-' + data.roomID).find('.chat-messages').append(newTimestamp('Chat Start'));
+	$messageContainer[0].scrollTop = $messageContainer[0].scrollHeight;
+
+	$inputMessage = $('#' + data.roomID);
+	$inputMessage.on('keypress', function(e) {
+		isTyping(e);
+	});
+
+	$newChatConn.play();
+	//socket.emit('accept client', data)
+}
+
 function showChat(id) {
 	$('.chat-container').addClass('hidden');
 	$('#chat-' + id).removeClass('hidden');
@@ -583,4 +607,8 @@ function removeChat(id) {
 	socket.emit('leave', {
 		roomID: id
 	});
+}
+
+function acceptNewClient() {
+	socket.emit('accept client');
 }
