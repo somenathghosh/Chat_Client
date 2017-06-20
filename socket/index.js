@@ -260,7 +260,22 @@ io.on('connection', function(socket) {
 				}
 			} else {
 				if (socket.userDetails) {
+					// Remove user socket with no admin
 					delete users[socket.roomID];
+
+					// Remove user socket from queue
+					for(let x = 0; x < kue.size(); x++) {
+						let nextSocket = kue.dequeue();
+						if(socket.roomID !== nextSocket.roomID) {
+							kue.enqueue(nextSocket);
+						}
+					}
+
+					_.each(admins, function(adminSocket) {
+						adminSocket.emit("queue update", {
+							clientsInQueue: kue.size()
+						});
+					});
 				}
 				/* mail.sendMail({
 					roomID: socket.roomID,
