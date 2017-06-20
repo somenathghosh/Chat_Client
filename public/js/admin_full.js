@@ -123,45 +123,6 @@ socket.on('admin removed', function(username) {
 	$('#' + username).remove();
 });
 
-/*socket.on('New Client', function(data) {
-	console.log('400');
-	$('.container').append(getChatArea(data.roomID));
-	$inputMessage = $('#' + data.roomID);
-	var $parent = $inputMessage.parent();
-	var $messages = $parent.children(".messages");
-	var $chatHeader = $parent.children(".chatHeader");
-	var len = data.history.length;
-	$chatHeader.append(data.details[0] + " , " + data.details[1] + " , " + data.details[2]);
-	var sender;
-	for (var i = len - 1; i >= 0; i--) {
-		if (data["history"][i]["who"])
-			sender = "You"
-		else
-			sender = "Client"
-		var $usernameDiv = $('<span class="username"/>').text(sender);
-		var $messageBodyDiv = $('<span class="messageBody">').text(data["history"][i]["what"]);
-		var $timestampDiv = $('<span class="timestamp">').text((data["history"][i]["when"]).toLocaleString().substr(15, 6));
-		var $messageDiv = $('<li class="message"/>').append($usernameDiv, $messageBodyDiv, $timestampDiv);
-		$messages.append($messageDiv);
-		$messages[0].scrollTop = $messages[0].scrollHeight;
-	}
-	if (!data.justJoined) {
-		$newUser.play();
-		notifyAdmin("New Client", "Hey there!" + data.details[0] + " needs help!");
-		$parent.css('border', '2px solid red');
-		$inputMessage = $('#' + data.roomID);
-		$inputMessage.on("focus", function() {
-			$newUser.pause();
-			$parent.css('border', '1px solid black');
-			$inputMessage.off('focus');
-				socket.emit('client ack', {});
-		});
-	}
-	$inputMessage.on('keypress', function(e) {
-		isTyping(e);
-	});
-});*/
-
 socket.on('New Client', function(data) {
 	console.log('400');
 	$inputMessage = $('#' + data.roomID);
@@ -179,12 +140,6 @@ socket.on('New Client', function(data) {
 		addNotification(data.roomID)
 	}
 });
-
-/*socket.on('accept client', function(data) {
-	console.log('450');
-
-	addNewClient(data);
-});*/
 
 socket.on('typing', function(data) {
 	console.log('600');
@@ -267,6 +222,16 @@ socket.on('reconnect_failed', function() {
 	$window.alert("Disconnected from chat.");
 });
 
+socket.on('more chat history', function(data) {
+	console.log('1300');console.log(data);
+
+	let $messages = $('#chat-' + data.roomID).find('.chat-messages');
+
+	var len = data.history.length;
+	for (var i = 0; i < len; i++)
+		$messages.prepend(createMessage(data["history"][i]["what"], null, data["history"][i]["when"], data["history"][i]["who"]));
+});
+
 socket.on('queue update', function(data) {
 	console.log('2000');
 
@@ -318,10 +283,10 @@ function sendMessage(id) {
 		//var $timestampDiv = $('<span class="timestamp">').text((data.timestamp).toLocaleString().substr(15, 6));
 		//var $messageDiv = $('<li class="message"/>').append($usernameDiv, $messageBodyDiv, $timestampDiv);
 
-		console.log($messageContainer);
+		//console.log($messageContainer);
 
 		$messageContainer.append(newMessage);
-		$messageContainer.scrollTop = $messageContainer.scrollHeight;
+		$messageContainer[0].scrollTop = $messageContainer[0].scrollHeight;
 	}
 }
 
@@ -545,6 +510,20 @@ function addNewClient(data) {
 	$inputMessage.on('keypress', function(e) {
 		isTyping(e);
 	});
+
+	var messageHistoryLength = data.MsgHistoryLen;
+	$messages.on("scroll", function() {
+
+		if ($messages.scrollTop() == 0) {
+			//console.log('loading history');
+			socket.emit("more messages", {
+				roomID: data.roomID,
+				MsgHistoryLen: messageHistoryLength
+			});
+
+			messageHistoryLength += 10;
+		}
+	})
 
 	$newChatConn.play();
 	//socket.emit('accept client', data)

@@ -196,7 +196,9 @@ io.on('connection', function(socket) {
 				history: newSocket.history,
 				details: newSocket.userDetails,
 				justJoined: false,
-				clientsInQueue: kue.size()
+				clientsInQueue: kue.size(),
+				MsgHistoryLen: newSocket.MsgHistoryLen,
+				TotalMsgLen: newSocket.TotalMsgLen
 			});
 
 			_.each(admins, function(adminSocket) {
@@ -357,16 +359,21 @@ io.on('connection', function(socket) {
 	});
 
 
-	socket.on("more messages", function() {
-		if (socket.MsgHistoryLen < 0) {
-			dbFunctions.getMessages(socket.roomID, socket.MsgHistoryLen)
+	socket.on("more messages", function(data) {
+		let roomID = (data.roomID ? data.roomID : socket.roomID);
+		let MsgHistoryLen = (data.MsgHistoryLen ? data.MsgHistoryLen : socket.MsgHistoryLen);
+
+		if (MsgHistoryLen < 0) {
+			dbFunctions.getMessages(roomID, MsgHistoryLen)
 				.then(function(history) {
+					MsgHistoryLen += 10
 					history.splice(-1, 1);
 					socket.emit('more chat history', {
 						history: history,
+						roomID: roomID,
+						MsgHistoryLen: MsgHistoryLen
 					});
 				});
-			socket.MsgHistoryLen += 10;
 		}
 	});
 });
