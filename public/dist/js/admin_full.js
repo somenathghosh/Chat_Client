@@ -171,7 +171,7 @@ socket.on('New Client', function(data) {
 		addNewClient(data);
 	}
 	else {
-		$('#chat-' + data.roomID).find('.chat-messages').append(newTimestamp('Client Reconnected'));
+		$('#chat-' + data.roomID).find('.chat-messages').append(newTimestamp('Resuming Previous Chat'));
 		clearTimeout(disconnectTimers[data.roomID]);
 	}
 
@@ -207,13 +207,32 @@ socket.on('User Disconnected', function(roomID) {
 	$inputMessage = $('#' + roomID);
 	let $messageContainer = $('#chat-' + roomID).find('.chat-messages');
 
-	$messageContainer.append(newTimestamp('Client Disconnected'));
+	$messageContainer.append(newTimestamp('Client Connection Lost'));
+
+	$messageContainer[0].scrollTop = $messageContainer[0].scrollHeight;
+});
+
+socket.on('User Terminated', function(roomID) {
+	console.log('850');
+
+	$newUser.pause();
+	$inputMessage = $('#' + roomID);
+	let $messageContainer = $('#chat-' + roomID).find('.chat-messages');
+
+	$messageContainer.append(newTimestamp('Client Session Terminated'));
 
 	disconnectTimers = setTimeout(function() {
 		 $('#chat-' + roomID).find('.chat-messages').append(newCloseChatButton(roomID));
 	}, 5*60*1000);
 
 	$messageContainer[0].scrollTop = $messageContainer[0].scrollHeight;
+});
+
+socket.on('User Reconnected', function(roomID) {
+	console.log('880');
+
+	$('#chat-' + roomID).find('.chat-messages').append(newTimestamp('Client Reconnected'));
+		clearTimeout(disconnectTimers[roomID]);
 });
 
 socket.on('poke admin', function() {

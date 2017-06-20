@@ -163,6 +163,11 @@ io.on('connection', function(socket) {
 							});
 						});
 					}
+
+					else {
+						console.log("RECONNECTED");
+						socket.broadcast.to(socket.roomID).emit("User Reconnected", socket.roomID);
+					}
 				}
 			})
 			.catch(function(error) {
@@ -237,7 +242,8 @@ io.on('connection', function(socket) {
 				var totAdmins = Object.keys(admins).length;
 				var clients = total - totAdmins;
 				if (clients == 0) {
-					// check if user reconnects in 4 seconds
+					// check if user reconnects in 40 seconds
+					socket.broadcast.to(socket.roomID).emit("User Disconnected", socket.roomID);
 					setTimeout(function() {
 						if (io.sockets.adapter.rooms[socket.roomID]) {
 							total = io.sockets.adapter.rooms[socket.roomID]["length"];
@@ -251,12 +257,12 @@ io.on('connection', function(socket) {
 							}); */
 							delete users[socket.roomID];
 							// dbFunctions.deleteRoom(socket.roomID);
-							socket.broadcast.to(socket.roomID).emit("User Disconnected", socket.roomID);
+							socket.broadcast.to(socket.roomID).emit("User Terminated", socket.roomID);
 							_.each(admins, function(adminSocket) {
 								adminSocket.leave(socket.roomID);
 							});
 						}
-					}, 4000);
+					}, 40000);
 				}
 			} else {
 				if (socket.userDetails) {
