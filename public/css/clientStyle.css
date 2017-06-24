@@ -5,13 +5,13 @@ body {
 .msg_box {
     position: absolute;
     bottom: -5px;
-    width: 25%;
+    width: 30%;
     background: white;
     border-radius: 5px 5px 0px 0px;
 }
 
 .msg_head {
-    background: #0088cc;
+    background: rgba(210, 0, 27, 1);
     color: white;
     padding:18px 15px 19px 15px;
     font-weight: bold;
@@ -20,7 +20,7 @@ body {
 }
 
 .formArea {
-    height: 450px;
+    height: 650px;
 }
 
 .title {
@@ -74,6 +74,7 @@ body {
     padding: 15px;
     overflow: auto;
     overflow-x: hidden;
+    height: 450px;
 }
 
 .msg_input {

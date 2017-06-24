@@ -26,7 +26,7 @@ let DB  = (function(){
     }
 
 
-		deleteRoom(roomID){
+		deleteRoom(roomID) {
 
 			console.log('executing del');
 			redisClient.del(roomID);
@@ -89,7 +89,7 @@ let DB  = (function(){
 		}
 
 		getDetails (roomID) {
-			var deffered = Q.defer();
+			let deffered = Q.defer();
 			redisClient.hmget(roomID + "-details", ["Name", "Email", "Phone","Company"], function(err, result) {
 				if (!err) {
 					deffered.resolve(result)
@@ -101,7 +101,7 @@ let DB  = (function(){
 		}
 
 		getMsgLength (roomID) {
-			var deffered = Q.defer();
+			let deffered = Q.defer();
 			redisClient.llen(roomID, function(err, len) {
 				if (!err) {
 					deffered.resolve(len);
@@ -111,15 +111,8 @@ let DB  = (function(){
 			});
 			return deffered.promise;
 		}
-
-
-
 	}
-
 	return DB;
-
-
-
 })();
 
 

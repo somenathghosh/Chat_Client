@@ -8,7 +8,11 @@ const passport 	= require('passport');
 const User = require('../models/user');
 // const Room = require('../models/room');
 const randomalpha = require('randomstring');
+const multer = require('../file');
 const redirectURI = {customer:'/client', admin:'/admin-full'};
+// accepting a file at a time. This is to stop DoS. At max, it will accept 9 files at time if used array.
+const upload = multer.single('file');
+
 
 router.get('/', function(req, res, next) {
 	// If user is already logged in, then redirect to rooms page
@@ -114,11 +118,39 @@ router.post('/register', function(req, res, next) {
 	}
 });
 
+
+/**
+ * @param  string '/upload'
+ * @param  {} User.isAuthenticated
+ * @param  {} User.isAuthorize
+ * @param  {} function(req
+ * @param  {} res
+ * @param  {} next
+ */
+router.post('/upload', [User.isAuthenticated, User.isAuthorize, function(req, res, next) {
+	console.log('At upload route');
+	upload(req, res, function(err) {
+		if (err) {
+			res.status(400).send();
+		} else {
+			res.status(200).send();
+		}
+	});
+}]);
+
 // Client
 router.get('/client', [User.isAuthenticated, User.isAuthorize, function(req, res, next) {
 	// console.log(req.user);
 	let user = req.user;
-	res.render('client', {user});
+	let settings = {};
+	settings.files = {};
+	settings.giphy = {};
+	settings.files.enable = true;
+	settings.giphy.enable = true;
+	res.render('client', {
+		user,
+		settings,
+	});
 	// User.find({username: {$ne: req.user.username}},function(err, users){
 	// 	if(err) throw err;
 	// 	res.render('rooms', { users });
@@ -158,6 +190,8 @@ router.get('/logout', function(req, res, next) {
 	// redirect to homepage
 	res.redirect('/');
 });
+
+
 
 
 module.exports = router;

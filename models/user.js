@@ -83,14 +83,13 @@ var isAuthenticated = function (req, res, next) {
 
 var isAuthorize = function (req, res, next){
 	// let user = req.user;
-	let roleMatrix = {'admin':['/admin','/admin-full'],
-										'customer':['/client'],
-										};
+	let roleMatrix = {'admin': ['/admin', '/admin-full'], 
+						'customer': ['/client', '/upload'], 
+						};
 	console.log(req.user.role, req.originalUrl);
-	if (roleMatrix[req.user.role].indexOf(req.originalUrl) < 0){
+	if (roleMatrix[req.user.role].indexOf(req.originalUrl) < 0) {
 		res.redirect('/');
-	}
-	else {
+	} else {
 		next();
 	}
 }

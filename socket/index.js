@@ -1,4 +1,4 @@
-/* eslint-disable new-cap, max-len, no-var, key-spacing, quotes, no-invalid-this */
+	/* eslint-disable new-cap, max-len, no-var, key-spacing, quotes, no-invalid-this */
 'use strict';
 const io = require('socket.io')();
 const uuid = require('uuid/v4');
@@ -8,6 +8,8 @@ const btoa = require('btoa');
 const _ = require('underscore');
 // const _redq = require('../redq');
 const kue = require('../qfifo');
+
+// const kue2 = require('../redkue');
 // const mail = require('../mail');	//Configure mail.js and un-comment the mail code
 
 // pull all admin users here
@@ -122,6 +124,31 @@ io.on('connection', function(socket) {
 			// console.log(users[socket.roomID]);
 			// add new users to the Q
 			kue.enqueue(socket);
+			//
+			// kue2.enqueue({data:socket})
+			// .then(function(reply){
+			// 	console.log(reply);
+			// })
+			// .catch(function(err) {
+			// 	console.log(err);
+			// });
+			// kue2.size()
+			// .then(function(len){
+			//   console.log('size', len);
+			// })
+			// .catch(function(err){
+			//   console.log(err);
+			// });
+			// kue2.dequeue()
+			// .then(function(ele){
+			//   console.log('dequeue', ele);
+			// 	console.log(ele.emit);
+			// })
+			// .catch(function(err){
+			//   console.log(err);
+			// });
+			// kue2.qdel();
+			//
 		}
 		// Fetch message history
 		dbFunctions.getMessages(socket.roomID, 0)
@@ -141,24 +168,24 @@ io.on('connection', function(socket) {
 						socket.emit('log message', "Hello " + socket.userDetails[0] + ", How can I help you?");
 						// Make all available admins join this users room.
 
-						//console.log(kue.isEmpty());
-						//console.log(kue.size());
+						// console.log(kue.isEmpty());
+						// console.log(kue.size());
 						// console.log(kue.dequeue());
-						//console.log(kue.isEmpty());
+						// console.log(kue.isEmpty());
 
 						socket.history = history;
 						socket.justJoined = false;
 
 						_.each(admins, function(adminSocket) {
-							//adminSocket.join(socket.roomID);
-							//TODO: Should this 
-							/*adminSocket.emit("New Client", {
+							// adminSocket.join(socket.roomID);
+							// TODO: Should this
+							/* adminSocket.emit("New Client", {
 								roomID: socket.roomID,
 								history: history,
 								details: socket.userDetails,
 								justJoined: false,
-							});*/
-							_.each(admins, function(adminSocket) {
+							}); */
+							_.each(admins, function(adminSocket) { // Looks to be repeated
 								adminSocket.emit('queue update', {clientsInQueue: kue.size()});
 							});
 						});
@@ -181,29 +208,27 @@ io.on('connection', function(socket) {
 	});
 
 	socket.on('accept client', function(data) {
-		if(!kue.isEmpty()) {
+		if (!kue.isEmpty()) {
 			let newSocket = kue.dequeue();
 
 			socket.join(newSocket.roomID);
-			//console.log('socket ID: ' + newSocket.roomID);
+			// console.log('socket ID: ' + newSocket.roomID);
 			socket.emit("New Client", {
 				roomID: newSocket.roomID,
 				history: newSocket.history,
 				details: newSocket.userDetails,
 				justJoined: false,
-				clientsInQueue: kue.size()
+				clientsInQueue: kue.size(),
 			});
 
 			_.each(admins, function(adminSocket) {
 				socket.emit("queue update", {
-					clientsInQueue: kue.size()
+					clientsInQueue: kue.size(),
 				});
 			});
-
-			//console.log('client accpted');
-			//console.log(kue.size());
+			// console.log('client accpted');
+			// console.log(kue.size());
 		}
-		
 	});
 
 	socket.on('chat message', function(data) {
@@ -284,35 +309,37 @@ io.on('connection', function(socket) {
 				var totAdmins = Object.keys(admins).length;
 				var clients = total - totAdmins;
 				if (clients == 0) {
-					//check if user reconnects in 4 seconds
+					// check if user reconnects in 4 seconds
 					setTimeout(function() {
-						if (io.sockets.adapter.rooms[socket.roomID])
+						if (io.sockets.adapter.rooms[socket.roomID]) {
 							total = io.sockets.adapter.rooms[socket.roomID]["length"];
+						}
 						totAdmins = Object.keys(admins).length;
 						if (total <= totAdmins) {
-							/*mail.sendMail({
+							/* mail.sendMail({
 								roomID: socket.roomID,
 								MsgLen: socket.TotalMsgLen,
 								email: socket.userDetails
-							});*/
+							}); */
 							delete users[socket.roomID];
 							// dbFunctions.deleteRoom(socket.roomID);
 							socket.broadcast.to(socket.roomID).emit("User Disconnected", socket.roomID);
 							_.each(admins, function(adminSocket) {
-								adminSocket.leave(socket.roomID)
+								adminSocket.leave(socket.roomID);
 							});
 						}
 					}, 4000);
 				}
 			} else {
-				if (socket.userDetails)
-				/*mail.sendMail({
+				if (socket.userDetails) {
+				/* mail.sendMail({
 					roomID: socket.roomID,
 					MsgLen: socket.TotalMsgLen,
 					email: socket.userDetails
-				});*/
+				}); */
 					delete users[socket.roomID];
 				// dbFunctions.deleteRoom(socket.roomID);
+				}
 			}
 		}
 	});

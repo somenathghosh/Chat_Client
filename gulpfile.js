@@ -23,8 +23,10 @@ gulp.task('develop', function() {
     script: 'app.js',
     ext: 'js coffee ejs',
     stdout: false,
-    env: {'NODE_ENV': 'development', 'PORT': '3000', 'DDG_API': 'http://api.duckduckgo.com', 'DDGS_API': 'https://duckduckgo.com',
-    'DDGR_API': '/message'},
+    env: {'NODE_ENV': 'development', 'PORT': '3000', 'REDIS_URL': 'redis://h:p22fad4700c45fa29f34c04f1101c818cd68c835161a09da4beb6cf4a33334cfb@ec2-34-206-77-235.compute-1.amazonaws.com:41999',
+      'MONGODB_URI': 'mongodb://heroku_l2sh3rqr:kh61lmnt0g4fp1gq8dvhects85@ds151941.mlab.com:51941/heroku_l2sh3rqr',
+      'ADMIN_PASS': 'cGFzc3dvcmQ=', 'COOKIE_NAME': 'D761396384741FE3E8BD3A3721EE1',
+    },
   }).on('readable', function() {
     this.stdout.on('data', function(chunk) {
       if(/^Express server listening on port/.test(chunk)) {
@@ -100,7 +102,7 @@ gulp.task('watch', function() {
   // Watch any files in dist/, reload on change
   gulp.watch(['public/dist/**']).on('change', livereload.changed);
 
-  gulp.watch(['app/**/**']).on('change', livereload.changed);
+  gulp.watch(['socket/**']).on('change', livereload.changed);
 
 });
 

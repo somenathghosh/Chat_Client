@@ -1,98 +1,123 @@
 <!doctype html>
 <html>
 
-<head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat App</title>
-    <link rel="stylesheet" href="/css/clientStyle.css">
-    <link rel="stylesheet" href="/components/components-font-awesome/css/font-awesome.min.css">
-    <link rel="stylesheet" href="components/bootstrap/dist/css/bootstrap.min.css">
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Chat Client</title>
+        <% if (ENV_DEVELOPMENT) { %>
+            <link rel="stylesheet" href="/css/clientStyle.css">
+        <% } %>
+        <link rel="stylesheet" href="/components/components-font-awesome/css/font-awesome.min.css">
+        <link rel="stylesheet" href="components/bootstrap/dist/css/bootstrap.min.css">
+        <link ref="stylesheet" href="components/dropzone/dist/min/dropzone.min.css">
+        
+        <% if (ENV_PRODUCTION) { %>
+            <link rel="stylesheet" href="/css/clientStyle.min.css">
+        <% } %>
+        <link rel="stylesheet" href="/components/components-font-awesome/css/font-awesome.min.css">
+        <link rel="stylesheet" href="components/bootstrap/dist/css/bootstrap.min.css">
+        <link ref="stylesheet" href="components/dropzone/dist/min/dropzone.min.css">
+        
+        <% if (ENV_DEVELOPMENT) { %>
+		    <script src="http://localhost:35729/livereload.js"></script>
+		<% } %>
 
-</head>
+    </head>
 
-<body style="background-image: url('/img/1.jpg')">
+    <body style="background-image: url('/img/1.jpg')">
 
-  <nav class="navbar navbar-inverse">
-  <div class="container-fluid">
-    <!-- Brand and toggle get grouped for better mobile display -->
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-      <a class="navbar-brand" href="#">X Health Care</a>
-    </div>
-
-    <!-- Collect the nav links, forms, and other content for toggling -->
-    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-      <ul class="nav navbar-nav">
-        <li class="active"><a href="#">Client<span class="sr-only">(current)</span></a></li>
-      </ul>
-      <ul class="nav navbar-nav navbar-right">
-        <li><a href="#">Dummy</a></li>
-        <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Logout <span class="caret"></span></a>
-          <ul class="dropdown-menu">
-            <li><a href="#">Action - Dummy</a></li>
-            <li><a href="#">Another action - Dummy</a></li>
-            <li><a href="#">Something else here - Dummy</a></li>
-            <li role="separator" class="divider"></li>
-            <li><a href="/logout">Logout</a></li>
-          </ul>
-        </li>
-      </ul>
-    </div><!-- /.navbar-collapse -->
-  </div><!-- /.container-fluid -->
-</nav>
-
-
-  <!-- <div class="controls" style="border: none; width: 100%;">
-    <a href="/logout" class="btn btn-danger" href="#" role="button">Logout</a>
-      <a href="/logout" class="logout-btn" style="width: auto; padding: 13px; font-size: 12px;">Logout</a>
-  </div> -->
-    <div class="msg_box">
-        <div class="msg_head">Live Chat</div>
-        <div class="contentArea" style="display: none">
-            <div class="formArea">
-                <div class="title">Please click the button to get connected</div>
-                <form class="inputFields">
-                    <!-- <div class="inputContainer">
-                        <input class="nameInput" type="text" maxlength="20" pattern="^[a-zA-Z ]{3,}" placeholder=" * Name" required />
-                    </div>
-                    <div class="inputContainer">
-                        <input class="emailInput" type="email" placeholder=" * Email" required />
-                    </div>
-                    <div class="inputContainer">
-                        <input class="phoneInput" type="text" pattern="[0-9\(\)\-\+ ]{8,15}" title="Enter a valid Phone Number" placeholder=" * Phone Number" required />
-                    </div> -->
-                    <input type="submit" class="submitBtn">
-                </form>
-            </div>
-            <div class="chatArea" style="display: none">
-                <div class="messages">
-                    <div class="msg_push_old"></div>
-                    <div class="msg_push_new"></div>
+        <nav class="navbar navbar-inverse">
+            <div class="container-fluid">
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="#">X Health Care</a>
                 </div>
-                <div class='typing'></div>
-                <input class="inputMessage" rows="1" placeholder="Type here..."></input>
+
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav">
+                        <li ><a href="#">Client</a></li>
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a href="#">Dummy</a></li>
+                        <li class="active">
+                            <% if (settings.files.enable) { %>
+                                <a class="btn btn-action hidden-xs lcb-upload-trigger pull-right" title="Upload Files" aria-label="Upload Files" href="#lcb-upload" data-toggle="modal">
+                                    <i class="fa fa-cloud-upload fa-2x"></i><span class="sr-only">(current)</span>
+                                </a>
+                            <% } %>
+                        </li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Logout <span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="#">Action - Dummy</a></li>
+                                <li><a href="#">Another action - Dummy</a></li>
+                                <li><a href="#">Something else here - Dummy</a></li>
+                                <li role="separator" class="divider"></li>
+                                <li><a href="/logout">Logout</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div><!-- /.navbar-collapse -->
+            </div><!-- /.container-fluid -->
+        </nav>
+
+
+        <div class="msg_box">
+            <div class="msg_head">
+                Customer Service
+            </div>
+            <div class="contentArea" style="display: none">
+                <div class="formArea">
+                    <div class="title">Please click the button to get connected</div>
+                    <form class="inputFields">
+                        <!-- <div class="inputContainer">
+                            <input class="nameInput" type="text" maxlength="20" pattern="^[a-zA-Z ]{3,}" placeholder=" * Name" required />
+                        </div>
+                        <div class="inputContainer">
+                            <input class="emailInput" type="email" placeholder=" * Email" required />
+                        </div>
+                        <div class="inputContainer">
+                            <input class="phoneInput" type="text" pattern="[0-9\(\)\-\+ ]{8,15}" title="Enter a valid Phone Number" placeholder=" * Phone Number" required />
+                        </div> -->
+                        <input type="submit" class="submitBtn">
+                    </form>
+                </div>
+                <div class="chatArea" style="display: none">
+                    <div class="messages">
+                        <div class="msg_push_old"></div>
+                        <div class="msg_push_new"></div>
+                    </div>
+                    <div class='typing'></div>
+                    <input class="inputMessage" rows="1" placeholder="Type here..."></input>
+                </div>
             </div>
         </div>
-    </div>
-    <audio id="chatSound">
-        <source src="/sounds/new_message.mp3" type="audio/mpeg">
-    </audio>
+        <audio id="chatSound">
+            <source src="/sounds/new_message.mp3" type="audio/mpeg">
+        </audio>
+        
+        <% include partials/upload %>
+        <script>
+            let _client =<%-JSON.stringify(user)%>
+        </script>
 
-    <script>
-        let _client =<%-JSON.stringify(user)%>
-    </script>
-
-    <script src="components/jquery/dist/jquery.min.js"></script>
-    <script src="components/bootstrap/dist/js/bootstrap.min.js"></script>
-    <script src="socket.io-client/dist/socket.io.js"></script>
-    <script src="js/client.js"></script>
-
-</body>
-
+        
+        <script src="components/jquery/dist/jquery.min.js"></script>
+        <script src="components/bootstrap/dist/js/bootstrap.min.js"></script>
+        <script src="components/dropzone/dist/min/dropzone.min.js"></script>
+        <script src="socket.io-client/dist/socket.io.js"></script>
+        <% if (ENV_DEVELOPMENT) { %>
+        <script src="js/client.js"></script>
+        <% } %>
+        <% if (ENV_PRODUCTION) { %>
+        <script src="js/client.min.js"></script>
+        <% } %>
+    </body>
 </html>
