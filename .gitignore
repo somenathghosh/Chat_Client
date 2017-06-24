@@ -5,7 +5,6 @@ cert/*
 .jshintrc
 .eslintrc
 builtAssets
-node_modules
 test.js
 launch.json
 settings.json
