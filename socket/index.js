@@ -6,7 +6,6 @@ const dbFunctions = require('../dbStore/dbFunctions').new();
 const config = require('../config');
 const btoa = require('btoa');
 const _ = require('underscore');
-// const _redq = require('../redq');
 const kue = require('../qfifo');
 // const mail = require('../mail');	//Configure mail.js and un-comment the mail code
 
@@ -141,18 +140,18 @@ io.on('connection', function(socket) {
 						socket.emit('log message', "Hello " + socket.userDetails[0] + ", How can I help you?");
 						// Make all available admins join this users room.
 
-						//console.log(kue.isEmpty());
-						//console.log(kue.size());
+						// console.log(kue.isEmpty());
+						// console.log(kue.size());
 						// console.log(kue.dequeue());
-						//console.log(kue.isEmpty());
+						// console.log(kue.isEmpty());
 
 						socket.history = history;
 						socket.justJoined = false;
 
 						_.each(admins, function(adminSocket) {
-							//adminSocket.join(socket.roomID);
-							//TODO: Should this 
-							/*adminSocket.emit("New Client", {
+							// adminSocket.join(socket.roomID);
+							// TODO: Should this
+							/* adminSocket.emit("New Client", {
 								roomID: socket.roomID,
 								history: history,
 								details: socket.userDetails,
@@ -162,6 +161,10 @@ io.on('connection', function(socket) {
 								adminSocket.emit('queue update', {clientsInQueue: kue.size()});
 							});
 						});
+					}
+					else {
+						console.log("RECONNECTED");
+						socket.broadcast.to(socket.roomID).emit("User Reconnected", socket.roomID);
 					}
 				}
 			})
@@ -192,11 +195,13 @@ io.on('connection', function(socket) {
 				details: newSocket.userDetails,
 				justJoined: false,
 				clientsInQueue: kue.size(),
+				MsgHistoryLen: newSocket.MsgHistoryLen,
+				TotalMsgLen: newSocket.TotalMsgLen,
 			});
 
 			_.each(admins, function(adminSocket) {
 				socket.emit("queue update", {
-					clientsInQueue: kue.size()
+					clientsInQueue: kue.size(),
 				});
 			});
 
@@ -236,7 +241,8 @@ io.on('connection', function(socket) {
 				var totAdmins = Object.keys(admins).length;
 				var clients = total - totAdmins;
 				if (clients == 0) {
-					// check if user reconnects in 4 seconds
+					// check if user reconnects in 40 seconds
+					socket.broadcast.to(socket.roomID).emit("User Disconnected", socket.roomID);
 					setTimeout(function() {
 						if (io.sockets.adapter.rooms[socket.roomID]) {
 							total = io.sockets.adapter.rooms[socket.roomID]["length"];
@@ -250,16 +256,31 @@ io.on('connection', function(socket) {
 							}); */
 							delete users[socket.roomID];
 							// dbFunctions.deleteRoom(socket.roomID);
-							socket.broadcast.to(socket.roomID).emit("User Disconnected", socket.roomID);
+							socket.broadcast.to(socket.roomID).emit("User Terminated", socket.roomID);
 							_.each(admins, function(adminSocket) {
 								adminSocket.leave(socket.roomID);
 							});
 						}
-					}, 4000);
+					}, 40000);
 				}
 			} else {
 				if (socket.userDetails) {
+					// Remove user socket with no admin
 					delete users[socket.roomID];
+
+					// Remove user socket from queue
+					for (let x = 0; x < kue.size(); x++) {
+						let nextSocket = kue.dequeue();
+						if (socket.roomID !== nextSocket.roomID) {
+							kue.enqueue(nextSocket);
+						}
+					}
+
+					_.each(admins, function(adminSocket) {
+						adminSocket.emit("queue update", {
+							clientsInQueue: kue.size(),
+						});
+					});
 				}
 				/* mail.sendMail({
 					roomID: socket.roomID,
@@ -283,7 +304,7 @@ io.on('connection', function(socket) {
 				var totAdmins = Object.keys(admins).length;
 				var clients = total - totAdmins;
 				if (clients == 0) {
-					// check if user reconnects in 4 seconds
+					//check if user reconnects in 4 seconds
 					setTimeout(function() {
 						if (io.sockets.adapter.rooms[socket.roomID]) {
 							total = io.sockets.adapter.rooms[socket.roomID]["length"];
@@ -299,19 +320,20 @@ io.on('connection', function(socket) {
 							// dbFunctions.deleteRoom(socket.roomID);
 							socket.broadcast.to(socket.roomID).emit("User Disconnected", socket.roomID);
 							_.each(admins, function(adminSocket) {
-								adminSocket.leave(socket.roomID);
+								adminSocket.leave(socket.roomID)
 							});
 						}
 					}, 4000);
 				}
 			} else {
-				if (socket.userDetails)
-				/*mail.sendMail({
+				if (socket.userDetails) {
+					delete users[socket.roomID];
+				}
+				/* mail.sendMail({
 					roomID: socket.roomID,
 					MsgLen: socket.TotalMsgLen,
 					email: socket.userDetails
 				});*/
-					delete users[socket.roomID];
 				// dbFunctions.deleteRoom(socket.roomID);
 			}
 		}
@@ -336,16 +358,21 @@ io.on('connection', function(socket) {
 	});
 
 
-	socket.on("more messages", function() {
-		if (socket.MsgHistoryLen < 0) {
-			dbFunctions.getMessages(socket.roomID, socket.MsgHistoryLen)
+	socket.on("more messages", function(data) {
+		let roomID = (data.roomID ? data.roomID : socket.roomID);
+		let MsgHistoryLen = (data.MsgHistoryLen ? data.MsgHistoryLen : socket.MsgHistoryLen);
+
+		if (MsgHistoryLen < 0) {
+			dbFunctions.getMessages(roomID, MsgHistoryLen)
 				.then(function(history) {
+					MsgHistoryLen += 10;
 					history.splice(-1, 1);
 					socket.emit('more chat history', {
 						history: history,
+						roomID: roomID,
+						MsgHistoryLen: MsgHistoryLen,
 					});
 				});
-			socket.MsgHistoryLen += 10;
 		}
 	});
 });

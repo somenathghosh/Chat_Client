@@ -1,3 +1,4 @@
+/* eslint-disable new-cap */
 'use strict';
 
 process.title = 'Chat_Client';
@@ -36,7 +37,7 @@ app.set('view engine', 'ejs');
 
 // Middlewares
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({extended: false}));
 app.use(express.static(__dirname + '/public'));
 
 // logger
@@ -49,7 +50,7 @@ app.use(passport.session());
 app.use(flash());
 
 // Set compression before any routes
-app.use(compression({ threshold: 512 }));
+app.use(compression({threshold: 512}));
 app.use(cookieParser());
 
 
@@ -149,12 +150,12 @@ function startApp() {
 			(new Date().toLocaleString().substr(0, 24)));
 	});
 	let connectionOptions = {
-    'force new connection' : true,
+    'force new connection': true,
     'reconnection': true,
     'reconnectionDelay': 2000,                  // starts with 2 secs delay, then 4, 6, 8, until 60 where it stays forever until it reconnects
-    'reconnectionDelayMax' : 60000,             // 1 minute maximum delay between connections
+    'reconnectionDelayMax': 60000,             // 1 minute maximum delay between connections
     'reconnectionAttempts': 'Infinity',         // to prevent dead clients, having the user to having to manually reconnect after a server restart.
-    'timeout' : 10000,                           // before connect_error and connect_timeout are emitted.
+    'timeout': 10000,                           // before connect_error and connect_timeout are emitted.
 	};
 
 	// Attach to the http server

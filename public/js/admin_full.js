@@ -1,4 +1,4 @@
-/* eslint-disable new-cap, max-len, no-var, key-spacing, quotes */
+/* eslint-disable new-cap, max-len, no-var, key-spacing, quotes, no-unused-vars, valid-jsdoc */
 // To-do
 // Add scroll to load more messages for Admins
 "use strict";
@@ -54,7 +54,7 @@ socket.on('login', function(data) {
 		console.log('100');
 		socket.emit('add admin', {
 			admin: username,
-			isAdmin: true
+			isAdmin: true,
 		});
 		$userList.append('<li id=' + username + '>' + username + '</li>');
 		connected = true;
@@ -102,11 +102,11 @@ socket.on('chat message', function(data) {
 	var $message = createMessage(data.msg, null, null, data.isAdmin);
 	console.log(data);
 
-	//var $timestampDiv = $('<span class="timestamp">').text((data.timestamp).toLocaleString().substr(15, 6));
-	//var $messageDiv = $('<li class="message"/>').append($usernameDiv, $messageBodyDiv, $timestampDiv);
+	// var $timestampDiv = $('<span class="timestamp">').text((data.timestamp).toLocaleString().substr(15, 6));
+	// var $messageDiv = $('<li class="message"/>').append($usernameDiv, $messageBodyDiv, $timestampDiv);
 
-	if($chatContainer.hasClass('hidden')) {
-		addNotification(data.roomID)
+	if ($chatContainer.hasClass('hidden')) {
+		addNotification(data.roomID);
 	}
 
 	$messageContainer.append($message);
@@ -129,17 +129,15 @@ socket.on('New Client', function(data) {
 	console.log('400');
 	$inputMessage = $('#' + data.roomID);
 
-	if($inputMessage.length < 1) {
-
+	if ($inputMessage.length < 1) {
 		addNewClient(data);
-	}
-	else {
+	} else {
 		$('#chat-' + data.roomID).find('.chat-messages').append(newTimestamp('Resuming Previous Chat'));
 		clearTimeout(disconnectTimers[data.roomID]);
 	}
 
-	if($('#chat-' + data.roomID).hasClass('hidden')) {
-		addNotification(data.roomID)
+	if ($('#chat-' + data.roomID).hasClass('hidden')) {
+		addNotification(data.roomID);
 	}
 });
 
@@ -147,10 +145,11 @@ socket.on('typing', function(data) {
 	console.log('600');
 	var $messages = $('#chat-' + data.roomID).find('.chat-messages');
 
-	if (data.isTyping)
+	if (data.isTyping) {
 		$messages.append("<small class='typing'>" + data.person + " is typing...<small>");
-	else
+	} else {
 		$messages.find($('.typing')).remove();
+	}
 });
 
 socket.on('client ack', function() {
@@ -171,15 +170,14 @@ socket.on('User Disconnected', function(roomID) {
 
 socket.on('User Terminated', function(roomID) {
 	console.log('850');
-
 	$newUser.pause();
 	$inputMessage = $('#' + roomID);
-	let $messageContainer = $('#chat-' + roomID).find('.chat-messages');
+	var $messageContainer = $('#chat-' + roomID).find('.chat-messages');
 
 	$messageContainer.append(newTimestamp('Client Session Terminated'));
 
 	disconnectTimers = setTimeout(function() {
-		 $('#chat-' + roomID).find('.chat-messages').append(newCloseChatButton(roomID));
+		$('#chat-' + roomID).find('.chat-messages').append(newCloseChatButton(roomID));
 	}, 5*60*1000);
 
 	$messageContainer[0].scrollTop = $messageContainer[0].scrollHeight;
@@ -203,11 +201,12 @@ socket.on('reconnect', function() {
 	$('.container').empty();
 	$errorPage.fadeOut();
 	$userList.append('<li id=' + username + '>' + username + '</li>');
-	if (authenticated)
+	if (authenticated) {
 		socket.emit('add admin', {
 			admin: username,
 			isAdmin: true,
 		});
+	}
 });
 
 socket.on('disconnect', function() {
@@ -225,13 +224,14 @@ socket.on('reconnect_failed', function() {
 });
 
 socket.on('more chat history', function(data) {
-	console.log('1300');console.log(data);
-
-	let $messages = $('#chat-' + data.roomID).find('.chat-messages');
+	console.log('1300');
+	console.log(data);
+	var $messages = $('#chat-' + data.roomID).find('.chat-messages');
 
 	var len = data.history.length;
-	for (var i = 0; i < len; i++)
+	for (var i = 0; i < len; i++) {
 		$messages.prepend(createMessage(data["history"][i]["what"], null, data["history"][i]["when"], data["history"][i]["who"]));
+	}
 });
 
 socket.on('queue update', function(data) {
@@ -242,7 +242,7 @@ socket.on('queue update', function(data) {
 });
 
 var clock = $('.counter').FlipClock(clientsWaiting, {
-	clockFace: 'Counter'
+	clockFace: 'Counter',
 });
 
 // $passwordInput.keypress(function(event) {
@@ -278,14 +278,12 @@ function sendMessage(id) {
 			timestamp: time,
 		});
 
-		var newMessage = '<div class="message message-sender">' +
-	        '<div class="message-text">' + message + '</div>' +
-	    '</div>';
+		var newMessage = '<div class="message message-sender">' + '<div class="message-text">' + message + '</div>' + '</div>';
 
-		//var $timestampDiv = $('<span class="timestamp">').text((data.timestamp).toLocaleString().substr(15, 6));
-		//var $messageDiv = $('<li class="message"/>').append($usernameDiv, $messageBodyDiv, $timestampDiv);
+		// var $timestampDiv = $('<span class="timestamp">').text((data.timestamp).toLocaleString().substr(15, 6));
+		// var $messageDiv = $('<li class="message"/>').append($usernameDiv, $messageBodyDiv, $timestampDiv);
 
-		//console.log($messageContainer);
+		// console.log($messageContainer);
 
 		$messageContainer.append(newMessage);
 		$messageContainer[0].scrollTop = $messageContainer[0].scrollHeight;
@@ -408,9 +406,9 @@ function setUsername(_username) {
  * @date    2017-06-12
  */
 function notifyAdmin(title, body) {
-	if (Notification.permission !== "granted")
+	if (Notification.permission !== "granted") {
 		Notification.requestPermission();
-	else {
+	} else {
 		var notification = new Notification(title, {
 			icon: '',
 			body: body,
@@ -439,7 +437,12 @@ function cleanInput(input) {
 
 
 // Full additions
-
+/**
+ * @param  {} id
+ * @param  {} username
+ * @param  {} company
+ * @param  {} order
+ */
 function newChatContainer(id, username, company, order) {
 	// TODO: Rotate color class
 	var chatContainer = '';
@@ -465,7 +468,12 @@ function newChatContainer(id, username, company, order) {
 
 	return chatContainer;
 }
-
+/**
+ * @param  {} id
+ * @param  {} username
+ * @param  {} company
+ * @param  {} order
+ */
 function newSidebarChat(id, username, company, order) {
 	// TODO: Rotate color class
 	var chatContainer = '';
@@ -478,10 +486,12 @@ function newSidebarChat(id, username, company, order) {
 
 	return chatContainer;
 }
-
+/**
+ * @param  {} data
+ */
 function addNewClient(data) {
 	var order = totalChats++;
-	//console.log(data);
+	// console.log(data);
 
 	$('.chat-area').append(newChatContainer(data.roomID, data.details[0], data.details[3], order));
 	$('#sidebar').append(newSidebarChat(data.roomID, data.details[0], data.details[3], order));
@@ -492,15 +502,15 @@ function addNewClient(data) {
 
 	var len = data.history.length;
 	var isSender;
-	if(len > 0) {
+	if (len > 0) {
 		$('#chat-' + data.roomID).find('.chat-messages').append(newTimestamp('History'));
 
 		for (var i = len - 1; i >= 0; i--) {
-			if (data["history"][i]["who"])
+			if (data["history"][i]["who"]) {
 				isSender = true;
-			else
+			} else {
 				isSender = false;
-
+			}
 			$messages.append(createMessage(data["history"][i]["what"], null, data["history"][i]["when"], isSender));
 		}
 	}
@@ -515,22 +525,23 @@ function addNewClient(data) {
 
 	var messageHistoryLength = data.MsgHistoryLen;
 	$messages.on("scroll", function() {
-
-		if ($messages.scrollTop() == 0) {
-			//console.log('loading history');
+		if ($messages.scrollTop() === 0) {
+			// console.log('loading history');
 			socket.emit("more messages", {
 				roomID: data.roomID,
-				MsgHistoryLen: messageHistoryLength
+				MsgHistoryLen: messageHistoryLength,
 			});
 
 			messageHistoryLength += 10;
 		}
-	})
+	});
 
 	$newChatConn.play();
-	//socket.emit('accept client', data)
+	// socket.emit('accept client', data)
 }
-
+/**
+ * @param  {} id
+ */
 function showChat(id) {
 	$('.chat-container').addClass('hidden');
 	$('#chat-' + id).removeClass('hidden');
@@ -538,7 +549,12 @@ function showChat(id) {
 	var $notification = $('#sidebar-chat-' + id).find('.sidebar-chat-notification');
 	$notification.text(0);
 }
-
+/**
+ * @param  {} message
+ * @param  {} name
+ * @param  {} time
+ * @param  {} isSender
+ */
 function createMessage(message, name, time, isSender) {
 	var $message = '';
 
@@ -548,17 +564,19 @@ function createMessage(message, name, time, isSender) {
 
     return message;
 }
-
+/**
+ * @param  {} description
+ */
 function newTimestamp(description) {
 	var timestamp = '';
 	var date = new Date();
 	var hours = date.getHours();
 	var minutes = date.getMinutes();
 
-	if(hours < 10) {
+	if (hours < 10) {
 		hours = "0" + hours;
 	}
-	if(minutes < 10) {
+	if (minutes < 10) {
 		minutes = "0" + minutes;
 	}
 
@@ -574,7 +592,9 @@ function newTimestamp(description) {
 
 	return timestamp;
 }
-
+/**
+ * @param  {} id
+ */
 function newCloseChatButton(id) {
 	var button = '';
 
@@ -584,20 +604,24 @@ function newCloseChatButton(id) {
 
 	return button;
 }
-
+/**
+ * @param  {} id
+ */
 function addNotification(id) {
 	var $notification = $('#sidebar-chat-' + id).find('.sidebar-chat-notification');
 
 	$notification.text(parseInt($notification.text()) + 1);
 }
-
+/**
+ * @param  {} id
+ */
 function removeChat(id) {
 	console.log('1500');
 	var $chatWindow = $('#chat-' + id);
 	var $chartSidebar = $('#sidebar-chat-' + id);
 	var $firstChat = $('.chat-area').find('.chat-container').first();
 
-	if($firstChat.length > 0) {
+	if ($firstChat.length > 0) {
 		$firstChat.removeClass('hidden');
 	}
 
@@ -605,10 +629,11 @@ function removeChat(id) {
 	$chartSidebar.remove();
 
 	socket.emit('leave', {
-		roomID: id
+		roomID: id,
 	});
 }
-
+/**
+ */
 function acceptNewClient() {
 	socket.emit('accept client');
 }

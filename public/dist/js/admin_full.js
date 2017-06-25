@@ -174,7 +174,7 @@ socket.on('User Terminated', function(roomID) {
 
 	$newUser.pause();
 	$inputMessage = $('#' + roomID);
-	let $messageContainer = $('#chat-' + roomID).find('.chat-messages');
+	var $messageContainer = $('#chat-' + roomID).find('.chat-messages');
 
 	$messageContainer.append(newTimestamp('Client Session Terminated'));
 
@@ -227,7 +227,7 @@ socket.on('reconnect_failed', function() {
 socket.on('more chat history', function(data) {
 	console.log('1300');console.log(data);
 
-	let $messages = $('#chat-' + data.roomID).find('.chat-messages');
+	var $messages = $('#chat-' + data.roomID).find('.chat-messages');
 
 	var len = data.history.length;
 	for (var i = 0; i < len; i++)
