@@ -23,10 +23,7 @@ gulp.task('develop', function() {
     script: 'app.js',
     ext: 'js coffee ejs',
     stdout: false,
-    env: {'NODE_ENV': 'development', 'PORT': '3000', 'REDIS_URL': 'redis://h:p22fad4700c45fa29f34c04f1101c818cd68c835161a09da4beb6cf4a33334cfb@ec2-34-206-77-235.compute-1.amazonaws.com:41999',
-      'MONGODB_URI': 'mongodb://heroku_l2sh3rqr:kh61lmnt0g4fp1gq8dvhects85@ds151941.mlab.com:51941/heroku_l2sh3rqr',
-      'ADMIN_PASS': 'cGFzc3dvcmQ=', 'COOKIE_NAME': 'D761396384741FE3E8BD3A3721EE1',
-    },
+    env: {'NODE_ENV': 'development', 'PORT': '3000'},
   }).on('readable', function() {
     this.stdout.on('data', function(chunk) {
       if(/^Express server listening on port/.test(chunk)) {
@@ -41,7 +38,7 @@ gulp.task('develop', function() {
 // style
 
 gulp.task('styles', function() {
-  return gulp.src('public/css/*.css')
+  return gulp.src('./public/css/*.css')
     .pipe(gulp.dest('public/dist/css'))
     .pipe(rename({suffix: '.min'}))
     .pipe(cssnano())
@@ -51,7 +48,7 @@ gulp.task('styles', function() {
 
 // scripts
 gulp.task('scripts', function() {
-  return gulp.src('public/js/*.js')
+  return gulp.src('./public/js/*.js')
     .pipe(plumber(function(error) {
                 gutil.log(error.message);
                 this.emit('end');
@@ -63,6 +60,7 @@ gulp.task('scripts', function() {
     // .pipe(gulp.dest('public/dist/js'))
     .pipe(rename({suffix: '.min'}))
     .pipe(uglify())
+    .on('error', function(err) { gutil.log(gutil.colors.red('[Error]'), err.toString()); })
     .pipe(gulp.dest('public/dist/js'))
     .pipe(notify({message: 'Scripts task complete'}));
 });
@@ -82,7 +80,7 @@ gulp.task('clean', function() {
 
 // run
 gulp.task('default', ['clean'], function() {
-    gulp.start('styles', 'scripts', 'images', 'watch', 'develop');
+    gulp.start('styles', 'scripts', 'images');
 });
 
 // Watch

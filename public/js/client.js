@@ -1,26 +1,29 @@
 /* eslint-disable new-cap, max-len, no-var, key-spacing, quotes */
+
+"use strict";
+
 // Initialize variables
-var $window = $(window);
+// var $window = $(window);
 var $newChat = $('#chatSound')[0];
-var $messages = $('.messages'); //Message area
-var $inputMessage = $('.inputMessage');  //Text area to input msg
-var $nameInput = $('.nameInput') //Name input
-var $phoneInput = $('.phoneInput') //Phone number input
-var $emailInput = $('.emailInput') //Email input
+var $messages = $('.messages'); // Message area
+var $inputMessage = $('.inputMessage');  // Text area to input msg
+// var $nameInput = $('.nameInput') // Name input
+// var $phoneInput = $('.phoneInput') // Phone number input
+// var $emailInput = $('.emailInput') // Email input
 var $form = $('.formArea'); // Details form
-var $widgetBox = $('.contentArea'); //Widget box
-var $Input = $('.inputFields'); //Input fields in form
-var $chatBox = $('.chatArea'); //Chat page after filling form
-var $Typing = $(".typing") //Typing notification
-var $newMsg = $('.msg_push_new'); //Dummy to push new msgs
-var $oldMsg = $('.msg_push_old'); //Dummy to push msg history
+var $widgetBox = $('.contentArea'); // Widget box
+// var $Input = $('.inputFields'); // Input fields in form
+var $chatBox = $('.chatArea'); // Chat page after filling form
+var $Typing = $(".typing"); // Typing notification
+var $newMsg = $('.msg_push_new'); // Dummy to push new msgs
+var $oldMsg = $('.msg_push_old'); // Dummy to push msg history
 var $submitBtn = $('.submitBtn');
 
-var socket = io({transports: ['websocket']}); //io socket
-var typing = false; //Boolean to check if user is typing
-var timeout = undefined; //Timeout to monitor typing
+var socket = io({transports: ['websocket']}); // io socket
+var typing = false; // Boolean to check if user is typing
+var timeout = undefined; // Timeout to monitor typing
 // var id; //Room ID in sessionStorage
-var active; //Check if chat has been opened.
+var active; // Check if chat has been opened.
 // console.log(_client.uuid);
 console.log('removing roomID from localstore');
 // unset roomID
@@ -39,7 +42,7 @@ if (active && id) {
 	console.log('100');
 	socket.emit('add user', {
 		isNewUser: false,
-		roomID: id
+		roomID: id,
 	});
 	$widgetBox.show();
 }
@@ -122,10 +125,10 @@ $inputMessage.keypress(function(event) {
 		clearTimeout(timeout);
 		timeoutFunction();
 	}
-})
+});
 
 $messages.on("scroll", function() {
-	if ($messages.scrollTop() == 0) {
+	if ($messages.scrollTop() === 0) {
 		socket.emit("more messages", {});
 	}
 });
@@ -153,24 +156,27 @@ socket.on('chat message', function(data) {
 
 socket.on('typing', function(data) {
 	console.log('700');
-	if (data.isTyping && data.person != 'Client')
+	if (data.isTyping && data.person != 'Client') {
 		$Typing.append("Admin is typing...");
-	else
+	} else {
 		$Typing.text('');
+	}	
 });
 
 socket.on('chat history', function(data) {
 	console.log('800');
 	var len = data.history.length;
-	for (var i = len - 1; i >= 0; i--)
+	for (var i = len - 1; i >= 0; i--) {
 		addMessages(data.history[i], false);
+	}
 });
 
 socket.on('more chat history', function(data) {
 	console.log('900');
 	var len = data.history.length;
-	for (var i = 0; i < len; i++)
+	for (var i = 0; i < len; i++) {
 		addMessages(data.history[i], true);
+	}
 });
 
 socket.on('log message', function(text) {
@@ -202,11 +208,12 @@ socket.on('reconnect', function() {
 		console.log("Reconnected!");
 		$inputMessage.prop('disabled', false);
 		$inputMessage.prop('placeholder', "Type here...");
-		if (active && id)
+		if (active && id) {
 			socket.emit('add user', {
 				isNewUser: false,
-				roomID: id
+				roomID: id,
 			});
+		}
 	}, 4000);
 });
 
@@ -215,16 +222,18 @@ socket.on('admin disconnected', function() {
 
 	$Typing.append("Admin disconnected. Session ended.");
 });
-
+/**
+ */
 function timeoutFunction() {
 	typing = false;
 	socket.emit("typing", {
 		isTyping: false,
 		roomID: id,
-		person: "Client"
+		person: "Client",
 	});
 }
-
+/**
+ */
 function sendMessage() {
 	var message = $inputMessage.val();
 	// Prevent markup from being injected into the message
@@ -239,20 +248,24 @@ function sendMessage() {
 		socket.emit('chat message', {
 			roomID: "null",
 			msg: message,
-			timestamp: time
+			timestamp: time,
 		});
 		var $messageBodyDiv = $('<div class="msg_b">' + message + '<span class="timestamp">' +
 			(time.toLocaleString().substr(15, 6)) + '</span></div>').insertBefore($newMsg);
 		$messages[0].scrollTop = $messages[0].scrollHeight;
 	}
 }
-
+/**
+ * @param  {} data
+ * @param  {} getMore
+ */
 function addMessages(data, getMore) {
 	var sender;
-	if (data["who"])
-		sender = "msg_a"
-	else
-		sender = "msg_b"
+	if (data["who"]) {
+		sender = "msg_a";
+	} else {
+		sender = "msg_b";
+	}	
 	var $messageBodyDiv = $('<div class="' + sender + '">' + data["what"] + '<span class="timestamp">' +
 		(data["when"]).toLocaleString().substr(15, 6) + '</span></div>');
 	if (getMore) {
@@ -265,6 +278,9 @@ function addMessages(data, getMore) {
 }
 
 // Prevents input from having injected markup
+/**
+ * @param  {} input
+ */
 function cleanInput(input) {
 	return $('<div/>').text(input).text();
 }
@@ -279,5 +295,5 @@ $("#client-dropzone").dropzone({
 	dictResponseError: 'Error uploading file!',
 	headers: {
 		'X-CSRF-Token': $('input[name="_csrf"]').val()
-	}
+	},
 });

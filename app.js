@@ -27,6 +27,7 @@ app.locals.ENV = env;
 app.locals.ENV_DEVELOPMENT = env === 'development';
 app.locals.ENV_PRODUCTION = env === 'production';
 
+console.log('Starting App as ', env);
 
 // const ninetyDaysInSeconds = 7776000;
 // View engine setup
@@ -50,7 +51,7 @@ app.use(flash());
 // Set compression before any routes
 app.use(compression({ threshold: 512 }));
 app.use(cookieParser());
-app.use(csrf());
+
 
 // Security protections
 app.use(helmet.frameguard());
@@ -84,14 +85,27 @@ app.use(helmet.contentSecurityPolicy({
   },
 }));
 
+// You need a JSON parser first.
+app.use(bodyParser.json({
+  type: ['json', 'application/csp-report'],
+}));
+app.post('/report-violation', function(req, res) {
+  if (req.body) {
+    console.log('CSP Violation: ', req.body);
+  } else {
+    console.log('CSP Violation: No data received!');
+  }
+
+  res.status(204).end();
+});
+
+app.use(csrf());
 app.use(function(req, res, next) {
   // Expose variable to templates via locals
-  // console.log(req.body);
   let token = req.csrfToken();
-  // res.cookie('X-CSRFToken', token);
   res.header('X-CSRFToken', token);
   res.locals.csrfToken = token;
-  console.log('sending this csrf ', token);
+  // console.log('sending this csrf ', token);
   next();
 });
 
@@ -120,19 +134,7 @@ app.use(function(req, res, next) {
 // routes
 app.use('/', routes);
 
-// You need a JSON parser first.
-app.use(bodyParser.json({
-  type: ['json', 'application/csp-report'],
-}));
-app.post('/report-violation', function(req, res) {
-  if (req.body) {
-    console.log('CSP Violation: ', req.body);
-  } else {
-    console.log('CSP Violation: No data received!');
-  }
 
-  res.status(204).end();
-});
 /*
 * Startup scripts
 */

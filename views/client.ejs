@@ -12,15 +12,12 @@
         <link ref="stylesheet" href="components/dropzone/dist/min/dropzone.min.css">
         
         <% if (ENV_PRODUCTION) { %>
-            <link rel="stylesheet" href="/css/clientStyle.min.css">
+            <link rel="stylesheet" href="/dist/css/clientStyle.min.css">
         <% } %>
         <link rel="stylesheet" href="/components/components-font-awesome/css/font-awesome.min.css">
         <link rel="stylesheet" href="components/bootstrap/dist/css/bootstrap.min.css">
         <link ref="stylesheet" href="components/dropzone/dist/min/dropzone.min.css">
-        
-        <% if (ENV_DEVELOPMENT) { %>
-		    <script src="http://localhost:35729/livereload.js"></script>
-		<% } %>
+
 
     </head>
 
@@ -108,7 +105,6 @@
             let _client =<%-JSON.stringify(user)%>
         </script>
 
-        
         <script src="components/jquery/dist/jquery.min.js"></script>
         <script src="components/bootstrap/dist/js/bootstrap.min.js"></script>
         <script src="components/dropzone/dist/min/dropzone.min.js"></script>
@@ -117,7 +113,7 @@
         <script src="js/client.js"></script>
         <% } %>
         <% if (ENV_PRODUCTION) { %>
-        <script src="js/client.min.js"></script>
+        <script src="/dist/js/client.min.js"></script>
         <% } %>
     </body>
 </html>

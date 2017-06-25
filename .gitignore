@@ -9,3 +9,6 @@ test.js
 launch.json
 settings.json
 .vscode
+node_module
+upload/*
+npm-debug.log
