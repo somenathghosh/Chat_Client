@@ -128,7 +128,7 @@ $inputMessage.keypress(function(event) {
 });
 
 $messages.on("scroll", function() {
-	if ($messages.scrollTop() == 0) {
+	if ($messages.scrollTop() === 0) {
 		socket.emit("more messages", {});
 	}
 });
@@ -290,10 +290,13 @@ function cleanInput(input) {
 $("#client-dropzone").dropzone({
 	url: "/upload",
 	addRemoveLinks : true,
-	maxFilesize: 5,
+	maxFilesize: 1,
+	maxFilesize: 5, // MB
+	paramName: 'file', // change in server side too if you change this
 	dictDefaultMessage: '<span class="text-center"><span class="font-lg visible-xs-block visible-sm-block visible-lg-block"><span class="font-lg"><i class="fa fa-caret-right text-danger"></i> Drop files <span class="font-xs">to upload</span></span><span>&nbsp&nbsp<h4 class="display-inline"> (Or Click)</h4></span>',
 	dictResponseError: 'Error uploading file!',
 	headers: {
-		'X-CSRF-Token': $('input[name="_csrf"]').val()
+		'X-CSRF-Token': $('input[name="_csrf"]').val(),
 	},
+	acceptedFiles: 'image/*', // change it accordingly...this is for test purpose to show images in cards/zoomin/zoomout
 });

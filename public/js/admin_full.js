@@ -21,7 +21,8 @@ var $acceptClient = $('.accept-client');
 var $noClientQ = $('#no-clients-q');
 
 var username;	// Store admin username
-var company; // store company
+var password;  	// Store admin password - need to find out  a way to strore as hash - may be use md5
+var company; 	// store company
 var authenticated = false; // Boolean to check if admin is authenticated
 var connected = false;
 var typing = false; // Boolean to check if admin is typing

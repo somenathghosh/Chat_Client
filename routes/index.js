@@ -133,7 +133,7 @@ router.post('/upload', [User.isAuthenticated, User.isAuthorize, function(req, re
 		if (err) {
 			res.status(400).send();
 		} else {
-			res.status(200).send();
+			res.status(200).send(); // When front end is ready, send the file meta data in send(req.file);
 		}
 	});
 }]);

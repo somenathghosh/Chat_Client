@@ -6,9 +6,19 @@
 
     <link rel="stylesheet" href="components/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="/css/sidebar_collapse.css">
-    <link rel="stylesheet" href="/css/adminStyle.css">
+     <% if (ENV_DEVELOPMENT) { %>
+        <link rel="stylesheet" href="/css/adminStyle.css">
+     <% } %>
+     <% if (ENV_PRODUCTION) { %>
+        <link rel="stylesheet" href="dist/css/adminStyle.min.css">
+     <% } %>
     <link rel="stylesheet" href="components/flipclock/compiled/flipclock.css">
-    <link rel="stylesheet" href="/css/admin_fullStyle.css">
+    <% if (ENV_DEVELOPMENT) { %>
+        <link rel="stylesheet" href="/css/admin_fullStyle.css">
+    <% } %>
+    <% if (ENV_PRODUCTION) { %>
+        <link rel="stylesheet" href="dist/css/admin_fullStyle.min.css">
+    <% } %>
 </head>
 
 <body>
@@ -120,7 +130,12 @@
     <script src="socket.io-client/dist/socket.io.js"></script>
     <script src="components/bootstrap/dist/js/bootstrap.min.js"></script>
     <script src="components/flipclock/compiled/flipclock.min.js"></script>
-    <script src="js/admin_full.js"></script>
+    <% if (ENV_DEVELOPMENT) { %>
+        <script src="js/admin_full.js"></script>
+    <% } %>
+    <% if (ENV_PRODUCTION) { %>
+        <script src="dist/js/admin_full.min.js"></script>
+    <% } %>
 </body>
 
 </html>
