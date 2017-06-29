@@ -31,7 +31,12 @@ var socket = io({transports: ['websocket']}); // io socket
 var clientsWaiting = 0;
 $newUser.loop = true;
 $usernameInput.focus();
-Notification.requestPermission();
+try {
+	Notification.requestPermission();
+}
+catch(e) {
+	console.log('Notification not supported by browser');
+}
 
 var totalChats = 1; // Used to rotate colors for new chats
 var colorClasses = ['paletton-blue', 'paletton-purple', 'paletton-green', 'paletton-orange'];
