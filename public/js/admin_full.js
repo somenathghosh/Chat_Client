@@ -115,8 +115,8 @@ socket.on('chat message', function(data) {
 });
 
 socket.on('admin added', function(username) {
-	console.log('300');
-	$userList.append('<li id=' + username + '>' + username + '</li>');
+	console.log('300', username);
+	// $userList.append('<li id=' + username + '>' + username + '</li>');
 	adminListListener(username);
 });
 
@@ -139,6 +139,9 @@ socket.on('New Client', function(data) {
 	if ($('#chat-' + data.roomID).hasClass('hidden')) {
 		addNotification(data.roomID);
 	}
+	// Make sure to update client Q.
+	var clientsWaiting = parseInt(data.clientsInQueue);
+	clock.setCounter(clientsWaiting);
 });
 
 socket.on('typing', function(data) {
@@ -236,7 +239,7 @@ socket.on('more chat history', function(data) {
 
 socket.on('queue update', function(data) {
 	console.log('2000');
-
+	console.log('queue update', data);
 	clientsWaiting = parseInt(data.clientsInQueue);
 	clock.setCounter(clientsWaiting);
 });

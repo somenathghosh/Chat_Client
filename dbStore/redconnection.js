@@ -45,6 +45,7 @@ let CONN  = (function(){
 
 })();
 
-let client = new CONN()
+let client = new CONN();
+
 
 module.exports = client.connectToRedis();

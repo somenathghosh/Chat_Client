@@ -7,6 +7,10 @@
     "start": "nf start web=1",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "engine": {
+    "node": "7.8.x",
+    "npm": "2.1.x"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/somenathghosh/Chat_Client"
@@ -16,6 +20,7 @@
   "homepage": "https://github.com/somenathghosh/Chat_Client",
   "dependencies": {
     "assert": "1.4.1",
+    "asyncawait": "1.0.6",
     "bcrypt-nodejs": "0.0.3",
     "bluebird": "3.5.0",
     "body-parser": "1.17.2",

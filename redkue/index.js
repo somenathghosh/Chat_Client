@@ -4,81 +4,80 @@ const config = require('../config');
 const redisClient = require('../dbStore/redconnection');
 const EventEmitter = require('events').EventEmitter;
 const uuid = require('uuid/v4');
-const Q = require('q');
+const Promise = require('bluebird');
+const client = Promise.promisifyAll(redisClient);
 
 let Kue  = (function(){
 
-	// let redisClient;  // private variable
-	let _name  = uuid(); // this is name of the queue.
+	// let _name  = uuid(); // this is name of the queue.
+	let _qname;
+
 	class Kue extends EventEmitter {
 
-		constructor() {
+		constructor(name) {
 			super();
 			this.on('error', this.printStack);
-			this.name = _name;
+			this.qname = name;
 		}
+
 		printStack(error) {
-      console.log(error.stack);
-    }
-
-		qdel(){
-			redisClient.del(this.name);
-		}
-		enqueue(data) {
-			let deffered = Q.defer();
-			redisClient.lpush(this.name,data, function(err, reply){
-				if (!err) {
-					deffered.resolve(reply);
-				} else {
-					deffered.reject(err);
-				}
-			});
-			return deffered.promise;
-		}
-		dequeue() {
-
-			let deffered = Q.defer();
-			redisClient.rpop(this.name, function(err, message){
-				if (!err) {
-					deffered.resolve(message);
-				} else {
-					deffered.reject(err);
-				}
-			});
-			return deffered.promise;
+			console.log(error.stack);
 		}
 
-		size() {
-			let deffered = Q.defer();
-			redisClient.llen(this.name, function(err, len) {
-				if (!err) {
-					deffered.resolve(len);
-				} else {
-					deffered.reject(err);
-				}
-			});
-			return deffered.promise;
+		async del() {
+			console.log('Q name ==>', this.qname);
+			let success = await client.delAsync(this.qname);
+			return success;
 		}
 
-		isEmpty() {
-			let deffered = Q.defer();
-			this.size()
-			.then(function(len) {
-			  if(len === 0) {
-					deffered.resolve(true);
-				} else {
-					deffered.resolve(false);
-				}
-			})
-			.catch(function(err){
-			  deffered.reject(err);
-			});
-			return deffered.promise;
+		async enqueue(data){
+			let success = await client.lpushAsync(this.qname, data);
+			return success;
 		}
 
+		async dequeue(data) {
+			let success;
+			if(!data) {
+				success = await client.rpopAsync(this.qname);
+			} else {
+				success = await client.lremAsync(this.qname,data,0);
+			}
+			return success;
+		}
 
+		async size() {
+			try {
+				let success = await client.llenAsync(this.qname);
+				return success;
+			} catch(err) {
+				console.error('redkue/index: Error in size function ==>', err);
+			}
+		}
+
+		async isEmpty() {
+			try {
+				let len = await this.size();
+				if (len === 0) return true;
+				else return false;
+			} catch(err) {
+				console.error('redkue/index: Error in isEmpty function ==>', err);
+			}
+		}
+
+		async list() {
+			try {
+				let len = await this.size();
+				let success = await client.lrangeAsync(this.qname,0,len);
+				let result = await success;
+				return result;
+			} catch(err) {
+				console.error('redkue/index: Error in list function ==>', err);
+			}
+
+		}
+		// End of Public methods
 	}
 	return Kue;
 })();
 
-module.exports = new Kue();
+module.exports = Kue;

@@ -6,7 +6,7 @@ process.title = 'Chat_Client';
 const express = require('express');
 const app = express();
 const server = require('http').Server(app);
-const io = require('./socket');
+const io = require('./socket/index-pure');
 const config = require('./config');
 const morgan = require('morgan');
 const path 		= require('path');
@@ -168,14 +168,14 @@ function startApp() {
 
 app.use(function(req, res, next) {
   if (config.env === 'development') {
-    console.log(err.stack);
+    // console.log(err.stack);
   }
   res.status(404).render('404.ejs');
 });
 
 app.use(function(req, res, next) {
   if (config.env === 'development') {
-    console.log(err.stack);
+    // console.log(err.stack);
   }
   res.status(500).render('500.ejs');
 });

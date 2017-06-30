@@ -7,6 +7,8 @@ const config = require('../config');
 const btoa = require('btoa');
 const _ = require('underscore');
 const kue = require('../qfifo');
+const cuqu = require('../redkue');
+const cycle = require('../util/JSON-js/cycle');
 // const mail = require('../mail');	//Configure mail.js and un-comment the mail code
 
 // pull all admin users here
@@ -97,7 +99,7 @@ io.on('connection', function(socket) {
 			}
 			dbFunctions.setDetails(data);
 			socket.userDetails = [data.Name, data.Email, data.Phone, data.Company];
-			socket.emit("roomID", data.roomID);
+			socket.emit("roomID", data.roomID); // fallback | does not need since roomID is coming from user's uuid
 		}
 
 		socket.roomID = data.roomID;
@@ -120,6 +122,16 @@ io.on('connection', function(socket) {
 			newUser = true;
 			// console.log(users[socket.roomID]);
 			// add new users to the Q
+			console.log('Before queueing');
+			console.log(socket);
+			console.log('=======================================================================');
+			cuqu.enqueue(JSON.stringify(JSON.decycle(socket)))
+			.then(function(reply) {
+				console.log('enqueue', reply);
+			}).catch(function(err) {
+				console.log(err);
+			}).done();
+
 			kue.enqueue(socket);
 		}
 		// Fetch message history
@@ -141,6 +153,27 @@ io.on('connection', function(socket) {
 						// Make all available admins join this users room.
 
 						// console.log(kue.isEmpty());
+						cuqu.isEmpty()
+						.then(function(bool) {
+							console.log('isEmpty', bool);
+						})
+						.catch(function(err) {
+							console.log(err);
+						}).done();
+
+						cuqu.size()
+						.then(function(len) {
+							console.log('size', len);
+						}).catch(function(err) {
+							console.log(err);
+						}).done();
+
+						cuqu.dequeue().then(function(ele) {
+							console.log('dequeue', JSON.retrocycle(JSON.parse(ele)));
+						}).catch(function(err) {
+							console.log(err);
+						}).done();
+						cuqu.qdel();
 						// console.log(kue.size());
 						// console.log(kue.dequeue());
 						// console.log(kue.isEmpty());
@@ -161,8 +194,7 @@ io.on('connection', function(socket) {
 								adminSocket.emit('queue update', {clientsInQueue: kue.size()});
 							});
 						});
-					}
-					else {
+					} else {
 						console.log("RECONNECTED");
 						socket.broadcast.to(socket.roomID).emit("User Reconnected", socket.roomID);
 					}

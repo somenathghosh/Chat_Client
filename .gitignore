@@ -12,5 +12,7 @@ settings.json
 node_module
 upload/*
 npm-debug.log
+redq
+redkue
 # exception to the rule
 !upload/.gitkeep

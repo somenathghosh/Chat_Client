@@ -160,11 +160,12 @@ socket.on('typing', function(data) {
 		$Typing.append("Admin is typing...");
 	} else {
 		$Typing.text('');
-	}	
+	}
 });
 
 socket.on('chat history', function(data) {
 	console.log('800');
+	console.log(data);
 	var len = data.history.length;
 	for (var i = len - 1; i >= 0; i--) {
 		addMessages(data.history[i], false);
@@ -261,11 +262,12 @@ function sendMessage() {
  */
 function addMessages(data, getMore) {
 	var sender;
+	console.log(data);
 	if (data["who"]) {
 		sender = "msg_a";
 	} else {
 		sender = "msg_b";
-	}	
+	}
 	var $messageBodyDiv = $('<div class="' + sender + '">' + data["what"] + '<span class="timestamp">' +
 		(data["when"]).toLocaleString().substr(15, 6) + '</span></div>');
 	if (getMore) {
