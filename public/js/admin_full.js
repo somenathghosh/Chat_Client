@@ -246,6 +246,13 @@ socket.on('queue update', function(data) {
 	clock.setCounter(clientsWaiting);
 });
 
+socket.on('upload', function(data) {
+	console.log('2100');
+	var $messages = $('#chat-' + data.roomID).find('.chat-messages');
+
+	$messages.append(createUploadMessage(data.filename));
+});
+
 var clock = $('.counter').FlipClock(clientsWaiting, {
 	clockFace: 'Counter',
 });
@@ -569,6 +576,21 @@ function createMessage(message, name, time, isSender) {
 
     return message;
 }
+
+/**
+ * @param  {} filename
+ * @param  {} isSender
+**/
+function createUploadMessage(filename, isSender) {
+	var message = '';
+
+	message = '<div class="message ' + (isSender ? 'message-sender' : 'message-receiver') + '">' +
+        '<div class="message-text"><a href="#" onclick="downloadFile(\'' + filename + '\')">' + filename + '</a></div>' +
+    '</div>';
+
+    return message;
+}
+
 /**
  * @param  {} description
  */
@@ -641,4 +663,9 @@ function removeChat(id) {
  */
 function acceptNewClient() {
 	socket.emit('accept client');
+}
+
+function downloadFile(filename) {
+	//TODO: Download file
+	alert('TODO: Download');
 }

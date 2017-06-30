@@ -218,7 +218,7 @@ io.on('connection', function(socket) {
 		dbFunctions.pushMessage(data);
 
 		socket.broadcast.to(data.roomID).emit('chat message', data);
-		console.log(data);
+		//console.log(data);
 	});
 
 	socket.on("typing", function(data) {
@@ -374,6 +374,17 @@ io.on('connection', function(socket) {
 					});
 				});
 		}
+	});
+
+	socket.on('upload', function(data) {
+		if (data.roomID === "null") {
+			data.roomID = socket.roomID;
+		}
+		data.isAdmin = socket.isAdmin;
+
+		//TODO: Save message
+
+		socket.broadcast.to(data.roomID).emit('upload', data);
 	});
 });
 

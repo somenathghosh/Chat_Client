@@ -6,7 +6,7 @@
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                 <h4 class="modal-title"><i class="fa fa-upload"></i> Upload </h4>
             </div>
-            <div class="modal-body dropzone" id="client-dropzone">
+            <div class="modal-body" id="client-dropzone">
                 <form action="./upload" method="post"  enctype="multipart/form-data" >
                     <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                     <div class="fallback">
