@@ -50,15 +50,18 @@ const User = require('../models/user');
 const clientKue = new Kue(config.client_q);
 // const activeKue = new Kue(config.active_q);
 const adminsKue = new Kue(config.admin_q); // item : [{username: _username}]
-
+let admin_users = [];
 // Get all admin from database
 User.findAdmin().then(function(users) {
 	console.log(users);
-	config.admin_users = users; // override the config admin users
+	admin_users = users; // override the config admin users
+	console.log('Socket List of admins ', admin_users);
 }).catch(function(err) {
 	console.log('Socket/findAdmin ==>', err);
   throw new Error('Error in getting Admin list, shuting down app instance');
 });
+
+
 
 io.on('connection', function(socket) {
 	// Login Admin
@@ -72,11 +75,16 @@ io.on('connection', function(socket) {
 					err: "Invalid Login",
 				});
 			} else {
-				if (_.find(config.admin_users, function(admin) { // check if admin exists in database
-						return (admin === _data.admin);
-					})) {
-						let admins =  await adminsKue.list();
-						if (admins.indexOf(_data.admin) > 0) {  // check if admin already logged in
+				if (admin_users.indexOf(_data.admin) >= 0) {
+						let admins;
+						try {
+							admins =  await adminsKue.list();
+						} catch(err) {
+							console.log('login/admin Error in getting admins in list', err);
+						}
+
+						console.log('admin login ==>', admins, admins.indexOf(_data.admin));
+						if (admins.indexOf(_data.admin) >= 0) {  // check if admin already logged in
 							socket.emit('login', {
 								login: false,
 								err: "Already Logged In",
@@ -96,8 +104,9 @@ io.on('connection', function(socket) {
 						});
 					}
 			}
+			return 'YES';
 		}
-		run(data);
+		run(data).then(x => console.log(`login admin successfully run: ${x}`)).catch(err => console.error(`login admin Error: ${err}`));
 	});
 
 	// Init admin
@@ -109,10 +118,7 @@ io.on('connection', function(socket) {
 		async function run(_data) {
 			let success;
 			try {
-				// _this.isAdmin = _data.isAdmin;
-				// _socket.username = _data.admin;
 				success = await adminsKue.enqueue(socket.username);
-
 				// let other admin know this admin joined. Assess is this needed or now?
 				if(success) {
 					let list =  await adminsKue.list();
@@ -123,8 +129,9 @@ io.on('connection', function(socket) {
 			} catch(err) {
 				console.log('add admin ==>', err);
 			}
+			return 'YES';
 		}
-		run(data);
+		run(data).then(x => console.log(`add admin successfully run: ${x}`)).catch(err => console.error(`add admin Error: ${err}`));
 
 	});
 
@@ -139,68 +146,70 @@ io.on('connection', function(socket) {
 
 		async function run(_data) {
 			// _socket.isAdmin = false;
-			let userDetails, history, newUser, users;
+			let userDetails, history, newUser, users, success;
 			console.log(_data);
 			if (_data.isNewUser) {
 				if (!_data.roomID) { // this should not get executed, else you can't track who has logged in.
 					console.log('roomID not provided when new user');
 					_data.roomID = uuid();
 				}
-				let success = await dbFunctions.setDetails(_data);
+				try {
+					success = await dbFunctions.setDetails(_data);
+					console.log('add user dbFunctions.setDetails success ==>', success);
+				} catch(err) {
+					console.error('add user dbFunctions.setDetails error ==>', err);
+				}
 				socket.userDetails = [_data.Name, _data.Email, _data.Phone, _data.Company];
 				socket.isUser = true;
 				socket.emit("roomID", _data.roomID); // fallback | does not need since roomID is coming from user's uuid
 			}
 
 			socket.roomID = _data.roomID;
-			userDetails = await dbFunctions.getDetails(_data.roomID);
-			console.log('add user details==>', userDetails);
+			try {
+				userDetails = await dbFunctions.getDetails(_data.roomID);
+				console.log('add dbFunctions.getDetails user details==>', userDetails);
+			} catch(err) {
+				console.error('add user dbFunctions.getDetails ==>', err);
+			}
 
-			// Fetch user details
-			// if (!_data.isNewUser) {
-			// 	let details = await dbFunctions.getDetails(_socket.roomID);
-			// 	console.log('add user details==>', details);
-			// 	userDetails = details;
-			// }
 			socket.join(socket.roomID); // joining chat room for user
 
 			newUser = false;
-			// let brandNewUser = false;
-			users =  await clientKue.list();
-			let usersRoom =[];
+
 			try {
-				// users = JSON.parse(users);
-				for(let i in users){
-					usersRoom.push(JSON.parse(users[i]).roomID);
-				}
+				history = await dbFunctions.getMessages(socket.roomID, 0);
 			} catch (err) {
-				console.log('add user details JSON/users parse problem');
+				console.error('add user dbFunctions.getMessages ==>', err);
 			}
 
-			console.log('add user users in q==>', usersRoom);
-			history = await dbFunctions.getMessages(socket.roomID, 0);
 			let result = [];
 			for (var msg in history){
 				try {
 					result.push(JSON.parse(history[msg]));
 				} catch (err) {
-					console.log('add user details JSON/history parse problem');
+					console.log('add user details JSON/history parse problem @ result.push(JSON.parse(history[msg]))');
 				}
 			}
-			console.log('add user history ==> ', result);
-			let len = await dbFunctions.getMsgLength(socket.roomID);
-			let msgHistoryLen = (len * -1) + 10;
-			let totalMsgLen = (len * -1);
 
-			let thisUser = {
-				roomID : socket.roomID,
-				history: result,
-				details: userDetails,
-				MsgHistoryLen: msgHistoryLen,
-				TotalMsgLen: totalMsgLen,
+			console.log('add user history ==> ', result);
+
+			try {
+				users =  await clientKue.list();
+				console.log('add user users in q==>', users);
+			} catch (err) {
+				console.error('add user clientKue.list ==>', err);
 			}
-			if (usersRoom.indexOf(socket.roomID) < 0) { // Check if different instance of same user. (ie. Multiple tabs)
-				let enqueueClient = await clientKue.enqueue(JSON.stringify(thisUser));
+
+			if (users.indexOf(socket.roomID) < 0) { // Check if different instance of same user. (ie. Multiple tabs)
+				// let enqueueClient = await clientKue.enqueue(JSON.stringify(thisUser));
+				let enqueueClient;
+				try {
+					enqueueClient = await clientKue.enqueue(socket.roomID);
+					console.log('add user clientKue.enqueue success ==> ', enqueueClient);
+				} catch(err) {
+					console.error('add user clientKue.enqueue ==>', err);
+				}
+
 				if(enqueueClient){
 					newUser = true;
 				} else {
@@ -212,10 +221,20 @@ io.on('connection', function(socket) {
 				getMore: false,
 			});
 
-			let isEmpty = await adminsKue.isEmpty();
-			let size = await clientKue.size();
+			let isNoAdmin;
+			try {
+				isNoAdmin = await adminsKue.isEmpty();
+			} catch(err) {
+				console.error('add user adminsKue.isEmpty ==>', err);
+			}
+			let size;
+			try {
+				size = await clientKue.size();
+			} catch (err) {
+				console.error('add user clientKue.size ==>', err);
+			}
 
-			if(isEmpty) {
+			if(isNoAdmin) {
 				socket.emit('log message', "Thank you for reaching us." +
 					" Please leave your message here and we will get back to you shortly.");
 			} else {
@@ -230,10 +249,10 @@ io.on('connection', function(socket) {
 					socket.broadcast.to(socket.roomID).emit("User Reconnected", socket.roomID);
 				}
 			}
-
+			return 'YES';
 		}
 
-		run(data);
+		run(data).then(x => console.log(`add user successfully run: ${x}`)).catch(err => console.error(`add user Error: ${err}`));
 
 	});
 
@@ -243,40 +262,85 @@ io.on('connection', function(socket) {
 		let _this = this;
 
 		async function run(_data) {
+			let isEmpty,
+					roomID,
+					userDetail,
+					history,
+					result,
+					len,
+					msgHistoryLen,
+					totalMsgLen,
+					size;
 
-			let isEmpty = await clientKue.isEmpty();
-			console.log('accept client', isEmpty);
+			try {
+				isEmpty = await clientKue.isEmpty();
+				console.log('accept client', isEmpty);
+			} catch (e) {
+				console.error('accept client clientKue.isEmpty ==>', err);
+			}
 			if (isEmpty === false) {
-				let detail = await clientKue.dequeue();
-				console.log('accept client detail ==>', detail);
-				let userDetail = JSON.parse(detail);
-				console.log('accept client userDetail ==>', userDetail);
-				let roomID = userDetail.roomID;
-				let history = userDetail.history;
-				let userDetails = userDetail.details;
-				let msgHistoryLen = userDetail.MsgHistoryLen
-				let totalMsgLen = userDetail.TotalMsgLen
-				let size = await clientKue.size();
-				console.log('accept client size ==>', size);
+				try {
+					roomID = await clientKue.dequeue();
+					console.log('accept client detail ==>', roomID);
+				} catch (e) {
+					console.error('accept client clientKue.dequeue ==>', err);
+				}
+
+				try {
+					userDetail = await dbFunctions.getDetails(roomID);
+					console.log('accept client userDetail ==>', userDetail);
+				} catch (e) {
+					console.error('accept client dbFunctions.getDetails ==>', err);
+				}
+
+				try {
+					history = await dbFunctions.getMessages(roomID, 0);
+				} catch (e) {
+					console.error('accept client dbFunctions.getMessages ==>', err);
+				}
+
+				result = [];
+				for (var msg in history){
+					try {
+						result.push(JSON.parse(history[msg]));
+					} catch (err) {
+						console.log('accept client details JSON/history parse problem');
+					}
+				}
+				console.log('accept client history ==> ', result);
+
+				// no need to have so much info to store...but db call will increase
+				try {
+					len = await dbFunctions.getMsgLength(roomID);
+					msgHistoryLen = (len * -1) + 10;
+					totalMsgLen = (len * -1);
+				} catch (e) {
+					console.error('accept client dbFunctions.getMsgLength ==>', err);
+				}
+
+				try {
+					size = await clientKue.size();
+					console.log('accept client size ==>', size);
+				} catch (e) {
+					console.error('accept client clientKue.size ==>', err);
+				}
 
 				socket.join(roomID);
 				// console.log('socket ID: ' + newSocket.roomID);
 				socket.emit("New Client", {
 					roomID: roomID,
-					history: history,
-					details: userDetails,
+					history: result,
+					details: userDetail,
 					justJoined: false,
 					clientsInQueue: size,
 					MsgHistoryLen: msgHistoryLen,
 					TotalMsgLen: totalMsgLen,
 				});
 				socket.broadcast.emit('queue update', {clientsInQueue: size});
-
-				// console.log('client accpted');
-				// console.log(kue.size());
 			}
+			return 'YES';
 		}
-		run(data);
+		run(data).then(x => console.log(`accept client successfully run: ${x}`)).catch(err => console.error(`accept client Error: ${err}`));
 	});
 
 	socket.on('chat message', function(data) {
@@ -299,28 +363,49 @@ io.on('connection', function(socket) {
 	});
 
 	socket.on("more messages", function(data) {
-		let roomID = (data.roomID ? data.roomID : socket.roomID);
-		let msgHistoryLen = (data.MsgHistoryLen ? data.MsgHistoryLen : socket.MsgHistoryLen);
-		if (msgHistoryLen < 0) {
-			let history = await dbFunctions.getMessages(socket.roomID, msgHistoryLen);
-			let result = [];
-			for (var i in history){
-				// console.log('add user history messages==>',msg);
-				try {
-					result.push(JSON.parse(history[i]));
-				} catch(err) {
-					console.log('more messages/history JSON Parse Error');
-				}
-			}
-			msgHistoryLen += 10;
-			console.log('more messages history ==> ', result);
-			socket.emit('more chat history', {
-				history: history,
-				roomID: roomID,
-				MsgHistoryLen: msgHistoryLen,
-			});
 
+		async function run(data){
+			let roomID,
+					msgHistoryLen,
+					result;
+
+			roomID = (data.roomID ? data.roomID : socket.roomID);
+			console.log('more messages roomID ==>', roomID);
+			msgHistoryLen = (data.MsgHistoryLen ? data.MsgHistoryLen : socket.MsgHistoryLen);
+			console.log('more messages msgHistoryLen ==>', msgHistoryLen);
+
+			if (msgHistoryLen < 0) {
+				let history;
+
+				try {
+					history = await dbFunctions.getMessages(roomID, msgHistoryLen);
+				} catch (e) {
+					console.error('more messages dbFunctions.getMessages ==>', err);
+				}
+
+				result = [];
+				for (var i in history){
+					// console.log('add user history messages==>',msg);
+					try {
+						result.push(JSON.parse(history[i]));
+					} catch(err) {
+						console.log('more messages/history JSON Parse Error @ result.push(JSON.parse(history[i]))');
+					}
+				}
+				msgHistoryLen += 10;
+				console.log('more messages history ==> ', result);
+				socket.emit('more chat history', {
+					history: result,
+					roomID: roomID,
+					MsgHistoryLen: msgHistoryLen,
+				});
+
+			}
+			return 'YES';
 		}
+
+		run(data).then(x => console.log(`more messages successfully run: ${x}`)).catch(err => console.error(`more messages Error: ${err}`));
+
 	});
 
 	socket.on('client ack', function() {
@@ -337,32 +422,50 @@ io.on('connection', function(socket) {
 			} else {
 				if (socket.userDetails) {
 					socket.broadcast.to(socket.roomID).emit("User Disconnected", socket.roomID);
-					delete users[socket.roomID];
+					try {
+						let success = await clientKue.dequeue(socket.roomID);
+						console.log('leave clientKue.dequeue ==>', success);
+					} catch(err) {
+						console.log('leave Error in dequeue of users', err);
+					}
+					// delete users[socket.roomID];
 				}
 			}
+			return 'YES';
 		}
-
-		}
-		run(data);
-
+		run(data).then(x => console.log(`leave successfully run: ${x}`)).catch(err => console.error(`leave Error: ${err}`));
 	});
 
 	socket.on('disconnect', function() {
 
 		async function run(){
 			if (socket.isAdmin) {
-				adminsKue.dequeue(socket.username);
+				console.log('admin disconnect', socket.username);
+				// get all roomIDs admin was connected, send disconnect info to all of them
+				 // socket.broadcast.to(_data.roomID).emit('admin disconnected', _data);
+				try {
+					let success = await adminsKue.dequeue(socket.username);
+					console.log('disconnect adminsKue.dequeue ==>', success);
+				} catch(err) {
+					console.log('disconnect Error in dequeue of admin', err);
+				}
+
 			} else {
 				// remove client
 				socket.broadcast.to(socket.roomID).emit("User Disconnected", socket.roomID);
 				setTimeout(function() {
 					socket.broadcast.to(socket.roomID).emit("User Terminated", socket.roomID);
-					// delete users[socket.roomID];
-				},40000);
+					try {
+						clientKue.dequeue(socket.roomID);
+						console.log('disconnect clientKue.dequeue');
+					} catch (e) {
+						console.log('disconnect Error in dequeue of client', err);
+					}
+				},4000);
 			}
-
+			return 'YES';
 		}
-		run();
+		run().then(x => console.log(`disconnect successfully run: ${x}`)).catch(err => console.error(`disconnect Error: ${err}`));
 
 	});
 

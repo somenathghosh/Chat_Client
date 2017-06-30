@@ -40,7 +40,7 @@ let Kue  = (function(){
 			if(!data) {
 				success = await client.rpopAsync(this.qname);
 			} else {
-				success = await client.lremAsync(this.qname,data,0);
+				success = await client.lremAsync(this.qname,0, data);
 			}
 			return success;
 		}
