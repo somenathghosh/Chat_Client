@@ -9,7 +9,7 @@ test.js
 launch.json
 settings.json
 .vscode
-node_module
+node_modules
 upload/*
 npm-debug.log
 # exception to the rule

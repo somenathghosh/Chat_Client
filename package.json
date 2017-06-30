@@ -44,6 +44,7 @@
     "passport-facebook": "2.1.1",
     "passport-local": "1.0.0",
     "passport-twitter": "1.0.4",
+    "process-nextick-args": "^1.0.7",
     "q": "1.5.0",
     "queue": "4.2.1",
     "queue-fifo": "0.2.3",
