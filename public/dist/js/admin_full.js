@@ -579,8 +579,6 @@ function createMessage(message, name, time, isSender) {
 
     return message;
 }
-<<<<<<< HEAD
-=======
 
 /**
  * @param  {} filename
@@ -596,7 +594,6 @@ function createUploadMessage(filename, isSender) {
     return message;
 }
 
->>>>>>> 441be89e80caf7da57da1ba668b35e57e82e9815
 /**
  * @param  {} description
  */
@@ -670,11 +667,8 @@ function removeChat(id) {
 function acceptNewClient() {
 	socket.emit('accept client');
 }
-<<<<<<< HEAD
-=======
 
 function downloadFile(filename) {
 	//TODO: Download file
 	alert('TODO: Download');
 }
->>>>>>> 441be89e80caf7da57da1ba668b35e57e82e9815
