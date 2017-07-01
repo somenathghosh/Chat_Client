@@ -31,7 +31,12 @@ var socket = io({transports: ['websocket']}); // io socket
 var clientsWaiting = 0;
 $newUser.loop = true;
 $usernameInput.focus();
-Notification.requestPermission();
+try {
+	Notification.requestPermission();
+}
+catch(e) {
+	console.log('Notification not supported by browser');
+}
 
 var totalChats = 1; // Used to rotate colors for new chats
 var colorClasses = ['paletton-blue', 'paletton-purple', 'paletton-green', 'paletton-orange'];
@@ -242,6 +247,13 @@ socket.on('queue update', function(data) {
 	console.log('queue update', data);
 	clientsWaiting = parseInt(data.clientsInQueue);
 	clock.setCounter(clientsWaiting);
+});
+
+socket.on('upload', function(data) {
+	console.log('2100');
+	var $messages = $('#chat-' + data.roomID).find('.chat-messages');
+
+	$messages.append(createUploadMessage(data.filename));
 });
 
 var clock = $('.counter').FlipClock(clientsWaiting, {
@@ -567,6 +579,21 @@ function createMessage(message, name, time, isSender) {
 
     return message;
 }
+
+/**
+ * @param  {} filename
+ * @param  {} isSender
+**/
+function createUploadMessage(filename, isSender) {
+	var message = '';
+
+	message = '<div class="message ' + (isSender ? 'message-sender' : 'message-receiver') + '">' +
+        '<div class="message-text"><a href="#" onclick="downloadFile(\'' + filename + '\')">' + filename + '</a></div>' +
+    '</div>';
+
+    return message;
+}
+
 /**
  * @param  {} description
  */
@@ -639,4 +666,9 @@ function removeChat(id) {
  */
 function acceptNewClient() {
 	socket.emit('accept client');
+}
+
+function downloadFile(filename) {
+	//TODO: Download file
+	alert('TODO: Download');
 }

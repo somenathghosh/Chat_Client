@@ -25,4 +25,5 @@ module.exports = {Mongoose,
 	models: {
 		user: require('./schemas/user'),
 		room: require('./schemas/room'),
+		file: require('./schemas/file')
 	}};

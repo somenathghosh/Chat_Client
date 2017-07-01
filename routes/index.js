@@ -12,6 +12,7 @@ const multer = require('../file');
 const redirectURI = {customer:'/client', admin:'/admin-full'};
 // accepting a file at a time. This is to stop DoS. At max, it will accept 9 files at time if used array.
 const upload = multer.single('file');
+const path = require('path');
 
 
 router.get('/', function(req, res, next) {
@@ -129,13 +130,30 @@ router.post('/register', function(req, res, next) {
  */
 router.post('/upload', [User.isAuthenticated, User.isAuthorize, function(req, res, next) {
 	console.log('At upload route');
+
 	upload(req, res, function(err) {
+		//console.log(req);
 		if (err) {
 			res.status(400).send();
 		} else {
-			res.status(200).send(); // When front end is ready, send the file meta data in send(req.file);
+			res.status(200).send({filename: req.file.filename}); // When front end is ready, send the file meta data in send(req.file);
 		}
 	});
+}]);
+
+router.post('/download', [User.isAuthenticated, User.isAuthorize, function(req, res, next) {
+	console.log('At download route');
+
+	var file = __dirname + '/upload/' + req.filename;
+
+	var filename = path.basename(file);
+	//var mimetype = mime.lookup(file);
+
+	res.setHeader('Content-disposition', 'attachment; filename=' + filename);
+	//res.setHeader('Content-type', mimetype);
+
+	var filestream = fs.createReadStream(file);
+	filestream.pipe(res);
 }]);
 
 // Client

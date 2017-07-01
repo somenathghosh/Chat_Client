@@ -36,7 +36,11 @@
   "homepage": "https://github.com/somenathghosh/Chat_Client",
   "dependencies": {
     "assert": "1.4.1",
+<<<<<<< HEAD
     "asyncawait": "1.0.6",
+=======
+    "async": "^2.5.0",
+>>>>>>> 441be89e80caf7da57da1ba668b35e57e82e9815
     "bcrypt-nodejs": "0.0.3",
     "bluebird": "3.5.0",
     "body-parser": "1.17.2",
@@ -65,11 +69,13 @@
     "passport-facebook": "2.1.1",
     "passport-local": "1.0.0",
     "passport-twitter": "1.0.4",
+    "process-nextick-args": "^1.0.7",
     "q": "1.5.0",
     "queue": "4.2.1",
     "queue-fifo": "0.2.3",
     "randomstring": "1.1.5",
     "redis": "2.7.1",
+    "require_optional": "^1.0.1",
     "rsmq": "0.8.2",
     "socket.io": "2.0.2",
     "socket.io-redis": "5.1.0",

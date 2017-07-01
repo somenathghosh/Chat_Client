@@ -223,6 +223,7 @@ socket.on('admin disconnected', function() {
 
 	$Typing.append("Admin disconnected. Session ended.");
 });
+
 /**
  */
 function timeoutFunction() {
@@ -289,16 +290,40 @@ function cleanInput(input) {
 
 
 // initialize Dropzone
-$("#client-dropzone").dropzone({
-	url: "/upload",
-	addRemoveLinks : true,
-	maxFilesize: 1,
-	maxFilesize: 5, // MB
-	paramName: 'file', // change in server side too if you change this
-	dictDefaultMessage: '<span class="text-center"><span class="font-lg visible-xs-block visible-sm-block visible-lg-block"><span class="font-lg"><i class="fa fa-caret-right text-danger"></i> Drop files <span class="font-xs">to upload</span></span><span>&nbsp&nbsp<h4 class="display-inline"> (Or Click)</h4></span>',
-	dictResponseError: 'Error uploading file!',
-	headers: {
-		'X-CSRF-Token': $('input[name="_csrf"]').val(),
-	},
-	acceptedFiles: 'image/*', // change it accordingly...this is for test purpose to show images in cards/zoomin/zoomout
-});
+try {
+	$("#client-dropzone").dropzone({
+		url: "/upload",
+		addRemoveLinks : true,
+		maxFilesize: 1,
+		maxFilesize: 5, // MB
+		paramName: 'file', // change in server side too if you change this
+		dictDefaultMessage: '<span class="text-center"><span class="font-lg visible-xs-block visible-sm-block visible-lg-block"><span class="font-lg"><i class="fa fa-caret-right text-danger"></i> Drop files <span class="font-xs">to upload</span></span><span>&nbsp&nbsp<h4 class="display-inline"> (Or Click)</h4></span>',
+		dictResponseError: 'Error uploading file!',
+		headers: {
+			'X-CSRF-Token': $('input[name="_csrf"]').val(),
+		},
+		acceptedFiles: 'image/*', // change it accordingly...this is for test purpose to show images in cards/zoomin/zoomout
+		success: function(file, response) {
+			var time = ("" + new Date());
+			//console.log(response);
+			//var obj = JSON.parse(response);
+
+			socket.emit('upload', {
+				filename: response.filename,
+				roomID: "null",
+				timestamp: time
+			});
+
+			console.log('2100');
+
+			var $messageBodyDiv = $('<div class="msg_b">' + response.filename + '<span class="timestamp">' +
+					(time.toLocaleString().substr(15, 6)) + '</span></div>').insertBefore($newMsg);
+
+			$messages[0].scrollTop = $messages[0].scrollHeight;
+		}
+	});
+}
+catch(e) {
+	console.log('Error loading dropzone');
+	console.log(e);
+}
