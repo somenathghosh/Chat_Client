@@ -4,10 +4,12 @@
   "description": "Simple application using socket.io",
   "main": "app.js",
   "author": "Somenath Ghosh <somenath.ghosh84@gmail.com>",
-  "contributors": [{
-    "name": "Brandon Rodenmayer ",
-    "email": "brandon.g.rodenmayer@tcs.com"
-  }],
+  "contributors": [
+    {
+      "name": "Brandon Rodenmayer ",
+      "email": "brandon.g.rodenmayer@tcs.com"
+    }
+  ],
   "scripts": {
     "start": "nf start web=1",
     "build-js": "gulp",
@@ -36,11 +38,6 @@
   "homepage": "https://github.com/somenathghosh/Chat_Client",
   "dependencies": {
     "assert": "1.4.1",
-<<<<<<< HEAD
-    "asyncawait": "1.0.6",
-=======
-    "async": "^2.5.0",
->>>>>>> 441be89e80caf7da57da1ba668b35e57e82e9815
     "bcrypt-nodejs": "0.0.3",
     "bluebird": "3.5.0",
     "body-parser": "1.17.2",
@@ -81,9 +78,11 @@
     "socket.io-redis": "5.1.0",
     "underscore": "1.8.3",
     "uuid": "3.0.1",
+    "winston": "2.3.1",
     "xoauth2": "1.2.0"
   },
   "devDependencies": {
+    "debug": "^2.6.8",
     "del": "^3.0.0",
     "eslint": "^3.19.0",
     "eslint-config-google": "^0.8.0",

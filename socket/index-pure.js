@@ -45,19 +45,25 @@ const btoa = require('btoa');
 const _ = require('underscore');
 const Kue = require('../redkue');
 const User = require('../models/user');
-
+const winston = require('../util/log')('socket/index-pure');
 // const waitKue = new Kue(config.wait_q);
 const clientKue = new Kue(config.client_q);
 // const activeKue = new Kue(config.active_q);
 const adminsKue = new Kue(config.admin_q); // item : [{username: _username}]
+
+//override console object with winston
+winston.info = console.log;
+winston.error = console.error;
+
 let admin_users = [];
+winston.level = process.env.LOG_LEVEL;
 // Get all admin from database
 User.findAdmin().then(function (users) {
-	// console.log(users);
+	// winston.info(users);
 	admin_users = users; // override the config admin users
-	console.log('Socket List of admins ', admin_users);
+	winston.info('Socket List of admins ', admin_users);
 }).catch(function (err) {
-	console.log('Socket/findAdmin ==>', err);
+	winston.info('Socket/findAdmin ==>', err);
 	throw new Error('Error in getting Admin list, shuting down app instance');
 });
 
@@ -80,10 +86,10 @@ io.on('connection', function (socket) {
 					try {
 						admins = await adminsKue.list();
 					} catch (err) {
-						console.log('login/admin Error in getting admins in list', err);
+						winston.info('login/admin Error in getting admins in list', err);
 					}
-					console.log('admin login ==>', admins, admins.indexOf(_data.admin));
-					
+					winston.info('admin login ==>', admins, admins.indexOf(_data.admin));
+
 					if (admins.indexOf(_data.admin) >= 0) { // check if admin already logged in
 						socket.emit('login', {
 							login: false,
@@ -91,7 +97,7 @@ io.on('connection', function (socket) {
 						});
 					} else {
 						let size = await clientKue.size();
-						console.log(`New Admin joined, sending size of list, size: ${size}`);
+						winston.info(`New Admin joined, sending size of list, size: ${size}`);
 						socket.emit('login', {
 							login: true,
 							clientsInQueue: size,
@@ -106,7 +112,7 @@ io.on('connection', function (socket) {
 			}
 			return 'YES';
 		}
-		run(data).then(x => console.log(`login admin successfully run: ${x}`)).catch(err => console.error(`login admin Error: ${err}`));
+		run(data).then(x => winston.info(`login admin successfully run: ${x}`)).catch(err => winston.error(`login admin Error: ${err}`));
 	});
 
 	// Init admin
@@ -127,11 +133,11 @@ io.on('connection', function (socket) {
 					// TODO handle error
 				}
 			} catch (err) {
-				console.log('add admin ==>', err);
+				winston.info('add admin ==>', err);
 			}
 			return 'YES';
 		}
-		run(data).then(x => console.log(`add admin successfully run: ${x}`)).catch(err => console.error(`add admin Error: ${err}`));
+		run(data).then(x => winston.info(`add admin successfully run: ${x}`)).catch(err => winston.error(`add admin Error: ${err}`));
 
 	});
 
@@ -147,17 +153,17 @@ io.on('connection', function (socket) {
 		async function run(_data) {
 			// _socket.isAdmin = false;
 			let userDetails, history, newUser, users, success;
-			console.log(_data);
+			winston.info(_data);
 			if (_data.isNewUser) {
 				if (!_data.roomID) { // this should not get executed, else you can't track who has logged in.
-					console.log('roomID not provided when new user');
+					winston.info('roomID not provided when new user');
 					_data.roomID = uuid();
 				}
 				try {
 					success = await dbFunctions.setDetails(_data);
-					console.log('add user dbFunctions.setDetails success ==>', success);
+					winston.info('add user dbFunctions.setDetails success ==>', success);
 				} catch (err) {
-					console.error('add user dbFunctions.setDetails error ==>', err);
+					winston.error('add user dbFunctions.setDetails error ==>', err);
 				}
 				socket.userDetails = [_data.Name, _data.Email, _data.Phone, _data.Company];
 				socket.isUser = true;
@@ -167,9 +173,9 @@ io.on('connection', function (socket) {
 			socket.roomID = _data.roomID;
 			try {
 				userDetails = await dbFunctions.getDetails(_data.roomID);
-				console.log('add dbFunctions.getDetails user details==>', userDetails);
+				winston.info('add dbFunctions.getDetails user details==>', userDetails);
 			} catch (err) {
-				console.error('add user dbFunctions.getDetails ==>', err);
+				winston.error('add user dbFunctions.getDetails ==>', err);
 			}
 
 			socket.join(socket.roomID); // joining chat room for user
@@ -179,7 +185,7 @@ io.on('connection', function (socket) {
 			try {
 				history = await dbFunctions.getMessages(socket.roomID, 0);
 			} catch (err) {
-				console.error('add user dbFunctions.getMessages ==>', err);
+				winston.error('add user dbFunctions.getMessages ==>', err);
 			}
 
 			let result = [];
@@ -187,17 +193,17 @@ io.on('connection', function (socket) {
 				try {
 					result.push(JSON.parse(history[msg]));
 				} catch (err) {
-					console.log('add user details JSON/history parse problem @ result.push(JSON.parse(history[msg]))');
+					winston.info('add user details JSON/history parse problem @ result.push(JSON.parse(history[msg]))');
 				}
 			}
 
-			console.log('add user history ==> ', result);
+			winston.info('add user history ==> ', result);
 
 			try {
 				users = await clientKue.list();
-				console.log('add user users in q==>', users);
+				winston.info('add user users in q==>', users);
 			} catch (err) {
-				console.error('add user clientKue.list ==>', err);
+				winston.error('add user clientKue.list ==>', err);
 			}
 
 			if (users.indexOf(socket.roomID) < 0) { // Check if different instance of same user. (ie. Multiple tabs)
@@ -205,9 +211,9 @@ io.on('connection', function (socket) {
 				let enqueueClient;
 				try {
 					enqueueClient = await clientKue.enqueue(socket.roomID);
-					console.log('add user clientKue.enqueue success ==> ', enqueueClient);
+					winston.info('add user clientKue.enqueue success ==> ', enqueueClient);
 				} catch (err) {
-					console.error('add user clientKue.enqueue ==>', err);
+					winston.error('add user clientKue.enqueue ==>', err);
 				}
 
 				if (enqueueClient) {
@@ -225,13 +231,13 @@ io.on('connection', function (socket) {
 			try {
 				isNoAdmin = await adminsKue.isEmpty();
 			} catch (err) {
-				console.error('add user adminsKue.isEmpty ==>', err);
+				winston.error('add user adminsKue.isEmpty ==>', err);
 			}
 			let size;
 			try {
 				size = await clientKue.size();
 			} catch (err) {
-				console.error('add user clientKue.size ==>', err);
+				winston.error('add user clientKue.size ==>', err);
 			}
 
 			if (isNoAdmin) {
@@ -247,14 +253,14 @@ io.on('connection', function (socket) {
 						clientsInQueue: size
 					});
 				} else {
-					console.log("RECONNECTED");
+					winston.info("RECONNECTED");
 					socket.broadcast.to(socket.roomID).emit("User Reconnected", socket.roomID);
 				}
 			}
 			return 'YES';
 		}
 
-		run(data).then(x => console.log(`add user successfully run: ${x}`)).catch(err => console.error(`add user Error: ${err}`));
+		run(data).then(x => winston.info(`add user successfully run: ${x}`)).catch(err => winston.error(`add user Error: ${err}`));
 
 	});
 
@@ -276,29 +282,29 @@ io.on('connection', function (socket) {
 
 			try {
 				isEmpty = await clientKue.isEmpty();
-				console.log('accept client', isEmpty);
+				winston.info('accept client', isEmpty);
 			} catch (e) {
-				console.error('accept client clientKue.isEmpty ==>', err);
+				winston.error('accept client clientKue.isEmpty ==>', err);
 			}
 			if (isEmpty === false) {
 				try {
 					roomID = await clientKue.dequeue();
-					console.log('accept client detail ==>', roomID);
+					winston.info('accept client detail ==>', roomID);
 				} catch (e) {
-					console.error('accept client clientKue.dequeue ==>', err);
+					winston.error('accept client clientKue.dequeue ==>', err);
 				}
 
 				try {
 					userDetail = await dbFunctions.getDetails(roomID);
-					console.log('accept client userDetail ==>', userDetail);
+					winston.info('accept client userDetail ==>', userDetail);
 				} catch (e) {
-					console.error('accept client dbFunctions.getDetails ==>', err);
+					winston.error('accept client dbFunctions.getDetails ==>', err);
 				}
 
 				try {
 					history = await dbFunctions.getMessages(roomID, 0);
 				} catch (e) {
-					console.error('accept client dbFunctions.getMessages ==>', err);
+					winston.error('accept client dbFunctions.getMessages ==>', err);
 				}
 
 				result = [];
@@ -306,10 +312,10 @@ io.on('connection', function (socket) {
 					try {
 						result.push(JSON.parse(history[msg]));
 					} catch (err) {
-						console.log('accept client details JSON/history parse problem');
+						winston.info('accept client details JSON/history parse problem');
 					}
 				}
-				console.log('accept client history ==> ', result);
+				winston.info('accept client history ==> ', result);
 
 				// no need to have so much info to store...but db call will increase
 				try {
@@ -317,18 +323,22 @@ io.on('connection', function (socket) {
 					msgHistoryLen = (len * -1) + 10;
 					totalMsgLen = (len * -1);
 				} catch (e) {
-					console.error('accept client dbFunctions.getMsgLength ==>', err);
+					winston.error('accept client dbFunctions.getMsgLength ==>', err);
 				}
 
 				try {
 					size = await clientKue.size();
-					console.log('accept client size ==>', size);
+					winston.info('accept client size ==>', size);
 				} catch (e) {
-					console.error('accept client clientKue.size ==>', err);
+					winston.error('accept client clientKue.size ==>', err);
 				}
-
+				winston.info('accept cliet', socket.attached_rooms);
+				if(!socket.attached_rooms){
+					socket.attached_rooms = [];
+				}
+				socket.attached_rooms.push(roomID); // have track of all roooms admin connected with
 				socket.join(roomID);
-				// console.log('socket ID: ' + newSocket.roomID);
+				// winston.info('socket ID: ' + newSocket.roomID);
 				socket.emit("New Client", {
 					roomID: roomID,
 					history: result,
@@ -344,7 +354,7 @@ io.on('connection', function (socket) {
 			}
 			return 'YES';
 		}
-		run(data).then(x => console.log(`accept client successfully run: ${x}`)).catch(err => console.error(`accept client Error: ${err}`));
+		run(data).then(x => winston.info(`accept client successfully run: ${x}`)).catch(err => winston.error(`accept client Error: ${err}`));
 	});
 
 	socket.on('chat message', function (data) {
@@ -355,7 +365,7 @@ io.on('connection', function (socket) {
 		dbFunctions.pushMessage(data);
 
 		socket.broadcast.to(data.roomID).emit('chat message', data);
-		console.log(data);
+		winston.info(data);
 	});
 
 	socket.on("typing", function (data) {
@@ -374,9 +384,9 @@ io.on('connection', function (socket) {
 				result;
 
 			roomID = (data.roomID ? data.roomID : socket.roomID);
-			console.log('more messages roomID ==>', roomID);
+			winston.info('more messages roomID ==>', roomID);
 			msgHistoryLen = (data.MsgHistoryLen ? data.MsgHistoryLen : socket.MsgHistoryLen);
-			console.log('more messages msgHistoryLen ==>', msgHistoryLen);
+			winston.info('more messages msgHistoryLen ==>', msgHistoryLen);
 
 			if (msgHistoryLen < 0) {
 				let history;
@@ -384,20 +394,20 @@ io.on('connection', function (socket) {
 				try {
 					history = await dbFunctions.getMessages(roomID, msgHistoryLen);
 				} catch (e) {
-					console.error('more messages dbFunctions.getMessages ==>', err);
+					winston.error('more messages dbFunctions.getMessages ==>', err);
 				}
 
 				result = [];
 				for (var i in history) {
-					// console.log('add user history messages==>',msg);
+					// winston.info('add user history messages==>',msg);
 					try {
 						result.push(JSON.parse(history[i]));
 					} catch (err) {
-						console.log('more messages/history JSON Parse Error @ result.push(JSON.parse(history[i]))');
+						winston.info('more messages/history JSON Parse Error @ result.push(JSON.parse(history[i]))');
 					}
 				}
 				msgHistoryLen += 10;
-				console.log('more messages history ==> ', result);
+				winston.info('more messages history ==> ', result);
 				socket.emit('more chat history', {
 					history: result,
 					roomID: roomID,
@@ -408,7 +418,7 @@ io.on('connection', function (socket) {
 			return 'YES';
 		}
 
-		run(data).then(x => console.log(`more messages successfully run: ${x}`)).catch(err => console.error(`more messages Error: ${err}`));
+		run(data).then(x => winston.info(`more messages successfully run: ${x}`)).catch(err => winston.error(`more messages Error: ${err}`));
 
 	});
 
@@ -427,31 +437,38 @@ io.on('connection', function (socket) {
 				if (socket.userDetails) {
 					socket.broadcast.to(socket.roomID).emit("User Disconnected", socket.roomID);
 					try {
-						let success = await clientKue.dequeue(socket.roomID);
-						console.log('leave clientKue.dequeue ==>', success);
+						// let success = await clientKue.dequeue(socket.roomID);
+						// winston.info('leave clientKue.dequeue ==>', success);
 					} catch (err) {
-						console.log('leave Error in dequeue of users', err);
+						winston.info('leave Error in dequeue of users', err);
 					}
 					// delete users[socket.roomID];
 				}
 			}
 			return 'YES';
 		}
-		run(data).then(x => console.log(`leave successfully run: ${x}`)).catch(err => console.error(`leave Error: ${err}`));
+		run(data).then(x => winston.info(`leave successfully run: ${x}`)).catch(err => winston.error(`leave Error: ${err}`));
 	});
 
 	socket.on('disconnect', function () {
 
 		async function run() {
 			if (socket.isAdmin) {
-				console.log('admin disconnect', socket.username);
+				winston.info('admin disconnect', socket.username);
+				_.each(socket.attached_rooms, x => {
+						winston.info('admin disconnect', x);
+						socket.broadcast.to(x).emit('admin disconnected', x);
+				});
+				// socket.leave(_data.roomID);
+				// _data.isAdmin = socket.isAdmin;
+				// socket.broadcast.to(_data.roomID).emit('admin disconnected', _data);
 				// get all roomIDs admin was connected, send disconnect info to all of them
 				// socket.broadcast.to(_data.roomID).emit('admin disconnected', _data);
 				try {
 					let success = await adminsKue.dequeue(socket.username);
-					console.log('disconnect adminsKue.dequeue ==>', success);
+					winston.info('disconnect adminsKue.dequeue ==>', success);
 				} catch (err) {
-					console.log('disconnect Error in dequeue of admin', err);
+					winston.info('disconnect Error in dequeue of admin', err);
 				}
 
 			} else {
@@ -460,16 +477,16 @@ io.on('connection', function (socket) {
 				setTimeout(function () {
 					socket.broadcast.to(socket.roomID).emit("User Terminated", socket.roomID);
 					try {
-						clientKue.dequeue(socket.roomID);
-						console.log('disconnect clientKue.dequeue');
+						// clientKue.dequeue(socket.roomID);
+						winston.info('disconnect clientKue.dequeue');
 					} catch (e) {
-						console.log('disconnect Error in dequeue of client', err);
+						winston.info('disconnect Error in dequeue of client', err);
 					}
 				}, 4000);
 			}
 			return 'YES';
 		}
-		run().then(x => console.log(`disconnect successfully run: ${x}`)).catch(err => console.error(`disconnect Error: ${err}`));
+		run().then(x => winston.info(`disconnect successfully run: ${x}`)).catch(err => winston.error(`disconnect Error: ${err}`));
 
 	});
 

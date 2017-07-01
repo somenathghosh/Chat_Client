@@ -1,0 +1,53 @@
+<% if (settings.acceptClient.enable) { %>
+<div id="lcb-accept-client" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title"><i class="fa fa-upload"></i> Clients in Waiting </h4>
+            </div>
+            <div class="modal-body" id="accept-client">
+                <table class="table">
+                    <thead class="thead-inverse">
+                    <tr>
+                      <th>#</th>
+                      <th>First Name</th>
+                      <th>Last Name</th>
+                      <th>Company</th>
+                      <th>Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                          <th scope="row">1</th>
+                          <td>Mark</td>
+                          <td>Otto</td>
+                          <td>Dummy</td>
+                          <td><button type="button" class="btn btn-danger form-control accept-client-1" >Accept</button></td>
+                        </tr>
+                        <tr>
+                          <th scope="row">2</th>
+                          <td>Jacob</td>
+                          <td>Thornton</td>
+                          <td>Dummy</td>
+                          <td><button type="button" class="btn btn-danger form-control accept-client-2" >Accept</button></td>
+                        </tr>
+                        <tr>
+                          <th scope="row">3</th>
+                          <td>Larry</td>
+                          <td>the Bird</td>
+                          <td>Dummy</td>
+                          <td><button type="button" class="btn btn-danger form-control accept-client-3" >Accept</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<% } %>
