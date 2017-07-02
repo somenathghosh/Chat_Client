@@ -9,7 +9,6 @@ test.js
 launch.json
 settings.json
 .vscode
-node_modules
 upload/*
 npm-debug.log
 redq
