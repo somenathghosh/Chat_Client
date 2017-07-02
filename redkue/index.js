@@ -25,7 +25,7 @@ let Kue  = (function(){
 		}
 
 		async del() {
-			console.log('Q name ==>', this.qname);
+			console.log('Deleting Q named ==>', this.qname);
 			let success = await client.delAsync(this.qname);
 			return success;
 		}
@@ -33,6 +33,19 @@ let Kue  = (function(){
 		async enqueue(data){
 			let success = await client.lpushAsync(this.qname, data);
 			return success;
+		}
+
+		async isAvailable(data) {
+			try {
+				let list = await this.list();
+				if(list.indexOf(data) < 0){
+					return false;
+				} else {
+					return true;
+				}
+			} catch(err) {
+				console.error('redkue/index: Error in isAvailable function ==>', err)
+			}
 		}
 
 		async dequeue(data) {

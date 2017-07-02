@@ -156,6 +156,7 @@ function startApp() {
     'reconnectionDelayMax': 60000,             // 1 minute maximum delay between connections
     'reconnectionAttempts': 'Infinity',         // to prevent dead clients, having the user to having to manually reconnect after a server restart.
     'timeout': 10000,                           // before connect_error and connect_timeout are emitted.
+    'rejectUnauthorized': true,
 	};
 
 	// Attach to the http server

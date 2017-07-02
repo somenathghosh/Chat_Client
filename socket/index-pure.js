@@ -46,8 +46,8 @@ const _ = require('underscore');
 const Kue = require('../redkue');
 const User = require('../models/user');
 const winston = require('../util/log')('socket/index-pure');
-// const waitKue = new Kue(config.wait_q);
-const clientKue = new Kue(config.client_q);
+
+const clientKue = new Kue(config.wait_q);
 // const activeKue = new Kue(config.active_q);
 const adminsKue = new Kue(config.admin_q); // item : [{username: _username}]
 
@@ -206,7 +206,7 @@ io.on('connection', function (socket) {
 				winston.error('add user clientKue.list ==>', err);
 			}
 
-			if (users.indexOf(socket.roomID) < 0) { // Check if different instance of same user. (ie. Multiple tabs)
+			if (users.indexOf(socket.roomID) < 0 && _data.isNewUser) { // Check if different instance of same user. (ie. Multiple tabs)
 				// let enqueueClient = await clientKue.enqueue(JSON.stringify(thisUser));
 				let enqueueClient;
 				try {

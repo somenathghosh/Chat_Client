@@ -18,6 +18,7 @@ const config = {
 	active_q: 'client-active-list',
 	admin_q: 'admin-active-list',
 	client_q: 'client-logged-list',
+	login_active_q: 'login-active-list',
 };
 
 module.exports = config;
