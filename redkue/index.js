@@ -51,7 +51,7 @@ let Kue  = (function(){
 		async dequeue(data) {
 			let success;
 			if(!data) {
-				success = await client.rpopAsync(this.qname);
+				success = await client.lpopAsync(this.qname);
 			} else {
 				success = await client.lremAsync(this.qname,0, data);
 			}
@@ -70,7 +70,7 @@ let Kue  = (function(){
 		async isEmpty() {
 			try {
 				let len = await this.size();
-				if (len === 0) return true;
+				if (len === 1) return true;
 				else return false;
 			} catch(err) {
 				console.error('redkue/index: Error in isEmpty function ==>', err);
@@ -79,10 +79,9 @@ let Kue  = (function(){
 
 		async list() {
 			try {
-				let len = await this.size();
+				let len = await client.llenAsync(this.qname);
 				let success = await client.lrangeAsync(this.qname,0,len);
-				let result = await success;
-				return result;
+				return success;
 			} catch(err) {
 				console.error('redkue/index: Error in list function ==>', err);
 			}

@@ -6,103 +6,50 @@ const router 		= express.Router();
 const config = require('../config');
 const passport 	= require('passport');
 const User = require('../models/user');
-// const Room = require('../models/room');
 const randomalpha = require('randomstring');
 const multer = require('../file');
 const Kue = require('../redkue');
 const loginActiveKue = new Kue(config.login_active_q);
-loginActiveKue.del(); // comment this when you are using multiple node.
+// loginActiveKue.del(); // comment this when you are using multiple node.
+const upload = multer.single('file');
+const path = require('path');
+const dbFunctions = require('../dbStore/db');
+
+
 
 
 const redirectURI = {customer:'/client', admin:'/admin-full'};
-// accepting a file at a time. This is to stop DoS. At max, it will accept 9 files at time if used array.
-const upload = multer.single('file');
-const fs = require('fs');
-const path = require('path');
 
-/**
- * [put description]
- * @method  put
- * @param   {[type]}   data [description]
- * @return  {[type]}        [description]
- * This is a function
- * @author Somenath Ghosh
- * @version [version]
- * @date    2017-07-02
- */
-async function qput(data) {
-	try {
-		let success = await loginActiveKue.enqueue(data);
-	} catch(err) {
-		console.error('Router/index: clientKue put/Enqueue Error', err);
-	}
-	return 'YES';
-}
-
-/**
- * [get description]
- * @method  get
- * @param   {[type]}   data [description]
- * @return  {[type]}        [description]
- * This is a function
- * @author Somenath Ghosh
- * @version [version]
- * @date    2017-07-02
- */
-async function qget(data) {
-	try {
-		let isAvailable = await loginActiveKue.isAvailable(data);
-		if (isAvailable) {
-			return true;
-		} else {
-			return false;
-		}
-	} catch(err) {
-		console.error('Router/index: clientKue get/isAvailable Error', err);
-	}
-}
-
-async function qdelete(data) {
-	try {
-		let success = await loginActiveKue.dequeue(data);
-		if(success) {
-			console.log('Successfully deleted', success);
-		} else  {
-			console.log('Could not delete/find', success);
-		}
-	} catch (err) {
-		console.error('Router/index: clientKue delete/delete Error', err);
-	}
-}
 
 router.get('/', function(req, res, next) {
 	// If user is already logged in, then redirect to rooms page
-	async function run() {
-		if(req.user) {
-			let isUserAlreadyLoggedIn = await loginActiveKue.isAvailable(req.user.username);
-			console.log('Is user already logged in', isUserAlreadyLoggedIn, req.user.username);
-			if (req.isAuthenticated() && !isUserAlreadyLoggedIn) {
-				// console.log(req.user)
-				res.redirect(redirectURI[req.user.role]);
-			} else {
-				res.render('login', {
-					success: req.flash('success')[0],
-					errors: req.flash('error'),
-					showRegisterForm: req.flash('showRegisterForm')[0],
-					iya: 'http://dummyimage.com/250x250/000/fff&text='+randomalpha.generate({length:1, charset: 'SBPM'}),
-				});
-			}
-		} else {
-			res.render('login', {
-				success: req.flash('success')[0],
-				errors: req.flash('error'),
-				showRegisterForm: req.flash('showRegisterForm')[0],
-				iya: 'http://dummyimage.com/250x250/000/fff&text='+randomalpha.generate({length:1, charset: 'SBPM'}),
-			});
+	function run() {
+		if(req.user && req.user.username) {
+			loginActiveKue.dequeue(req.user.username);
 		}
+		// 	console.log('Is user already logged in', isUserAlreadyLoggedIn, req.user.username);
+		// 	if (req.isAuthenticated() && !isUserAlreadyLoggedIn) {
+		// 		// console.log(req.user)
+		// 		res.redirect(redirectURI[req.user.role]);
+		// 	} else {
+		// 		res.render('login', {
+		// 			success: req.flash('success')[0],
+		// 			errors: req.flash('error'),
+		// 			showRegisterForm: req.flash('showRegisterForm')[0],
+		// 			iya: 'http://dummyimage.com/250x250/000/fff&text='+randomalpha.generate({length:1, charset: 'SBPM'}),
+		// 		});
+		// 	}
+		// } else {
+		res.render('login', {
+			success: req.flash('success')[0],
+			errors: req.flash('error'),
+			showRegisterForm: req.flash('showRegisterForm')[0],
+			iya: 'http://dummyimage.com/250x250/000/fff&text='+randomalpha.generate({length:1, charset: 'SBPM'}),
+		});
 		return 'YES';
 	}
-	run().then(x => console.log(`router/ / successful: ${x}`)).catch(err => console.error(`router/ / error:${err}`));
+	run();
+	// run().then(x => console.log(`router/ / successful: ${x}`)).catch(err => console.error(`router/ / error:${err}`));
 });
 
 // Login
@@ -146,6 +93,7 @@ router.post('/login', function(req, res, next) {
 
 				async function run(){
 					let list = await loginActiveKue.list();
+					list.splice(-1,1);
 					console.log('router/login list:', list);
 					if(list.indexOf(user.username) < 0){
 						res.redirect(redirectURI[user.role]);
@@ -206,9 +154,29 @@ router.post('/register', function(req, res, next) {
 				res.redirect('/');
 			} else {
 				User.create(credentials, function(err, newUser) {
-					if (err) throw err;
+					if (err) {
+						throw err;
+					}
 					req.flash('success', 'Your account has been created. Please log in.');
 					res.redirect('/');
+
+					// Add detailed info of User into Redis -detail hashmap.
+					User.findOne({'username': new RegExp('^' + req.body.username + '$', 'i')}, function(err, user) {
+						let data = {
+							roomID: user.uid,
+							Name: user.firstName + ' ' + user.lastName,
+							Email: user.email,
+							Phone: user.phone,
+							Company: user.company,
+						}
+						console.log('register ==> ', data);
+						// async - important function - but no need to wait for it.
+						dbFunctions.setDetails(data).then(success => {
+							console.log('register dbFunctions.setDetails success ==>', success);
+						}).catch(err =>{
+							console.error('register dbFunctions.setDetails error ==>', err);
+						});
+					});
 				});
 			}
 		});
@@ -305,8 +273,10 @@ router.get('/ping', function(req, res, next) {
 // logout
 router.get('/logout', function(req, res, next) {
 	// remove the req.user property and clear the login session
-	console.log('router/logout logging out ==>',req.user.username);
-	loginActiveKue.dequeue(req.user.username);
+	if(req.user) {
+		console.log('router/logout logging out ==>',req.user.username);
+		loginActiveKue.dequeue(req.user.username);
+	}
 	req.logout();
 	// destroy session data
 	req.session = null;
