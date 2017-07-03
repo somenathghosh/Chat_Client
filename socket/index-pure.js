@@ -125,15 +125,26 @@ io.on('connection', function (socket) {
 		let _this = this;
 		async function run(_data) {
 			let success;
+			console.log('add admin ==>', socket.attached_rooms);
 			try {
-				success = await adminsKue.enqueue(_data.admin);
-				console.log('add admin already in rooms ==> ', _data.listOfClients);
-				if(_data.listOfClients && _data.listOfClients > 1) {
-					_.each(_data.listOfClients, x => {
-						console.log('admin rejoins to room ==>', x);
-							socket.join(x)
-					});
+				if(_data.listOfClients === undefined) {
+					adminsKue.enqueue(_data.admin).then(x => winston.info(`add admin successfully run: ${x}`))
+																				.catch(err => winston.error(`add admin Error: ${err}`));
+				} else {
+					if(socket.attached_rooms === undefined || socket.attached_rooms === null) {
+						socket.attached_rooms = [];
+					}
+					console.log('add admin already in rooms ==> ', _data.listOfClients);
+					if(_data.listOfClients && _data.listOfClients.length > 1) {
+						_.each(_data.listOfClients, x => {
+							console.log('admin rejoins to room ==>', x);
+								socket.join(x);
+								socket.attached_rooms.push(x);
+						});
+					}
 				}
+				// success = await adminsKue.enqueue(_data.admin);
+
 			} catch (err) {
 				winston.info('add admin ==>', err);
 			}
