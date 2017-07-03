@@ -29,6 +29,7 @@ var typing = false; // Boolean to check if admin is typing
 var timeout = undefined; // Timeout to monitor typing
 var socket = io({transports: ['websocket']}); // io socket
 var clientsWaiting = 0;
+var listOfClients = [];
 $newUser.loop = true;
 $usernameInput.focus();
 try {
@@ -133,7 +134,7 @@ socket.on('admin removed', function(username) {
 socket.on('New Client', function(data) {
 	console.log('400');
 	$inputMessage = $('#' + data.roomID);
-
+	listOfClients.push(data.roomID);
 	if ($inputMessage.length < 1) {
 		addNewClient(data);
 	} else {
@@ -209,10 +210,12 @@ socket.on('reconnect', function() {
 	$('.container').empty();
 	$errorPage.fadeOut();
 	$userList.append('<li id=' + username + '>' + username + '</li>');
+	console.log('reconneted, reconnecting to existing rooms ', listOfClients);
 	if (authenticated) {
 		socket.emit('add admin', {
 			admin: username,
 			isAdmin: true,
+			listOfClients: listOfClients,
 		});
 	}
 });

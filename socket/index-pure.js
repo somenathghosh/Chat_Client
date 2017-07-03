@@ -85,6 +85,7 @@ io.on('connection', function (socket) {
 					let admins;
 					try {
 						admins = await adminsKue.list();
+						admins.splice(-1,1);
 					} catch (err) {
 						winston.info('login/admin Error in getting admins in list', err);
 					}
@@ -97,6 +98,7 @@ io.on('connection', function (socket) {
 						});
 					} else {
 						let size = await clientKue.size();
+						size--;
 						winston.info(`New Admin joined, sending size of list, size: ${size}`);
 						socket.emit('login', {
 							login: true,
@@ -124,13 +126,13 @@ io.on('connection', function (socket) {
 		async function run(_data) {
 			let success;
 			try {
-				success = await adminsKue.enqueue(socket.username);
-				// let other admin know this admin joined. Assess is this needed or now?
-				if (success) {
-					let list = await adminsKue.list();
-					socket.broadcast.emit("admin added", list);
-				} else {
-					// TODO handle error
+				success = await adminsKue.enqueue(_data.admin);
+				console.log('add admin already in rooms ==> ', _data.listOfClients);
+				if(_data.listOfClients && _data.listOfClients > 1) {
+					_.each(_data.listOfClients, x => {
+						console.log('admin rejoins to room ==>', x);
+							socket.join(x)
+					});
 				}
 			} catch (err) {
 				winston.info('add admin ==>', err);
@@ -146,6 +148,7 @@ io.on('connection', function (socket) {
 	socket.on('add user', function (data) {
 
 		socket.isAdmin = false;
+		socket.roomID = data.roomID;
 
 		let _socket = socket; // making sure scope does not create issue.
 		let _this = this;
@@ -159,25 +162,27 @@ io.on('connection', function (socket) {
 					winston.info('roomID not provided when new user');
 					_data.roomID = uuid();
 				}
-				try {
-					success = await dbFunctions.setDetails(_data);
-					winston.info('add user dbFunctions.setDetails success ==>', success);
-				} catch (err) {
-					winston.error('add user dbFunctions.setDetails error ==>', err);
-				}
 				socket.userDetails = [_data.Name, _data.Email, _data.Phone, _data.Company];
 				socket.isUser = true;
 				socket.emit("roomID", _data.roomID); // fallback | does not need since roomID is coming from user's uuid
 			}
 
 			socket.roomID = _data.roomID;
+			console.log('add user got roomID as ', socket.roomID);
 			try {
-				userDetails = await dbFunctions.getDetails(_data.roomID);
-				winston.info('add dbFunctions.getDetails user details==>', userDetails);
+				if(socket.userDetails) {
+					userDetails = socket.userDetails;
+					winston.info('add dbFunctions.getDetails user details from socket ==>', userDetails);
+				} else {
+					userDetails = await dbFunctions.getDetails(_data.roomID);
+					socket.userDetails = userDetails;
+					winston.info('add dbFunctions.getDetails user details==>', userDetails);
+				}
 			} catch (err) {
 				winston.error('add user dbFunctions.getDetails ==>', err);
 			}
 
+			console.log('user ', socket.userDetails[0], ' joining room ', socket.roomID);
 			socket.join(socket.roomID); // joining chat room for user
 
 			newUser = false;
@@ -201,9 +206,10 @@ io.on('connection', function (socket) {
 
 			try {
 				users = await clientKue.list();
+				users.splice(-1,1);
 				winston.info('add user users in q==>', users);
 			} catch (err) {
-				winston.error('add user clientKue.list ==>', err);
+				winston.error('add user clientKue list ==>', err);
 			}
 
 			if (users.indexOf(socket.roomID) < 0 && _data.isNewUser) { // Check if different instance of same user. (ie. Multiple tabs)
@@ -236,6 +242,7 @@ io.on('connection', function (socket) {
 			let size;
 			try {
 				size = await clientKue.size();
+				size--;
 			} catch (err) {
 				winston.error('add user clientKue.size ==>', err);
 			}
@@ -257,9 +264,16 @@ io.on('connection', function (socket) {
 					socket.broadcast.to(socket.roomID).emit("User Reconnected", socket.roomID);
 				}
 			}
+
 			return 'YES';
 		}
-
+		//async function...important, but no need to wait for anything
+		dbFunctions.getMsgLength(socket.roomID).then(function(len) {
+				socket.MsgHistoryLen = (len * -1) + 10;
+				socket.TotalMsgLen = (len * -1);
+		}).catch(function(error) {
+				console.log("add user dbFunctions.getMsgLength Error: ", error);
+		});
 		run(data).then(x => winston.info(`add user successfully run: ${x}`)).catch(err => winston.error(`add user Error: ${err}`));
 
 	});
@@ -328,6 +342,7 @@ io.on('connection', function (socket) {
 
 				try {
 					size = await clientKue.size();
+					size--;
 					winston.info('accept client size ==>', size);
 				} catch (e) {
 					winston.error('accept client clientKue.size ==>', err);
@@ -348,6 +363,7 @@ io.on('connection', function (socket) {
 					MsgHistoryLen: msgHistoryLen,
 					TotalMsgLen: totalMsgLen,
 				});
+
 				socket.broadcast.emit('queue update', {
 					clientsInQueue: size
 				});
@@ -386,7 +402,7 @@ io.on('connection', function (socket) {
 			roomID = (data.roomID ? data.roomID : socket.roomID);
 			winston.info('more messages roomID ==>', roomID);
 			msgHistoryLen = (data.MsgHistoryLen ? data.MsgHistoryLen : socket.MsgHistoryLen);
-			winston.info('more messages msgHistoryLen ==>', msgHistoryLen);
+			winston.info('more messages msgHistoryLen ==>', msgHistoryLen, ' socket message len ==>', socket.MsgHistoryLen);
 
 			if (msgHistoryLen < 0) {
 				let history;
@@ -407,6 +423,7 @@ io.on('connection', function (socket) {
 					}
 				}
 				msgHistoryLen += 10;
+				socket.MsgHistoryLen += 10;
 				winston.info('more messages history ==> ', result);
 				socket.emit('more chat history', {
 					history: result,
@@ -488,6 +505,17 @@ io.on('connection', function (socket) {
 		}
 		run().then(x => winston.info(`disconnect successfully run: ${x}`)).catch(err => winston.error(`disconnect Error: ${err}`));
 
+	});
+
+	socket.on('upload', function(data) {
+		if (data.roomID === "null") {
+			data.roomID = socket.roomID;
+		}
+		data.isAdmin = socket.isAdmin;
+
+		//TODO: Save message
+
+		socket.broadcast.to(data.roomID).emit('upload', data);
 	});
 
 
