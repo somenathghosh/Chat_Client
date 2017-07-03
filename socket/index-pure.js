@@ -183,6 +183,8 @@ io.on('connection', function (socket) {
 			}
 
 			console.log('user ', socket.userDetails[0], ' joining room ', socket.roomID);
+
+			socket.leave(socket.roomID);
 			socket.join(socket.roomID); // joining chat room for user
 
 			newUser = false;
@@ -374,14 +376,14 @@ io.on('connection', function (socket) {
 	});
 
 	socket.on('chat message', function (data) {
-		if (data.roomID === "null") {
+		if (data.roomID === "null" || data.roomID === undefined || data.roomID === null) {
 			data.roomID = socket.roomID;
 		}
 		data.isAdmin = socket.isAdmin;
 		dbFunctions.pushMessage(data);
-
+		console.log('chat message roomID', data.roomID);
 		socket.broadcast.to(data.roomID).emit('chat message', data);
-		winston.info(data);
+		winston.info('chat message ==> ',data);
 	});
 
 	socket.on("typing", function (data) {
