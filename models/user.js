@@ -75,7 +75,7 @@ var isAuthenticated = function (req, res, next) {
 var isAuthorize = function (req, res, next){
 	// let user = req.user;
 	let roleMatrix = {'admin': ['/admin', '/admin-full'],
-						'customer': ['/client', '/upload'],
+						'customer': ['/client', '/upload', '/download'],
 						};
 	console.log(req.user.role, req.originalUrl);
 	if (roleMatrix[req.user.role].indexOf(req.originalUrl) < 0) {

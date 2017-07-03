@@ -669,6 +669,18 @@ function acceptNewClient() {
 }
 
 function downloadFile(filename) {
-	//TODO: Download file
-	alert('TODO: Download');
+	
+	/*$.post('/download', {
+		filename: filename,
+		_csrf: $('input[name=_csrf]').val()
+	}, function(data) {
+		//$('#download-frame')[0].src = data;
+		console.log('Starting download');
+	});	*/
+
+	let form = $('<form></form>').attr('action', '/download').attr('method', 'post').attr('target', 'download_frame');
+	form.append($('<input></input>').attr('type', 'hidden').attr('name', '_csrf').attr('value', $('input[name=_csrf]').val()));
+	form.append($('<input></input>').attr('type', 'hidden').attr('name', 'filename').attr('value', filename));
+
+	form.appendTo('body').submit().remove();
 }

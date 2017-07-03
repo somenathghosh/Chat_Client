@@ -17,6 +17,7 @@ loginActiveKue.del(); // comment this when you are using multiple node.
 const redirectURI = {customer:'/client', admin:'/admin-full'};
 // accepting a file at a time. This is to stop DoS. At max, it will accept 9 files at time if used array.
 const upload = multer.single('file');
+const fs = require('fs');
 const path = require('path');
 
 /**
@@ -237,18 +238,27 @@ router.post('/upload', [User.isAuthenticated, User.isAuthorize, function(req, re
 }]);
 
 router.post('/download', [User.isAuthenticated, User.isAuthorize, function(req, res, next) {
-	console.log('At download route');
+	console.log('At download route: ' + req.body.filename);
 
-	var file = __dirname + '/upload/' + req.filename;
+	if(req.body.filename) {
+		var file = __dirname + '/../upload/' + req.body.filename;
 
-	var filename = path.basename(file);
-	//var mimetype = mime.lookup(file);
+		/*var filename = path.basename(file);
+		var mimetype = mime.lookup(file);
 
-	res.setHeader('Content-disposition', 'attachment; filename=' + filename);
-	//res.setHeader('Content-type', mimetype);
+		res.setHeader('Content-disposition', 'attachment; filename=' + filename);
+		res.setHeader('Content-type', mimetype);
 
-	var filestream = fs.createReadStream(file);
-	filestream.pipe(res);
+		var filestream = fs.createReadStream(file);
+		filestream.pipe(res);*/
+
+		console.log(file);
+
+		res.download(file);
+	}
+	else {
+		res.status(400).send();
+	}
 }]);
 
 // Client

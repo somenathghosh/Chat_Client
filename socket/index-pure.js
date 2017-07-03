@@ -490,6 +490,19 @@ io.on('connection', function (socket) {
 
 	});
 
+	socket.on('upload', function(data) {
+		console.log('Socket upload');
+
+		if (data.roomID === "null") {
+			data.roomID = socket.roomID;
+		}
+		data.isAdmin = socket.isAdmin;
+
+		//TODO: Save message
+
+		socket.broadcast.to(data.roomID).emit('upload', data);
+	});
+
 
 });
 
