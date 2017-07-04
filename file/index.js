@@ -13,16 +13,24 @@ const storage = multer.diskStorage({
 
 
 /**
- * @param  {} req
- * @param  {} file
- * @param  {} cb
+ * [description]
+ * @method
+ * @param   {[type]}   req  [description]
+ * @param   {[type]}   file [description]
+ * @param   {Function} cb   [description]
+ * @return  {[type]}        [description]
+ * This is a function
+ * @author Somenath Ghosh
+ * @version [version]
+ * @date    2017-07-04
  */
 const fileFilter = function(req, file, cb) {
- if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/)) {
-        return cb(new Error('Only image files are allowed!'), false);
-    }
-    cb(null, true);
+  console.log('file name being uploaded', file.originalname);
+  let fileName = file.originalname.toLowerCase();
+  if (!fileName.match(/\.(jpg|jpeg|png|gif)$/)) {
+          return cb(new Error('Only image files are allowed!'), false);
+  }
+  cb(null, true);
 };
 
 module.exports = multer({storage: storage, fileFilter: fileFilter, limits: {filesize: 5*1024*1024, files: 9}});
-

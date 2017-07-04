@@ -123,3 +123,9 @@
     width: 100%;
     text-align: center;
 }
+
+.download-icon {
+    max-width: 15px;
+    display: inline-block;
+    margin-right: 5px;
+}

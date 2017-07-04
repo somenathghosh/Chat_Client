@@ -520,7 +520,7 @@ function newModalChat(id, username, company, order) {
 	// TODO: Rotate color class
 	var chatContainer = '';
 
-	chatContainer += '<div class="row">' + 
+	chatContainer += '<div class="row">' +
 		'<div class="col-xs-9">' +
 			'<div class="sidebar-chat ' + colorClasses[order % colorClasses.length] +'" onclick="showChat(\'' + id + '\')">' +
 		        '<div>' + username + '</div>' +
@@ -529,7 +529,7 @@ function newModalChat(id, username, company, order) {
 		        //'<span class="sidebar-chat-notification">0</span>' +
 		    '</div>' +
 	    '</div>' +
-	    '<div class="col-xs-3 form-group">' + 
+	    '<div class="col-xs-3 form-group">' +
 	    	'<button type="button" class="btn btn-primary form-control" onclick="acceptNewClient(\'' + id + '\')" style="margin-top: 11px">Accept</button>'
 	    '</div>' +
     '</div>';
@@ -706,7 +706,7 @@ function acceptNewClient(id) {
 }
 
 function downloadFile(filename) {
-	/*$.post('/download', {
+	/* $.post('/download', {
 		filename: filename,
 		_csrf: $('input[name=_csrf]').val()
 	}, function(data) {
@@ -714,7 +714,7 @@ function downloadFile(filename) {
 		console.log('Starting download');
 	});	*/
 
-	let form = $('<form></form>').attr('action', '/download').attr('method', 'post').attr('target', 'download_frame');
+	var form = $('<form></form>').attr('action', '/download').attr('method', 'post').attr('target', 'download_frame');
 	form.append($('<input></input>').attr('type', 'hidden').attr('name', '_csrf').attr('value', $('input[name=_csrf]').val()));
 	form.append($('<input></input>').attr('type', 'hidden').attr('name', 'filename').attr('value', filename));
 
@@ -722,8 +722,8 @@ function downloadFile(filename) {
 }
 
 function viewAllWaiting() {
-	let $clientWaitingModal = $('#view-all-waiting-modal');
-	let $body = $clientWaitingModal.find('.modal-body');
+	var $clientWaitingModal = $('#view-all-waiting-modal');
+	var $body = $clientWaitingModal.find('.modal-body');
 
 	$body.html('');
 
@@ -731,7 +731,7 @@ function viewAllWaiting() {
 		$.each(clientsWaitingList, function(index, obj) {
 			//console.log(obj);
 			if(obj[0]) {
-				let row = newModalChat(obj[4], obj[0], obj[3], index);
+				var row = newModalChat(obj[4], obj[0], obj[3], index);
 				$clientWaitingModal.find('.modal-body').append(row);
 			}
 		});

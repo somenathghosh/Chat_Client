@@ -135,7 +135,7 @@ io.on('connection', function (socket) {
 						socket.attached_rooms = [];
 					}
 					console.log('add admin already in rooms ==> ', _data.listOfClients);
-					if(_data.listOfClients && _data.listOfClients.length > 1) {
+					if(_data.listOfClients && _data.listOfClients.length > 0) {
 						_.each(_data.listOfClients, x => {
 							console.log('admin rejoins to room ==>', x);
 								socket.join(x);
@@ -146,6 +146,7 @@ io.on('connection', function (socket) {
 				// success = await adminsKue.enqueue(_data.admin);
 
 				let currentKue = await clientKue.list();
+				currentKue.splice(-1,1);
 				let clientList = [];
 
 				for (let thisRoom of currentKue) {
@@ -333,6 +334,7 @@ io.on('connection', function (socket) {
 	socket.on('accept client', function (data) {
 		let _socket = socket; // making sure scope does not create issue.
 		let _this = this;
+		console.log('accept client recieved data ==>', data);
 
 		async function run(_data) {
 			let isEmpty,
@@ -356,35 +358,34 @@ io.on('connection', function (socket) {
 					//Send roomID to select the user of a specific roomID
 					if(data.roomID) {
 						roomID = data.roomID;
-						console.log('Accepting room: ' + roomID);
-
-						//Search through client queue for the specific client, queue the rest back
-						let size = await clientKue.size();
-						for(var x = 0; x < size; x++) {
-							let tempRoomID = await clientKue.dequeue();
-							if(roomID !== tempRoomID) {
-								clientKue.enqueue(tempRoomID);
-							}
-						}
-					}
-					else {
+						console.log('Accepting User with roomID: ' + roomID);
+						clientKue.dequeue(roomID);
+						// //Search through client queue for the specific client, queue the rest back
+						// let size = await clientKue.size();
+						// for(var x = 0; x < size; x++) {
+						// 	let tempRoomID = await clientKue.dequeue();
+						// 	if(roomID !== tempRoomID) {
+						// 		clientKue.enqueue(tempRoomID);
+						// 	}
+						// }
+					} else {
 						roomID = await clientKue.dequeue();
 					}
 					winston.info('accept client detail ==>', roomID);
-				} catch (e) {
+				} catch (err) {
 					winston.error('accept client clientKue.dequeue ==>', err);
 				}
 
 				try {
 					userDetail = await dbFunctions.getDetails(roomID);
 					winston.info('accept client userDetail ==>', userDetail);
-				} catch (e) {
+				} catch (err) {
 					winston.error('accept client dbFunctions.getDetails ==>', err);
 				}
 
 				try {
 					history = await dbFunctions.getMessages(roomID, 0);
-				} catch (e) {
+				} catch (err) {
 					winston.error('accept client dbFunctions.getMessages ==>', err);
 				}
 
@@ -403,7 +404,7 @@ io.on('connection', function (socket) {
 					len = await dbFunctions.getMsgLength(roomID);
 					msgHistoryLen = (len * -1) + 10;
 					totalMsgLen = (len * -1);
-				} catch (e) {
+				} catch (err) {
 					winston.error('accept client dbFunctions.getMsgLength ==>', err);
 				}
 
@@ -411,7 +412,7 @@ io.on('connection', function (socket) {
 					size = await clientKue.size();
 					size--;
 					winston.info('accept client size ==>', size);
-				} catch (e) {
+				} catch (err) {
 					winston.error('accept client clientKue.size ==>', err);
 				}
 				winston.info('accept cliet', socket.attached_rooms);
@@ -432,17 +433,18 @@ io.on('connection', function (socket) {
 				});
 
 				let currentKue = await clientKue.list();
+				currentKue.splice(-1,1);
 				let clientList = [];
 
 				for (let thisRoom of currentKue) {
 					let userDetail;
-					//console.log(thisRoom);
+					// console.log(thisRoom);
 					try {
 						userDetail = await dbFunctions.getDetails(thisRoom);
 						userDetail.push(thisRoom);
 						clientList.push(userDetail);
 						winston.info('queue update clientList ==>', clientList);
-					} catch (e) {
+					} catch (err) {
 						winston.error('queue update dbFunctions.getDetails ==>', err);
 					}
 				}
@@ -480,8 +482,8 @@ io.on('connection', function (socket) {
 
 		async function run(data) {
 			let roomID,
-				msgHistoryLen,
-				result;
+					msgHistoryLen,
+					result;
 
 			roomID = (data.roomID ? data.roomID : socket.roomID);
 			winston.info('more messages roomID ==>', roomID);

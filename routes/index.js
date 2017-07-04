@@ -198,6 +198,7 @@ router.post('/upload', [User.isAuthenticated, User.isAuthorize, function(req, re
 	upload(req, res, function(err) {
 		//console.log(req);
 		if (err) {
+			console.log('Upload err', err);
 			res.status(400).send();
 		} else {
 			res.status(200).send({filename: req.file.filename}); // When front end is ready, send the file meta data in send(req.file);

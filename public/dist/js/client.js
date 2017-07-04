@@ -310,7 +310,7 @@ try {
 
 			socket.emit('upload', {
 				filename: response.filename,
-				roomID: "null",
+				roomID: null,
 				timestamp: time
 			});
 
