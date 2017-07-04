@@ -29,6 +29,7 @@ var typing = false; // Boolean to check if admin is typing
 var timeout = undefined; // Timeout to monitor typing
 var socket = io({transports: ['websocket']}); // io socket
 var clientsWaiting = 0;
+var clientsWaitingList = [];
 var listOfClients = [];
 $newUser.loop = true;
 $usernameInput.focus();
@@ -65,6 +66,7 @@ socket.on('login', function(data) {
 		$userList.append('<li id=' + username + '>' + username + '</li>');
 		connected = true;
 		clientsWaiting = parseInt(data.clientsInQueue);
+		clientsWaitingList = data.clientList;
 		clock.setCounter(clientsWaiting);
 	} else {
 		alert(data.err);
@@ -147,6 +149,7 @@ socket.on('New Client', function(data) {
 	}
 	// Make sure to update client Q.
 	var clientsWaiting = parseInt(data.clientsInQueue);
+	//TODO: Update client list
 	clock.setCounter(clientsWaiting);
 });
 
@@ -249,7 +252,10 @@ socket.on('queue update', function(data) {
 	console.log('2000');
 	console.log('queue update', data);
 	clientsWaiting = parseInt(data.clientsInQueue);
+	clientsWaitingList = data.clientList;
+
 	clock.setCounter(clientsWaiting);
+	viewAllWaiting()
 });
 
 socket.on('upload', function(data) {
@@ -505,6 +511,32 @@ function newSidebarChat(id, username, company, order) {
 	return chatContainer;
 }
 /**
+ * @param  {} id
+ * @param  {} username
+ * @param  {} company
+ * @param  {} order
+ */
+function newModalChat(id, username, company, order) {
+	// TODO: Rotate color class
+	var chatContainer = '';
+
+	chatContainer += '<div class="row">' + 
+		'<div class="col-xs-9">' +
+			'<div class="sidebar-chat ' + colorClasses[order % colorClasses.length] +'" onclick="showChat(\'' + id + '\')">' +
+		        '<div>' + username + '</div>' +
+		        '<div><small>' + company + '</small></div>' +
+		        //TODO: Add time waiting in queue
+		        //'<span class="sidebar-chat-notification">0</span>' +
+		    '</div>' +
+	    '</div>' +
+	    '<div class="col-xs-3 form-group">' + 
+	    	'<button type="button" class="btn btn-primary form-control" onclick="acceptNewClient(\'' + id + '\')" style="margin-top: 11px">Accept</button>'
+	    '</div>' +
+    '</div>';
+
+	return chatContainer;
+}
+/**
  * @param  {} data
  */
 function addNewClient(data) {
@@ -667,8 +699,10 @@ function removeChat(id) {
 }
 /**
  */
-function acceptNewClient() {
-	socket.emit('accept client');
+function acceptNewClient(id) {
+	socket.emit('accept client', {
+		roomID: id
+	});
 }
 
 function downloadFile(filename) {
@@ -685,4 +719,24 @@ function downloadFile(filename) {
 	form.append($('<input></input>').attr('type', 'hidden').attr('name', 'filename').attr('value', filename));
 
 	form.appendTo('body').submit().remove();
+}
+
+function viewAllWaiting() {
+	let $clientWaitingModal = $('#view-all-waiting-modal');
+	let $body = $clientWaitingModal.find('.modal-body');
+
+	$body.html('');
+
+	if(clientsWaitingList.length > 0) {
+		$.each(clientsWaitingList, function(index, obj) {
+			//console.log(obj);
+			if(obj[0]) {
+				let row = newModalChat(obj[4], obj[0], obj[3], index);
+				$clientWaitingModal.find('.modal-body').append(row);
+			}
+		});
+	}
+	else {
+		$clientWaitingModal.find('.modal-body').append('<div style="text-align: center">No clients waiting</div>');
+	}
 }

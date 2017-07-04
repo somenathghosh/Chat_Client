@@ -145,6 +145,27 @@ io.on('connection', function (socket) {
 				}
 				// success = await adminsKue.enqueue(_data.admin);
 
+				let currentKue = await clientKue.list();
+				let clientList = [];
+
+				for (let thisRoom of currentKue) {
+					let userDetail;
+					//console.log(thisRoom);
+					try {
+						userDetail = await dbFunctions.getDetails(thisRoom);
+						userDetail.push(thisRoom);
+						clientList.push(userDetail);
+						winston.info('queue update clientList ==>', clientList);
+					} catch (e) {
+						winston.error('queue update dbFunctions.getDetails ==>', err);
+					}
+				}
+
+				socket.emit('queue update', {
+					clientsInQueue: currentKue.length,
+					clientList: clientList
+				});
+
 			} catch (err) {
 				winston.info('add admin ==>', err);
 			}
@@ -269,8 +290,25 @@ io.on('connection', function (socket) {
 					// _socket.history = history;
 					// _socket.justJoined = false;
 
+					let currentKue = await clientKue.list();
+					let clientList = [];
+
+					for (let thisRoom of currentKue) {
+						let userDetail;
+						//console.log(thisRoom);
+						try {
+							userDetail = await dbFunctions.getDetails(thisRoom);
+							userDetail.push(thisRoom);
+							clientList.push(userDetail);
+							winston.info('queue update clientList ==>', clientList);
+						} catch (e) {
+							winston.error('queue update dbFunctions.getDetails ==>', err);
+						}
+					}
+
 					socket.broadcast.emit('queue update', {
-						clientsInQueue: size
+						clientsInQueue: size,
+						clientList: clientList
 					});
 				} else {
 					winston.info("RECONNECTED");
@@ -315,7 +353,23 @@ io.on('connection', function (socket) {
 			}
 			if (isEmpty === false) {
 				try {
-					roomID = await clientKue.dequeue();
+					//Send roomID to select the user of a specific roomID
+					if(data.roomID) {
+						roomID = data.roomID;
+						console.log('Accepting room: ' + roomID);
+
+						//Search through client queue for the specific client, queue the rest back
+						let size = await clientKue.size();
+						for(var x = 0; x < size; x++) {
+							let tempRoomID = await clientKue.dequeue();
+							if(roomID !== tempRoomID) {
+								clientKue.enqueue(tempRoomID);
+							}
+						}
+					}
+					else {
+						roomID = await clientKue.dequeue();
+					}
 					winston.info('accept client detail ==>', roomID);
 				} catch (e) {
 					winston.error('accept client clientKue.dequeue ==>', err);
@@ -377,8 +431,25 @@ io.on('connection', function (socket) {
 					TotalMsgLen: totalMsgLen,
 				});
 
-				socket.broadcast.emit('queue update', {
-					clientsInQueue: size
+				let currentKue = await clientKue.list();
+				let clientList = [];
+
+				for (let thisRoom of currentKue) {
+					let userDetail;
+					//console.log(thisRoom);
+					try {
+						userDetail = await dbFunctions.getDetails(thisRoom);
+						userDetail.push(thisRoom);
+						clientList.push(userDetail);
+						winston.info('queue update clientList ==>', clientList);
+					} catch (e) {
+						winston.error('queue update dbFunctions.getDetails ==>', err);
+					}
+				}
+
+				socket.emit('queue update', {
+					clientsInQueue: size,
+					clientList: clientList
 				});
 			}
 			return 'YES';
