@@ -11,7 +11,10 @@ const multer = require('../file');
 const Kue = require('../redkue');
 const loginActiveKue = new Kue(config.login_active_q);
 // loginActiveKue.del(); // comment this when you are using multiple node.
+const fs = require('fs');
+const mime = require('mime');
 const upload = multer.single('file');
+const thumb = require('node-thumbnail').thumb;
 const path = require('path');
 const dbFunctions = require('../dbStore/db');
 
@@ -194,6 +197,7 @@ router.post('/register', function(req, res, next) {
  */
 router.post('/upload', [User.isAuthenticated, User.isAuthorize, function(req, res, next) {
 	console.log('At upload route');
+	console.log(req.body);
 
 	upload(req, res, function(err) {
 		//console.log(req);
@@ -201,29 +205,57 @@ router.post('/upload', [User.isAuthenticated, User.isAuthorize, function(req, re
 			console.log('Upload err', err);
 			res.status(400).send();
 		} else {
-			res.status(200).send({filename: req.file.filename}); // When front end is ready, send the file meta data in send(req.file);
+			thumb({
+				source: __dirname + '/../upload/' + req.file.filename,
+				destination: __dirname + '/../upload',
+				prefix: 'thumb_',
+				suffix: ''
+			}).then(function() {
+				console.log('Thumb generated');
+
+				res.status(200).send({filename: req.file.filename}); // When front end is ready, send the file meta data in send(req.file);
+			}).catch(function(e) {
+				console.log('Error', e.toString());
+
+				res.status(400).send();
+			});			 
 		}
-	});
+	});	
 }]);
 
 router.post('/download', [User.isAuthenticated, User.isAuthorize, function(req, res, next) {
 	console.log('At download route: ' + req.body.filename);
 
 	if(req.body.filename) {
-		var file = __dirname + '/../upload/' + req.body.filename;
+		let file = __dirname + '/../upload/' + req.body.filename;
+		//console.log(file);
 
-		/*var filename = path.basename(file);
-		var mimetype = mime.lookup(file);
+		if(req.body.filename.indexOf('thumb') >= 0) {
 
-		res.setHeader('Content-disposition', 'attachment; filename=' + filename);
-		res.setHeader('Content-type', mimetype);
+			let filemime = mime.lookup(file);
+			let bitmap = fs.readFileSync(file);
+			let img64 = new Buffer(bitmap, 'base64');
+			img64 = 'data:' + filemime + ';base64,' + img64.toString('base64');
+			//console.log(img64);
 
-		var filestream = fs.createReadStream(file);
-		filestream.pipe(res);*/
+			res.writeHead(200, {
+				'Content-Type': filemime,
+				'Content-Length': img64.length
+			});
+			res.end(img64);
+		}
+		else {
+			/*var filename = path.basename(file);
+			var mimetype = mime.lookup(file);
 
-		console.log(file);
+			res.setHeader('Content-disposition', 'attachment; filename=' + filename);
+			res.setHeader('Content-type', mimetype);
 
-		res.download(file);
+			var filestream = fs.createReadStream(file);
+			filestream.pipe(res);*/
+
+			res.download(file);
+		}
 	}
 	else {
 		res.status(400).send();
