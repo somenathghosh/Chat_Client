@@ -262,7 +262,9 @@ socket.on('upload', function(data) {
 	console.log('2100');
 	var $messages = $('#chat-' + data.roomID).find('.chat-messages');
 
-	$messages.append(createUploadMessage(data.filename));
+	downloadThumb(data.filename, function(dataUri){
+		$messages.append(createUploadMessage(data.filename, dataUri, false));
+	});
 });
 
 var clock = $('.counter').FlipClock(clientsWaiting, {
@@ -619,11 +621,15 @@ function createMessage(message, name, time, isSender) {
  * @param  {} filename
  * @param  {} isSender
 **/
-function createUploadMessage(filename, isSender) {
+function createUploadMessage(filename, dataUri, isSender) {
 	var message = '';
 
 	message = '<div class="message ' + (isSender ? 'message-sender' : 'message-receiver') + '">' +
-        '<div class="message-text"><img class="download-icon" src="./img/paperclip.png" /><a href="#" onclick="downloadFile(\'' + filename + '\')">' + filename + '</a></div>' +
+        //'<div class="message-text"><img class="download-icon" src="./img/paperclip.png" /><a href="#" onclick="downloadFile(\'' + filename + '\')">' +
+        '<div class="message-text"><a href="#" onclick="downloadFile(\'' + filename + '\')">' +
+        	/* + filename + */
+        	'<img style="max-width: 30px" src="' + dataUri + '" />' +
+    	'</a></div>' +
     '</div>';
 
     return message;
@@ -719,6 +725,19 @@ function downloadFile(filename) {
 	form.append($('<input></input>').attr('type', 'hidden').attr('name', 'filename').attr('value', filename));
 
 	form.appendTo('body').submit().remove();
+}
+
+function downloadThumb(filename, cb) {
+	$.post('/download', {
+		filename: 'thumb_' + filename,
+		_csrf: $('input[name=_csrf]').val()
+	}, function(data) {
+		console.log(data);
+		cb(data);
+	}).fail(function() {
+		//console.log(data);
+		return '';
+	});
 }
 
 function viewAllWaiting() {

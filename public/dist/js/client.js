@@ -316,7 +316,7 @@ try {
 
 			console.log('2100');
 
-			var $messageBodyDiv = $('<div class="msg_b">' + response.filename + '<span class="timestamp">' +
+			var $messageBodyDiv = $('<div class="msg_b">Uploaded: ' + response.filename + '<span class="timestamp">' +
 					(time.toLocaleString().substr(15, 6)) + '</span></div>').insertBefore($newMsg);
 
 			$messages[0].scrollTop = $messages[0].scrollHeight;
